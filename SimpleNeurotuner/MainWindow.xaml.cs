@@ -23,6 +23,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Microsoft.Win32;
+using System.Threading;
 
 namespace SimpleNeurotuner
 {
@@ -117,6 +118,17 @@ namespace SimpleNeurotuner
             }
         }
 
+        private void SoundIn()
+        {
+            _soundIn = new WasapiCapture();
+            _soundIn.Device = mInputDevices[cmbInput.SelectedIndex];
+            _soundIn.Initialize();
+            _soundIn.Start();
+
+            var source = new SoundInSource(_soundIn) { FillWithZeros = true };
+
+        }
+
         private void Sound(string file)
         {
             Stop();
@@ -135,8 +147,9 @@ namespace SimpleNeurotuner
                     _soundOut = new WasapiOut();
                     _soundOut.Initialize(source.ToWaveSource(16));
                     _soundOut.Play();
+                    
                     //InitializeComponent();
-                    //Thread.Sleep(200);*/
+                    Thread.Sleep(1060);
                 } while (click != 0);
         }
 
