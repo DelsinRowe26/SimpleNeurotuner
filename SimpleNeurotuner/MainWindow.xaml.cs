@@ -24,6 +24,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Microsoft.Win32;
 using System.Threading;
+using System.Diagnostics;
 
 namespace SimpleNeurotuner
 {
@@ -33,9 +34,10 @@ namespace SimpleNeurotuner
     public partial class MainWindow : Window
     {
         private SimpleMixer mMixer;
-        private int SampleRate = 44100;
-        private ISoundOut _soundOut;
-        private WasapiCapture _soundIn;
+        private int SampleRate = 48000;
+        private WasapiOut mSoundOut;
+        private WasapiCapture mSoundIn;
+        private SampleDSP mDsp;
         private IWaveSource _source;
         private MMDeviceCollection mOutputDevices;
         private MMDeviceCollection mInputDevices;
@@ -92,24 +94,25 @@ namespace SimpleNeurotuner
             file = openFileDialog.FileName;
             if (openFileDialog.ShowDialog() == true)
             {
-                await Task.Run(() => Sound(file));
+                //await Task.Run(() => Sound(file));
+                StartFullDuplex();
             }
         }
 
         private void Stop()
         {
 
-            if (_soundOut != null)
+            if (mSoundOut != null)
             {
-                _soundOut.Stop();
-                _soundOut.Dispose();
-                _soundOut = null;
+                mSoundOut.Stop();
+                mSoundOut.Dispose();
+                mSoundOut = null;
             }
-            if (_soundIn != null)
+            if (mSoundIn != null)
             {
-                _soundIn.Stop();
-                _soundIn.Dispose();
-                _soundIn = null;
+                mSoundIn.Stop();
+                mSoundIn.Dispose();
+                mSoundIn = null;
             }
             if (_source != null)
             {
@@ -118,39 +121,70 @@ namespace SimpleNeurotuner
             }
         }
 
-        private void SoundIn()
+        private bool StartFullDuplex()//запуск пича и громкости
         {
-            _soundIn = new WasapiCapture();
-            _soundIn.Device = mInputDevices[cmbInput.SelectedIndex];
-            _soundIn.Initialize();
-            _soundIn.Start();
+            try
+            {
+                //Запускает устройство захвата звука с задержкой 1 мс.
+                mSoundIn = new WasapiCapture(/*false, AudioClientShareMode.Exclusive, 1*/);
+                //mSoundIn.Device = mInputDevices[cmbInput.SelectedIndex];
+                mSoundIn.Initialize();
+               
 
-            var source = new SoundInSource(_soundIn) { FillWithZeros = true };
+                var source = new SoundInSource(mSoundIn) { FillWithZeros = true };
 
+                //Init DSP для смещения высоты тона
+                //mDsp = new SampleDSP(source.ToSampleSource().ToStereo());
+                //mDsp.GainDB = trackGain.Value;
+                //SetPitchShiftValue();
+                mSoundIn.Start();
+
+                //Инициальный микшер
+                Mixer();
+
+                //Добавляем наш источник звука в микшер
+                mMixer.AddSource(source.ToSampleSource().ToStereo()/*mDsp.ChangeSampleRate(mMixer.WaveFormat.SampleRate)*/);
+
+                //Запускает устройство воспроизведения звука с задержкой 1 мс.
+                SoundOut();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                string msg = "Error in StartFullDuplex: \r\n" + ex.Message;
+                MessageBox.Show(msg);
+                Debug.WriteLine(msg);
+            }
+            return false;
+        }
+
+        private void SoundOut()
+        {
+            mSoundOut = new WasapiOut();
+            mSoundOut.Initialize(mMixer.ToWaveSource(16));
+            mSoundOut.Play();
         }
 
         private void Sound(string file)
         {
             Stop();
-                do
-                {
-                    /*Mixer();
-                    mMp3 = CodecFactory.Instance.GetCodec(openFileDialog.FileName).ToStereo().ToSampleSource();
-                    mMixer.AddSource(mMp3.ChangeSampleRate(mMixer.WaveFormat.SampleRate));*/
-                    //open the selected file
-                    ISampleSource source = CodecFactory.Instance.GetCodec(openFileDialog.FileName)
-                        .ToSampleSource()
-                        .AppendSource(x => new PitchShifter(x), out _pitchShifter);
+            do
+            {
+                Mixer();
+                mMp3 = CodecFactory.Instance.GetCodec(openFileDialog.FileName).ToStereo().ToSampleSource();
+                mMixer.AddSource(mMp3.ChangeSampleRate(mMixer.WaveFormat.SampleRate));
+                //open the selected file
+                /*ISampleSource source = CodecFactory.Instance.GetCodec(openFileDialog.FileName)
+                    .ToSampleSource()
+                    .AppendSource(x => new PitchShifter(x), out _pitchShifter);*/
 
-                    //play the audio
+                //play the audio
 
-                    _soundOut = new WasapiOut();
-                    _soundOut.Initialize(source.ToWaveSource(16));
-                    _soundOut.Play();
+                SoundOut();
                     
-                    //InitializeComponent();
-                    Thread.Sleep(1060);
-                } while (click != 0);
+                //InitializeComponent();
+                Thread.Sleep(1050);
+            } while (click != 0);
         }
 
         private void btnStop_Click(object sender, RoutedEventArgs e)

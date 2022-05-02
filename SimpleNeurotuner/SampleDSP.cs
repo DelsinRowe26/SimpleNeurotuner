@@ -1,7 +1,7 @@
 ﻿using System;
 using CSCore;
 
-namespace Neurotuner
+namespace SimpleNeurotuner
 {
     class SampleDSP: ISampleSource
     {

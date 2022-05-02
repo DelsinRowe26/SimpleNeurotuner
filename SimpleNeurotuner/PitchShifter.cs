@@ -50,7 +50,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.IO;
 
-namespace Neurotuner
+namespace SimpleNeurotuner
 {
     public class PitchShifter
     {
