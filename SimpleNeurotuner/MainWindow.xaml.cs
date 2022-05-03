@@ -94,8 +94,8 @@ namespace SimpleNeurotuner
             file = openFileDialog.FileName;
             if (openFileDialog.ShowDialog() == true)
             {
-                //await Task.Run(() => Sound(file));
-                StartFullDuplex();
+                await Task.Run(() => Sound(file));
+                await Task.Run(() => StartFullDuplex());
             }
         }
 
@@ -127,7 +127,7 @@ namespace SimpleNeurotuner
             {
                 //Запускает устройство захвата звука с задержкой 1 мс.
                 mSoundIn = new WasapiCapture(/*false, AudioClientShareMode.Exclusive, 1*/);
-                //mSoundIn.Device = mInputDevices[cmbInput.SelectedIndex];
+                mSoundIn.Device = mInputDevices[cmbInput.SelectedIndex];
                 mSoundIn.Initialize();
                
 
@@ -161,6 +161,7 @@ namespace SimpleNeurotuner
         private void SoundOut()
         {
             mSoundOut = new WasapiOut();
+            //mSoundOut.Device = mOutputDevices[cmbOutput.SelectedIndex];
             mSoundOut.Initialize(mMixer.ToWaveSource(16));
             mSoundOut.Play();
         }
