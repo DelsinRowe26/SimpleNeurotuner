@@ -95,13 +95,18 @@ namespace SimpleNeurotuner
             if (openFileDialog.ShowDialog() == true)
             {
                 await Task.Run(() => Sound(file));
-                await Task.Run(() => StartFullDuplex());
+                //await Task.Run(() => StartFullDuplex());
+                StartFullDuplex();
             }
         }
 
         private void Stop()
         {
-
+            if(mMixer != null)
+            {
+                mMixer.Dispose();
+                mMixer = null;
+            }
             if (mSoundOut != null)
             {
                 mSoundOut.Stop();
@@ -121,7 +126,7 @@ namespace SimpleNeurotuner
             }
         }
 
-        private bool StartFullDuplex()//запуск пича и громкости
+        private async void StartFullDuplex()//запуск пича и громкости
         {
             try
             {
@@ -146,8 +151,8 @@ namespace SimpleNeurotuner
                 mMixer.AddSource(source.ToSampleSource().ToStereo()/*mDsp.ChangeSampleRate(mMixer.WaveFormat.SampleRate)*/);
 
                 //Запускает устройство воспроизведения звука с задержкой 1 мс.
-                SoundOut();
-                return true;
+                await Task.Run(() => SoundOut());
+                //return true;
             }
             catch (Exception ex)
             {
@@ -155,7 +160,7 @@ namespace SimpleNeurotuner
                 MessageBox.Show(msg);
                 Debug.WriteLine(msg);
             }
-            return false;
+            //return false;
         }
 
         private void SoundOut()
@@ -166,7 +171,7 @@ namespace SimpleNeurotuner
             mSoundOut.Play();
         }
 
-        private void Sound(string file)
+        private async void Sound(string file)
         {
             Stop();
             do
@@ -181,9 +186,8 @@ namespace SimpleNeurotuner
 
                 //play the audio
 
-                SoundOut();
-                    
-                //InitializeComponent();
+                await Task.Run(() => SoundOut());
+                
                 Thread.Sleep(1050);
             } while (click != 0);
         }
@@ -197,6 +201,7 @@ namespace SimpleNeurotuner
         private void SimpleNeurotuner_Closing(object sender, CancelEventArgs e)
         {
             Stop();
+            Environment.Exit(0);
         }
     }
 }
