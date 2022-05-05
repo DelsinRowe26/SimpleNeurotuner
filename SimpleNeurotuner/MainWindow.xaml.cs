@@ -203,5 +203,71 @@ namespace SimpleNeurotuner
             Stop();
             Environment.Exit(0);
         }
+
+        private void btnStart_Open_MouseMove(object sender, MouseEventArgs e)
+        {
+            Style style = new Style();
+            style.Setters.Add(new Setter { Property = Control.FontFamilyProperty, Value = new FontFamily("Verdana") });
+            style.Setters.Add(new Setter { Property = Control.MarginProperty, Value = new Thickness(10) });
+            style.Setters.Add(new Setter { Property = Control.BackgroundProperty, Value = new SolidColorBrush(Colors.Blue) });
+            style.Setters.Add(new Setter { Property = Control.ForegroundProperty, Value = new SolidColorBrush(Colors.White) });
+            btnStart_Open.Style = style;
+        }
+
+        private void btnStart_Open_MouseLeave(object sender, MouseEventArgs e)
+        {
+            Style style = new Style();
+            style.Setters.Add(new Setter { Property = Control.FontFamilyProperty, Value = new FontFamily("Verdana") });
+            style.Setters.Add(new Setter { Property = Control.MarginProperty, Value = new Thickness(10) });
+            style.Setters.Add(new Setter { Property = Control.BackgroundProperty, Value = new SolidColorBrush(Colors.Blue) });
+            style.Setters.Add(new Setter { Property = Control.ForegroundProperty, Value = new SolidColorBrush(Colors.Black) });
+            btnStart_Open.Style = style;
+        }
+
+        private void btnStop_MouseMove(object sender, MouseEventArgs e)
+        {
+            Style style = new Style();
+            style.Setters.Add(new Setter { Property = Control.FontFamilyProperty, Value = new FontFamily("Verdana") });
+            style.Setters.Add(new Setter { Property = Control.MarginProperty, Value = new Thickness(10) });
+            style.Setters.Add(new Setter { Property = Control.BackgroundProperty, Value = new SolidColorBrush(Colors.Blue) });
+            style.Setters.Add(new Setter { Property = Control.ForegroundProperty, Value = new SolidColorBrush(Colors.White) });
+            btnStop.Style = style;
+        }
+
+        private void btnStop_MouseLeave(object sender, MouseEventArgs e)
+        {
+            Style style = new Style();
+            style.Setters.Add(new Setter { Property = Control.FontFamilyProperty, Value = new FontFamily("Verdana") });
+            style.Setters.Add(new Setter { Property = Control.MarginProperty, Value = new Thickness(10) });
+            style.Setters.Add(new Setter { Property = Control.BackgroundProperty, Value = new SolidColorBrush(Colors.Blue) });
+            style.Setters.Add(new Setter { Property = Control.ForegroundProperty, Value = new SolidColorBrush(Colors.Black) });
+            btnStop.Style = style;
+        }
+
+        private void MenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            Window1 window1 = new Window1();
+            window1.Show();
+        }
+
+        private void cmbLanguage_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (cmbLanguage.SelectedIndex == 1)
+            {
+                Window1 window1 = new Window1();
+                window1.index = cmbLanguage.SelectedIndex;
+                btnStart_Open.Content = "Открыть/Старт";
+                btnStop.Content = "Стоп";
+                Help.Header = "Помощь";
+            }
+            else
+            {
+                Window1 window1 = new Window1();
+                window1.index = cmbLanguage.SelectedIndex;
+                btnStart_Open.Content = "Open/Start";
+                btnStop.Content = "Stop";
+                Help.Header = "Help";
+            }
+        }
     }
 }

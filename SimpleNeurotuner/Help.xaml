@@ -1,0 +1,19 @@
+﻿<Window x:Name="Help" x:Class="SimpleNeurotuner.Window1"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:SimpleNeurotuner"
+        mc:Ignorable="d"
+        Title="Help" Height="302" Width="370">
+    <Grid>
+        <TextBox x:Name="tbHelp" HorizontalAlignment="Center" Margin="0,34,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="350" Height="242" Text="Welcome to MiniNeurotuner.&#xD;&#xA;&#xD;&#xA;Instruction:&#xD;&#xA;1. If the microphone and speakers (headphones) are not selected by default, then select them yourself.&#xD;&#xA;2. Select an entry.&#xD;&#xA;3. Press the start button, and enjoy. There was a desire to stop, press the stop button."/>
+        <Menu x:Name="menu" VerticalAlignment="Top" Height="29">
+            <ComboBox x:Name="cmbLanguage" Width="40" SelectionChanged="cmbLanguage_SelectionChanged">
+                <ComboBoxItem Content="en"/>
+                <ComboBoxItem Content="ru"/>
+            </ComboBox>
+        </Menu>
+
+    </Grid>
+</Window>
