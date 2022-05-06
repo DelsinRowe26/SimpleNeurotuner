@@ -83,7 +83,7 @@
             </ComboBox>
         </Menu>
         <Label x:Name="label" Content="Label" HorizontalAlignment="Left" Margin="742,354,0,0" VerticalAlignment="Top"/>
-        <CheckBox x:Name="checkBox" Content="CheckBox" HorizontalAlignment="Left" Margin="443,406,0,0" VerticalAlignment="Top"/>
+        <CheckBox x:Name="checkBox" Content="CheckBox" HorizontalAlignment="Left" Margin="468,479,0,0" VerticalAlignment="Top"/>
 
     </Grid>
 </Window>
