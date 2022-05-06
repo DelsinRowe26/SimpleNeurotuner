@@ -25,6 +25,7 @@ using System.Windows.Shapes;
 using Microsoft.Win32;
 using System.Threading;
 using System.Diagnostics;
+using System.IO;
 
 namespace SimpleNeurotuner
 {
@@ -33,15 +34,17 @@ namespace SimpleNeurotuner
     /// </summary>
     public partial class MainWindow : Window
     {
+        private FileInfo fileInfo = new FileInfo("open.txt");
         private SimpleMixer mMixer;
         private int SampleRate = 48000;
         private WasapiOut mSoundOut;
         private WasapiCapture mSoundIn;
         private SampleDSP mDsp;
+        string[] file1 = File.ReadAllLines("open.txt");
         private IWaveSource _source;
         private MMDeviceCollection mOutputDevices;
         private MMDeviceCollection mInputDevices;
-        private PitchShifter _pitchShifter;
+        //private PitchShifter _pitchShifter;
         private ISampleSource mMp3;
         private OpenFileDialog openFileDialog;
         private string file;
@@ -63,6 +66,12 @@ namespace SimpleNeurotuner
 
         private void SimpleNeurotuner_Loaded(object sender, RoutedEventArgs e)
         {
+            if (file1.Length == 0)
+            {
+                WelcomeWindow window = new WelcomeWindow();
+                window.Show();
+                File.AppendAllText(fileInfo.FullName, "1");
+            }
             //Находит устройства для захвата звука и заполнияет комбобокс
             MMDeviceEnumerator deviceEnum = new MMDeviceEnumerator();
             mInputDevices = deviceEnum.EnumAudioEndpoints(DataFlow.Capture, DeviceState.Active);

@@ -1,0 +1,26 @@
+﻿<Window x:Name="Welcome" x:Class="SimpleNeurotuner.WelcomeWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:SimpleNeurotuner"
+        mc:Ignorable="d"
+        Title="Welcome" Height="450" Width="475" Topmost="True">
+    <Grid>
+        <Label x:Name="lbWelcome" Content="Welcome to MiniNeurotuner" HorizontalAlignment="Center" Margin="0,25,0,0" VerticalAlignment="Top" FontSize="24">
+            <Label.Style>
+                <Style>
+                    <Setter Property="Control.FontFamily" Value="Impact"/>
+                </Style>
+            </Label.Style>
+        </Label>
+        <Menu x:Name="menu" Margin="0,0,0,318" VerticalAlignment="Top" Height="22">
+            <ComboBox x:Name="cmbLanguage" Width="40" SelectionChanged="ComboBox_SelectionChanged" >
+                <ComboBoxItem Content="en"/>
+                <ComboBoxItem Content="ru"/>
+            </ComboBox>
+        </Menu>
+        <Button x:Name="button" Content="OK" HorizontalAlignment="Left" Margin="365,374,0,0" VerticalAlignment="Top" Height="50" Width="100" FontSize="22" FontFamily="Times New Roman" Click="button_Click"/>
+
+    </Grid>
+</Window>
