@@ -197,7 +197,7 @@ namespace SimpleNeurotuner
 
                 await Task.Run(() => SoundOut());
                 
-                Thread.Sleep(1050);
+                Thread.Sleep(750);
             } while (click != 0);
         }
 
