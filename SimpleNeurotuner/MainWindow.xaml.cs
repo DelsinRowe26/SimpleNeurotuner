@@ -146,7 +146,6 @@ namespace SimpleNeurotuner
                
 
                 var source = new SoundInSource(mSoundIn) { FillWithZeros = true };
-
                 //Init DSP для смещения высоты тона
                 //mDsp = new SampleDSP(source.ToSampleSource().ToStereo());
                 //mDsp.GainDB = trackGain.Value;
@@ -196,8 +195,17 @@ namespace SimpleNeurotuner
                 //play the audio
 
                 await Task.Run(() => SoundOut());
+
+                await Task.Delay(950);
                 
-                Thread.Sleep(750);
+                /*Mixer();
+                mMp3 = CodecFactory.Instance.GetCodec(openFileDialog.FileName).ToStereo().ToSampleSource();
+                mMixer.AddSource(mMp3.ChangeSampleRate(mMixer.WaveFormat.SampleRate));
+                await Task.Run(() => SoundOut());
+                await Task.Delay(950);*/
+                //mMixer.Dispose();
+                //mMp3.Dispose();
+                //Thread.Sleep(750);
             } while (click != 0);
         }
 
