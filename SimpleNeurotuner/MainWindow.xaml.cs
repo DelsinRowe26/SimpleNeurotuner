@@ -133,6 +133,11 @@ namespace SimpleNeurotuner
                 _source.Dispose();
                 _source = null;
             }
+            /*if (mMp3 != null)
+            {
+                mMp3.Dispose();
+                mMp3 = null;
+            }*/
         }
 
         private async void StartFullDuplex()//запуск пича и громкости
@@ -146,12 +151,13 @@ namespace SimpleNeurotuner
                
 
                 var source = new SoundInSource(mSoundIn) { FillWithZeros = true };
+                
                 //Init DSP для смещения высоты тона
                 //mDsp = new SampleDSP(source.ToSampleSource().ToStereo());
                 //mDsp.GainDB = trackGain.Value;
                 //SetPitchShiftValue();
                 mSoundIn.Start();
-
+                //source.WriteToFile("my.wav");
                 //Инициальный микшер
                 Mixer();
 
@@ -182,15 +188,32 @@ namespace SimpleNeurotuner
         private async void Sound(string file)
         {
             Stop();
-            do
+            Mixer();
+            mMp3 = CodecFactory.Instance.GetCodec(openFileDialog.FileName).ToStereo().ToSampleSource();
+            //mMp3.ToWaveSource(16).Loop();
+            mMixer.AddSource(mMp3.ChangeSampleRate(mMixer.WaveFormat.SampleRate).ToWaveSource(16).Loop().ToSampleSource());
+
+            //mMp3.ToWaveSource(16).Loop();
+            //open the selected file
+            /*ISampleSource source = CodecFactory.Instance.GetCodec(openFileDialog.FileName)
+                .ToSampleSource()
+                .AppendSource(x => new PitchShifter(x), out _pitchShifter);*/
+
+            //play the audio
+
+            await Task.Run(() => SoundOut());
+            /*do
             {
                 Mixer();
                 mMp3 = CodecFactory.Instance.GetCodec(openFileDialog.FileName).ToStereo().ToSampleSource();
-                mMixer.AddSource(mMp3.ChangeSampleRate(mMixer.WaveFormat.SampleRate));
+                //mMp3.ToWaveSource(16).Loop();
+                mMixer.AddSource(mMp3.ChangeSampleRate(mMixer.WaveFormat.SampleRate).ToWaveSource(16).Loop().ToSampleSource());
+                
+                //mMp3.ToWaveSource(16).Loop();
                 //open the selected file
                 /*ISampleSource source = CodecFactory.Instance.GetCodec(openFileDialog.FileName)
                     .ToSampleSource()
-                    .AppendSource(x => new PitchShifter(x), out _pitchShifter);*/
+                    .AppendSource(x => new PitchShifter(x), out _pitchShifter);
 
                 //play the audio
 
@@ -202,11 +225,11 @@ namespace SimpleNeurotuner
                 mMp3 = CodecFactory.Instance.GetCodec(openFileDialog.FileName).ToStereo().ToSampleSource();
                 mMixer.AddSource(mMp3.ChangeSampleRate(mMixer.WaveFormat.SampleRate));
                 await Task.Run(() => SoundOut());
-                await Task.Delay(950);*/
+                await Task.Delay(950);
                 //mMixer.Dispose();
                 //mMp3.Dispose();
                 //Thread.Sleep(750);
-            } while (click != 0);
+            } while (click != 0);*/
         }
 
         private void btnStop_Click(object sender, RoutedEventArgs e)
