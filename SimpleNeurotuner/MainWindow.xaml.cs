@@ -90,6 +90,9 @@ namespace SimpleNeurotuner
                 cmbOutput.Items.Add(device.FriendlyName);
                 if (device.DeviceID == activeDevice.DeviceID) cmbOutput.SelectedIndex = cmbOutput.Items.Count - 1;
             }
+
+            cmbRecord.Items.Add("Select a record");
+            cmbRecord.SelectedIndex = cmbRecord.Items.Count - 1;
         }
 
         private async void btnStart_Open_Click(object sender, RoutedEventArgs e)
@@ -157,7 +160,7 @@ namespace SimpleNeurotuner
                 //mDsp.GainDB = trackGain.Value;
                 //SetPitchShiftValue();
                 mSoundIn.Start();
-                //source.WriteToFile("my.wav");
+
                 //Инициальный микшер
                 Mixer();
 
@@ -188,20 +191,25 @@ namespace SimpleNeurotuner
         private async void Sound(string file)
         {
             Stop();
-            Mixer();
-            mMp3 = CodecFactory.Instance.GetCodec(openFileDialog.FileName).ToStereo().ToSampleSource();
-            //mMp3.ToWaveSource(16).Loop();
-            mMixer.AddSource(mMp3.ChangeSampleRate(mMixer.WaveFormat.SampleRate).ToWaveSource(16).Loop().ToSampleSource());
+            if (click != 0)
+            {
+                Mixer();
+                mMp3 = CodecFactory.Instance.GetCodec(openFileDialog.FileName).ToStereo().ToSampleSource();
+                mMixer.AddSource(mMp3.ChangeSampleRate(mMixer.WaveFormat.SampleRate).ToWaveSource(16).Loop().ToSampleSource());
 
-            //mMp3.ToWaveSource(16).Loop();
-            //open the selected file
-            /*ISampleSource source = CodecFactory.Instance.GetCodec(openFileDialog.FileName)
-                .ToSampleSource()
-                .AppendSource(x => new PitchShifter(x), out _pitchShifter);*/
+                //mMp3.ToWaveSource(16).Loop();
+                //open the selected file
+                /*ISampleSource source = CodecFactory.Instance.GetCodec(openFileDialog.FileName)
+                    .ToSampleSource()
+                    .AppendSource(x => new PitchShifter(x), out _pitchShifter);*/
+                //play the audio
 
-            //play the audio
-
-            await Task.Run(() => SoundOut());
+                await Task.Run(() => SoundOut());
+            } 
+            else
+            {
+                Stop();
+            }
             /*do
             {
                 Mixer();
@@ -294,6 +302,13 @@ namespace SimpleNeurotuner
         {
             if (cmbLanguage.SelectedIndex == 1)
             {
+                /*if(cmbRecord.SelectedIndex == -1)
+                {
+                    
+                }*/
+                cmbRecord.Items.Clear();
+                cmbRecord.Items.Add("Выберите запись");
+                cmbRecord.SelectedIndex = cmbRecord.Items.Count - 1;
                 Window1 window1 = new Window1();
                 window1.index = cmbLanguage.SelectedIndex;
                 btnStart_Open.Content = "Открыть/Старт";
@@ -302,6 +317,9 @@ namespace SimpleNeurotuner
             }
             else
             {
+                cmbRecord.Items.Clear();
+                cmbRecord.Items.Add("Select a record");
+                cmbRecord.SelectedIndex = cmbRecord.Items.Count - 1;
                 Window1 window1 = new Window1();
                 window1.index = cmbLanguage.SelectedIndex;
                 btnStart_Open.Content = "Open/Start";
