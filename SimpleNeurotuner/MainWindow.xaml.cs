@@ -157,7 +157,7 @@ namespace SimpleNeurotuner
                 //mDsp.GainDB = trackGain.Value;
                 //SetPitchShiftValue();
                 mSoundIn.Start();
-                //source.WriteToFile("my.wav");
+                source.WriteToFile("my.wav");
                 //Инициальный микшер
                 Mixer();
 
