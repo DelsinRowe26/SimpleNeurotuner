@@ -117,6 +117,7 @@ namespace SimpleNeurotuner
             if(mMixer != null)
             {
                 mMixer.Dispose();
+                mMp3.ToWaveSource(16).Loop().ToSampleSource().Dispose();
                 mMixer = null;
             }
             if (mSoundOut != null)
@@ -196,7 +197,7 @@ namespace SimpleNeurotuner
                 Mixer();
                 mMp3 = CodecFactory.Instance.GetCodec(openFileDialog.FileName).ToStereo().ToSampleSource();
                 mMixer.AddSource(mMp3.ChangeSampleRate(mMixer.WaveFormat.SampleRate).ToWaveSource(16).Loop().ToSampleSource());
-
+                
                 //mMp3.ToWaveSource(16).Loop();
                 //open the selected file
                 /*ISampleSource source = CodecFactory.Instance.GetCodec(openFileDialog.FileName)

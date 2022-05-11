@@ -5,12 +5,13 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SimpleNeurotuner"
         mc:Ignorable="d"
-        Title="Welcome" Height="450" Width="475" Topmost="True">
+        Title="Welcome" Height="440" Width="482" Topmost="True">
     <Grid>
         <Label x:Name="lbWelcome" Content="Welcome to MiniNeurotuner" HorizontalAlignment="Center" Margin="0,25,0,0" VerticalAlignment="Top" FontSize="24">
             <Label.Style>
                 <Style>
-                    <Setter Property="Control.FontFamily" Value="Impact"/>
+                    <Setter Property="Control.FontFamily" Value="Times New Roman"/>
+                    <Setter Property="Control.FontWeight" Value="Bold"/>
                 </Style>
             </Label.Style>
         </Label>
@@ -20,7 +21,14 @@
                 <ComboBoxItem Content="ru"/>
             </ComboBox>
         </Menu>
-        <Button x:Name="button" Content="OK" HorizontalAlignment="Left" Margin="365,374,0,0" VerticalAlignment="Top" Height="50" Width="100" FontSize="22" FontFamily="Times New Roman" Click="button_Click"/>
+        <Button x:Name="button" Content="OK" HorizontalAlignment="Left" Margin="350,352,0,0" VerticalAlignment="Top" Height="34" Width="74" FontSize="16" FontFamily="Times New Roman" Click="button_Click"/>
+        <Label x:Name="lbDescriptionText" Content="Version: 1.0&#xA;&#xA;The program is intended for a course on entering the resource state.&#xA;&#xA;Instruction:&#xA;&#xA;1. If the microphone and speakers (headphones) &#xA;are not selected by default, then select them yourself.&#xA;&#xA;2. Select an entry.&#xA;&#xA;3. Press the start button, and enjoy. There was a desire to stop,&#xA;press the stop button." HorizontalAlignment="Left" Margin="20,80,0,0" VerticalAlignment="Top" FontSize="16">
+            <Label.Style>
+                <Style>
+                    <Setter Property="Control.FontFamily" Value="Times New Roman"/>
+                </Style>
+            </Label.Style>
+        </Label>
 
     </Grid>
 </Window>

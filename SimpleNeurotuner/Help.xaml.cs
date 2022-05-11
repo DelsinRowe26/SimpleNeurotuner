@@ -30,11 +30,11 @@ namespace SimpleNeurotuner
         {
             if (cmbLanguage.SelectedIndex == 1)
             {
-                tbHelp.Text = "Добро пожаловать в МиниНейротюнер.\n\nИнструкция:\n1. Если по умолчанию не выбраны микрофон и колонки(наушники), то выберите их самостоятельно.\n2. Выбираем запись.\n3. Нажимаем кнопку старт, и наслаждаемся.Возникло желание остановить нажимаете кнопку стоп.";
+                tbHelp.Text = "Добро пожаловать в МиниНейротюнер.\n\nИнструкция:\n1. Если по умолчанию не выбраны микрофон и колонки(наушники), то выберите их самостоятельно.\n2. Выбираем запись.\n3. Нажимаем кнопку старт, и наслаждаемся.Возникло желание остановить нажимаете кнопку стоп.\n\nВерсия: 1.0";
             }
             else
             {
-                tbHelp.Text = "Welcome to MiniNeurotuner.\n\nInstruction:\n1. If the microphone and speakers (headphones) are not selected by default, then select them yourself.\n2. Select an entry.\n3. Press the start button, and enjoy. There was a desire to stop, press the stop button.";
+                tbHelp.Text = "Welcome to MiniNeurotuner.\n\nInstruction:\n1. If the microphone and speakers (headphones) are not selected by default, then select them yourself.\n2. Select an entry.\n3. Press the start button, and enjoy. There was a desire to stop, press the stop button.\n\nVersion: 1.0";
             }
         }
     }
