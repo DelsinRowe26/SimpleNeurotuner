@@ -34,13 +34,13 @@ namespace SimpleNeurotuner
     /// </summary>
     public partial class MainWindow : Window
     {
-        private FileInfo fileInfo = new FileInfo("open.txt");
+        private FileInfo fileInfo = new FileInfo("window.tmp");
         private SimpleMixer mMixer;
-        private int SampleRate = 48000;
+        private int SampleRate = 44100;
         private WasapiOut mSoundOut;
         private WasapiCapture mSoundIn;
         private SampleDSP mDsp;
-        string[] file1 = File.ReadAllLines("open.txt");
+        string[] file1 = File.ReadAllLines("window.tmp");
         private IWaveSource _source;
         private MMDeviceCollection mOutputDevices;
         private MMDeviceCollection mInputDevices;
@@ -153,12 +153,11 @@ namespace SimpleNeurotuner
                 mSoundIn.Device = mInputDevices[cmbInput.SelectedIndex];
                 mSoundIn.Initialize();
                
-
                 var source = new SoundInSource(mSoundIn) { FillWithZeros = true };
                 
                 //Init DSP для смещения высоты тона
-                //mDsp = new SampleDSP(source.ToSampleSource().ToStereo());
-                //mDsp.GainDB = trackGain.Value;
+                mDsp = new SampleDSP(source.ToSampleSource().ToStereo());
+                mDsp.GainDB = (float)slVolume.Value;
                 //SetPitchShiftValue();
                 mSoundIn.Start();
 
@@ -166,7 +165,7 @@ namespace SimpleNeurotuner
                 Mixer();
 
                 //Добавляем наш источник звука в микшер
-                mMixer.AddSource(source.ToSampleSource().ToStereo()/*mDsp.ChangeSampleRate(mMixer.WaveFormat.SampleRate)*/);
+                mMixer.AddSource(/*source.ToSampleSource().ToStereo()*/mDsp.ChangeSampleRate(mMixer.WaveFormat.SampleRate));
 
                 //Запускает устройство воспроизведения звука с задержкой 1 мс.
                 await Task.Run(() => SoundOut());
@@ -315,6 +314,7 @@ namespace SimpleNeurotuner
                 btnStart_Open.Content = "Открыть/Старт";
                 btnStop.Content = "Стоп";
                 Help.Header = "Помощь";
+                lbVersion.Content = "Версия: 1.0";
             }
             else
             {
@@ -326,6 +326,31 @@ namespace SimpleNeurotuner
                 btnStart_Open.Content = "Open/Start";
                 btnStop.Content = "Stop";
                 Help.Header = "Help";
+                lbVersion.Content = "Version: 1.0";
+            }
+        }
+
+        private void slVolume_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            try
+            {
+                mDsp.GainDB = (float)slVolume.Value;
+                lbVolValue.Content = (int)slVolume.Value;
+            }
+            catch
+            {
+                if (cmbLanguage.SelectedIndex == 1)
+                {
+                    string msg = "Ошибка в измененном значении объема: \r\n" + "Сначала начните запись, затем переместите ползунок громкости.";
+                    MessageBox.Show(msg);
+                    Debug.WriteLine(msg);
+                }
+                else
+                {
+                    string msg = "Error in Volume Value Changed: \r\n" + "Start recording first, then move the volume slider.";
+                    MessageBox.Show(msg);
+                    Debug.WriteLine(msg);
+                }
             }
         }
     }

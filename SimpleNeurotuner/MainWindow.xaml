@@ -9,7 +9,7 @@
     <Window.Background>
         <ImageBrush ImageSource="/ad5ddc9e-b9a1-4d8f-9e45-b6bed5b338ca.jpg" TileMode="Tile" Stretch="Uniform"/>
     </Window.Background>
-    <Grid x:Name="grid" Margin="10,0,10,0">
+    <Grid x:Name="grid">
         <Button x:Name="btnStart_Open" Content="Open/Start" HorizontalAlignment="Center" Margin="0,140,0,0" VerticalAlignment="Top" Height="47" Width="148" Click="btnStart_Open_Click" MouseMove="btnStart_Open_MouseMove" MouseLeave="btnStart_Open_MouseLeave" FontSize="18">
             <Button.Template>
                 <ControlTemplate>
@@ -83,6 +83,15 @@
             </ComboBox>
         </Menu>
         <Label x:Name="label" Content="Label" HorizontalAlignment="Left" Margin="742,354,0,0" VerticalAlignment="Top"/>
+        <Label x:Name="lbVersion" Content="Version: 1.0" HorizontalAlignment="Left" Margin="428,502,0,0" VerticalAlignment="Top" FontSize="18">
+            <Label.Style>
+                <Style>
+                    <Setter Property="Control.FontFamily" Value="Times New Roman"/>
+                </Style>
+            </Label.Style>
+        </Label>
+        <Slider x:Name="slVolume" HorizontalAlignment="Left" Margin="513,130,0,0" VerticalAlignment="Top" Width="24" Orientation="Vertical" Height="255" TickPlacement="BottomRight" ValueChanged="slVolume_ValueChanged"/>
+        <Label x:Name="lbVolValue" Content="0" HorizontalAlignment="Left" Margin="513,390,0,0" VerticalAlignment="Top" Height="32" Width="36" FontSize="18"/>
 
     </Grid>
 </Window>
