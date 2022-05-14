@@ -41,13 +41,16 @@ namespace SimpleNeurotuner
         private WasapiCapture mSoundIn;
         private SampleDSP mDsp;
         string[] file1 = File.ReadAllLines("window.tmp");
+        string folder = "Record";
         private IWaveSource _source;
         private MMDeviceCollection mOutputDevices;
         private MMDeviceCollection mInputDevices;
         //private PitchShifter _pitchShifter;
         private ISampleSource mMp3;
         private OpenFileDialog openFileDialog;
-        private string file;
+        private string file, filename;
+        private string record;
+        private string[] allfile;
         private int click;
 
         public MainWindow()
@@ -93,12 +96,25 @@ namespace SimpleNeurotuner
 
             cmbRecord.Items.Add("Select a record");
             cmbRecord.SelectedIndex = cmbRecord.Items.Count - 1;
+            Filling();
+            //cmbRecord.SelectedIndex = cmbRecord.Items.Count - 1;
+        }
+
+        private void Filling()
+        {
+            allfile = Directory.GetFiles(folder);
+            foreach (string filename in allfile)
+            {
+                //record = filename.Replace(@"Record\", "");
+                record = filename.Remove(0, 7);
+                cmbRecord.Items.Add(record);
+            }
         }
 
         private async void btnStart_Open_Click(object sender, RoutedEventArgs e)
         {
             click = 1;
-            openFileDialog = new OpenFileDialog()
+            /*openFileDialog = new OpenFileDialog()
             {
                 Filter = CodecFactory.SupportedFilesFilterEn,
                 Title = "Select a file..."
@@ -109,7 +125,10 @@ namespace SimpleNeurotuner
                 await Task.Run(() => Sound(file));
                 //await Task.Run(() => StartFullDuplex());
                 StartFullDuplex();
-            }
+            }*/
+            await Task.Run(() => Sound(file));
+            //await Task.Run(() => StartFullDuplex());
+            StartFullDuplex();
         }
 
         private void Stop()
@@ -137,11 +156,11 @@ namespace SimpleNeurotuner
                 _source.Dispose();
                 _source = null;
             }
-            /*if (mMp3 != null)
+            if (mMp3 != null)
             {
                 mMp3.Dispose();
                 mMp3 = null;
-            }*/
+            }
         }
 
         private async void StartFullDuplex()//запуск пича и громкости
@@ -194,7 +213,7 @@ namespace SimpleNeurotuner
             if (click != 0)
             {
                 Mixer();
-                mMp3 = CodecFactory.Instance.GetCodec(openFileDialog.FileName).ToStereo().ToSampleSource();
+                mMp3 = CodecFactory.Instance.GetCodec(filename).ToStereo().ToSampleSource();
                 mMixer.AddSource(mMp3.ChangeSampleRate(mMixer.WaveFormat.SampleRate).ToWaveSource(16).Loop().ToSampleSource());
                 
                 //mMp3.ToWaveSource(16).Loop();
@@ -302,16 +321,13 @@ namespace SimpleNeurotuner
         {
             if (cmbLanguage.SelectedIndex == 1)
             {
-                /*if(cmbRecord.SelectedIndex == -1)
-                {
-                    
-                }*/
                 cmbRecord.Items.Clear();
                 cmbRecord.Items.Add("Выберите запись");
                 cmbRecord.SelectedIndex = cmbRecord.Items.Count - 1;
+                Filling();
                 Window1 window1 = new Window1();
                 window1.index = cmbLanguage.SelectedIndex;
-                btnStart_Open.Content = "Открыть/Старт";
+                btnStart_Open.Content = "Старт";
                 btnStop.Content = "Стоп";
                 Help.Header = "Помощь";
                 lbVersion.Content = "Версия: 1.0";
@@ -321,9 +337,10 @@ namespace SimpleNeurotuner
                 cmbRecord.Items.Clear();
                 cmbRecord.Items.Add("Select a record");
                 cmbRecord.SelectedIndex = cmbRecord.Items.Count - 1;
+                Filling();
                 Window1 window1 = new Window1();
                 window1.index = cmbLanguage.SelectedIndex;
-                btnStart_Open.Content = "Open/Start";
+                btnStart_Open.Content = "Start";
                 btnStop.Content = "Stop";
                 Help.Header = "Help";
                 lbVersion.Content = "Version: 1.0";
@@ -352,6 +369,13 @@ namespace SimpleNeurotuner
                     Debug.WriteLine(msg);
                 }
             }
+        }
+
+        private void cmbRecord_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            //filename = cmbRecord.SelectedItem.ToString();
+            //filename = System.IO.Path.GetFullPath(cmbRecord.SelectedItem.ToString());
+            filename = @"Record\" + cmbRecord.SelectedItem.ToString();
         }
     }
 }
