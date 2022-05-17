@@ -12,6 +12,7 @@ using CSCore.SoundOut;//Выход звука
 using CSCore.CoreAudioAPI;
 using CSCore.Streams;
 using CSCore.Codecs;
+using CSCore.Codecs.WAV;
 using CSCore.Streams.Effects;
 using CSCore.DSP;
 using System.Windows.Controls;
@@ -133,33 +134,40 @@ namespace SimpleNeurotuner
 
         private void Stop()
         {
-            if(mMixer != null)
+            try
             {
-                mMixer.Dispose();
-                mMp3.ToWaveSource(16).Loop().ToSampleSource().Dispose();
-                mMixer = null;
+                if (mMixer != null)
+                {
+                    mMixer.Dispose();
+                    mMp3.ToWaveSource(16).Loop().ToSampleSource().Dispose();
+                    mMixer = null;
+                }
+                if (mSoundOut != null)
+                {
+                    mSoundOut.Stop();
+                    mSoundOut.Dispose();
+                    mSoundOut = null;
+                }
+                if (mSoundIn != null)
+                {
+                    mSoundIn.Stop();
+                    mSoundIn.Dispose();
+                    mSoundIn = null;
+                }
+                if (_source != null)
+                {
+                    _source.Dispose();
+                    _source = null;
+                }
+                if (mMp3 != null)
+                {
+                    mMp3.Dispose();
+                    mMp3 = null;
+                }
             }
-            if (mSoundOut != null)
+            catch
             {
-                mSoundOut.Stop();
-                mSoundOut.Dispose();
-                mSoundOut = null;
-            }
-            if (mSoundIn != null)
-            {
-                mSoundIn.Stop();
-                mSoundIn.Dispose();
-                mSoundIn = null;
-            }
-            if (_source != null)
-            {
-                _source.Dispose();
-                _source = null;
-            }
-            if (mMp3 != null)
-            {
-                mMp3.Dispose();
-                mMp3 = null;
+
             }
         }
 
@@ -369,6 +377,86 @@ namespace SimpleNeurotuner
                     Debug.WriteLine(msg);
                 }
             }
+        }
+
+        private void btnRecord_MouseMove(object sender, MouseEventArgs e)
+        {
+            Style style = new Style();
+            style.Setters.Add(new Setter { Property = Control.FontFamilyProperty, Value = new FontFamily("Verdana") });
+            style.Setters.Add(new Setter { Property = Control.MarginProperty, Value = new Thickness(10) });
+            style.Setters.Add(new Setter { Property = Control.BackgroundProperty, Value = new SolidColorBrush(Colors.Blue) });
+            style.Setters.Add(new Setter { Property = Control.ForegroundProperty, Value = new SolidColorBrush(Colors.White) });
+            btnRecord.Style = style;
+        }
+
+        private void btnRecord_MouseLeave(object sender, MouseEventArgs e)
+        {
+            Style style = new Style();
+            style.Setters.Add(new Setter { Property = Control.FontFamilyProperty, Value = new FontFamily("Verdana") });
+            style.Setters.Add(new Setter { Property = Control.MarginProperty, Value = new Thickness(10) });
+            style.Setters.Add(new Setter { Property = Control.BackgroundProperty, Value = new SolidColorBrush(Colors.Blue) });
+            style.Setters.Add(new Setter { Property = Control.ForegroundProperty, Value = new SolidColorBrush(Colors.Black) });
+            btnRecord.Style = style;
+        }
+
+        private async void btnRecord_Click(object sender, RoutedEventArgs e)
+        {
+           Recording();
+        }
+
+        private void Recording()
+        {
+            //File.Create("my.wav");
+            //try
+            //{
+            //Запускает устройство захвата звука с задержкой 1 мс.
+            //mSoundIn = new WasapiCapture(/*false, AudioClientShareMode.Exclusive, 1*/);
+            //mSoundIn = new WasapiCapture();
+            using(mSoundIn = new WasapiCapture())
+            {
+                mSoundIn.Device = mInputDevices[cmbInput.SelectedIndex];
+                mSoundIn.Initialize();
+                using(WaveWriter record = new WaveWriter("my.wav", mSoundIn.WaveFormat))
+                {
+                    mSoundIn.DataAvailable += (s, data) => record.Write(data.Data, data.Offset, data.ByteCount);
+                    mSoundIn.Start();
+                    Thread.Sleep(5000);
+                    mSoundIn.Stop();
+                }
+            }
+            //mSoundIn = new WasapiCapture();
+            
+
+            /*WaveWriter record = new WaveWriter("my.wav", mSoundIn.WaveFormat);
+            mSoundIn.DataAvailable += (s, x) =>
+            {
+                record.Write(x.Data, x.Offset, x.ByteCount);
+            };*/
+            /*var source = new SoundInSource(mSoundIn) { FillWithZeros = true };
+            source.WriteToFile("my.wav");
+            //Init DSP для смещения высоты тона
+            mDsp = new SampleDSP(source.ToSampleSource().ToStereo());
+            mDsp.GainDB = (float)slVolume.Value;
+            //SetPitchShiftValue();*/
+            //mSoundIn.Start();
+            //Thread.Sleep(10000);
+            //mSoundIn.Stop();
+            //Инициальный микшер
+            //Mixer();
+
+            //Добавляем наш источник звука в микшер
+            //mMixer.AddSource(/*source.ToSampleSource().ToStereo()*/mDsp.ChangeSampleRate(mMixer.WaveFormat.SampleRate));
+
+            //Запускает устройство воспроизведения звука с задержкой 1 мс.
+            //await Task.Run(() => SoundOut());
+            //return true;
+            //}
+            //catch (Exception ex)
+            //{
+            // string msg = "Error in StartFullDuplex: \r\n" + ex.Message;
+            // MessageBox.Show(msg);
+            //  Debug.WriteLine(msg);
+            //}
         }
 
         private void cmbRecord_SelectionChanged(object sender, SelectionChangedEventArgs e)

@@ -10,7 +10,7 @@
         <ImageBrush ImageSource="/ad5ddc9e-b9a1-4d8f-9e45-b6bed5b338ca.jpg" TileMode="Tile" Stretch="Uniform"/>
     </Window.Background>
     <Grid x:Name="grid">
-        <Button x:Name="btnStart_Open" Content="Start" HorizontalAlignment="Center" Margin="0,140,0,0" VerticalAlignment="Top" Height="47" Width="148" Click="btnStart_Open_Click" MouseMove="btnStart_Open_MouseMove" MouseLeave="btnStart_Open_MouseLeave" FontSize="18">
+        <Button x:Name="btnStart_Open" Content="Start" HorizontalAlignment="Center" Margin="0,102,0,0" VerticalAlignment="Top" Height="47" Width="148" Click="btnStart_Open_Click" MouseMove="btnStart_Open_MouseMove" MouseLeave="btnStart_Open_MouseLeave" FontSize="18">
             <Button.Template>
                 <ControlTemplate>
                     <Border BorderBrush="{TemplateBinding Control.BorderBrush}" BorderThickness="1" CornerRadius="25">
@@ -31,13 +31,10 @@
                 </Style>
             </Button.Style>
         </Button>
-        <Button x:Name="btnStop" Content="Stop" HorizontalAlignment="Center" Margin="0,354,0,0" VerticalAlignment="Top" Height="48" Width="148" Click="btnStop_Click" MouseMove="btnStop_MouseMove" MouseLeave="btnStop_MouseLeave" FontSize="18">
+        <Button x:Name="btnStop" Content="Stop" HorizontalAlignment="Center" Margin="0,349,0,0" VerticalAlignment="Top" Height="48" Width="148" Click="btnStop_Click" MouseMove="btnStop_MouseMove" MouseLeave="btnStop_MouseLeave" FontSize="18">
             <Button.Template>
                 <ControlTemplate>
                     <Border BorderBrush="{TemplateBinding Control.BorderBrush}" BorderThickness="1" CornerRadius="25">
-                        <FocusManager.FocusedElement>
-                            <Button>btnStart</Button>
-                        </FocusManager.FocusedElement>
                         <Border.Background>Gainsboro</Border.Background>
                         <ContentPresenter Content="{TemplateBinding ContentControl.Content}" HorizontalAlignment="Center" VerticalAlignment="Center" ></ContentPresenter>
                     </Border>
@@ -92,6 +89,24 @@
         </Label>
         <Slider x:Name="slVolume" HorizontalAlignment="Left" Margin="513,130,0,0" VerticalAlignment="Top" Width="24" Orientation="Vertical" Height="255" TickPlacement="BottomRight" ValueChanged="slVolume_ValueChanged"/>
         <Label x:Name="lbVolValue" Content="0" HorizontalAlignment="Left" Margin="513,390,0,0" VerticalAlignment="Top" Height="32" Width="36" FontSize="18"/>
+        <Button x:Name="btnRecord" Content="Record" HorizontalAlignment="Center" Margin="0,159,0,0" VerticalAlignment="Top" Height="47" Width="148" FontSize="18" MouseMove="btnRecord_MouseMove" MouseLeave="btnRecord_MouseLeave" Click="btnRecord_Click">
+            <Button.Template>
+                <ControlTemplate>
+                    <Border BorderBrush="{TemplateBinding Control.BorderBrush}" BorderThickness="1" CornerRadius="25">
+                        <Border.Background>Gainsboro</Border.Background>
+                        <ContentPresenter Content="{TemplateBinding ContentControl.Content}" HorizontalAlignment="Center" VerticalAlignment="Center" ></ContentPresenter>
+                    </Border>
+                </ControlTemplate>
+            </Button.Template>
+            <Button.Style>
+                <Style>
+                    <Setter Property="Control.FontFamily" Value="Verdana"/>
+                    <Setter Property="Control.Background" Value="Gainsboro"/>
+                    <Setter Property="Control.Foreground" Value="Black"/>
+                    <Setter Property="Control.Margin" Value="10"/>
+                </Style>
+            </Button.Style>
+        </Button>
 
     </Grid>
 </Window>
