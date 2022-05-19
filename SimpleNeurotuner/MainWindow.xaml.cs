@@ -406,12 +406,6 @@ namespace SimpleNeurotuner
 
         private void Recording()
         {
-            //File.Create("my.wav");
-            //try
-            //{
-            //Запускает устройство захвата звука с задержкой 1 мс.
-            //mSoundIn = new WasapiCapture(/*false, AudioClientShareMode.Exclusive, 1*/);
-            //mSoundIn = new WasapiCapture();
             using(mSoundIn = new WasapiCapture())
             {
                 mSoundIn.Device = mInputDevices[cmbInput.SelectedIndex];
@@ -424,39 +418,13 @@ namespace SimpleNeurotuner
                     mSoundIn.Stop();
                 }
             }
-            //mSoundIn = new WasapiCapture();
-            
+        }
 
-            /*WaveWriter record = new WaveWriter("my.wav", mSoundIn.WaveFormat);
-            mSoundIn.DataAvailable += (s, x) =>
-            {
-                record.Write(x.Data, x.Offset, x.ByteCount);
-            };*/
-            /*var source = new SoundInSource(mSoundIn) { FillWithZeros = true };
-            source.WriteToFile("my.wav");
-            //Init DSP для смещения высоты тона
-            mDsp = new SampleDSP(source.ToSampleSource().ToStereo());
-            mDsp.GainDB = (float)slVolume.Value;
-            //SetPitchShiftValue();*/
-            //mSoundIn.Start();
-            //Thread.Sleep(10000);
-            //mSoundIn.Stop();
-            //Инициальный микшер
-            //Mixer();
-
-            //Добавляем наш источник звука в микшер
-            //mMixer.AddSource(/*source.ToSampleSource().ToStereo()*/mDsp.ChangeSampleRate(mMixer.WaveFormat.SampleRate));
-
-            //Запускает устройство воспроизведения звука с задержкой 1 мс.
-            //await Task.Run(() => SoundOut());
-            //return true;
-            //}
-            //catch (Exception ex)
-            //{
-            // string msg = "Error in StartFullDuplex: \r\n" + ex.Message;
-            // MessageBox.Show(msg);
-            //  Debug.WriteLine(msg);
-            //}
+        private void button_Click(object sender, RoutedEventArgs e)
+        {
+            TimeSpan cutFromStart = new TimeSpan(0, 0, 2);
+            TimeSpan cutFromEnd = new TimeSpan(0, 0, 4);
+            WavFileUtils.TrimWavFile("my.wav", "cutmy.wav", cutFromStart, cutFromEnd);
         }
 
         private void cmbRecord_SelectionChanged(object sender, SelectionChangedEventArgs e)
