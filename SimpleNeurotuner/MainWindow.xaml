@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SimpleNeurotuner"
         mc:Ignorable="d"
-        Title="MiniNeurotuner" Height="573" Width="569" Loaded="SimpleNeurotuner_Loaded" Closing="SimpleNeurotuner_Closing" ResizeMode="CanMinimize">
+        Title="Neurokeys" Height="573" Width="569" Loaded="SimpleNeurotuner_Loaded" Closing="SimpleNeurotuner_Closing" ResizeMode="CanMinimize">
     <Window.Background>
         <ImageBrush ImageSource="/ad5ddc9e-b9a1-4d8f-9e45-b6bed5b338ca.jpg" TileMode="Tile" Stretch="Uniform"/>
     </Window.Background>
@@ -83,7 +83,7 @@
             </ComboBox>
         </Menu>
         <Label x:Name="label" Content="Label" HorizontalAlignment="Left" Margin="742,354,0,0" VerticalAlignment="Top"/>
-        <Label x:Name="lbVersion" Content="Version: 1.0" HorizontalAlignment="Left" Margin="428,502,0,0" VerticalAlignment="Top" FontSize="18">
+        <Label x:Name="lbVersion" Content="Neurokeys Version: 1.0" HorizontalAlignment="Left" Margin="352,502,0,0" VerticalAlignment="Top" FontSize="18">
             <Label.Style>
                 <Style>
                     <Setter Property="Control.FontFamily" Value="Times New Roman"/>

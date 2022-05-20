@@ -215,13 +215,6 @@ namespace SimpleNeurotuner
                 Mixer();
                 mMp3 = CodecFactory.Instance.GetCodec(filename).ToStereo().ToSampleSource();
                 mMixer.AddSource(mMp3.ChangeSampleRate(mMixer.WaveFormat.SampleRate).ToWaveSource(16).Loop().ToSampleSource());
-                
-                //mMp3.ToWaveSource(16).Loop();
-                //open the selected file
-                /*ISampleSource source = CodecFactory.Instance.GetCodec(openFileDialog.FileName)
-                    .ToSampleSource()
-                    .AppendSource(x => new PitchShifter(x), out _pitchShifter);*/
-                //play the audio
 
                 await Task.Run(() => SoundOut());
             } 
@@ -229,34 +222,6 @@ namespace SimpleNeurotuner
             {
                 Stop();
             }
-            /*do
-            {
-                Mixer();
-                mMp3 = CodecFactory.Instance.GetCodec(openFileDialog.FileName).ToStereo().ToSampleSource();
-                //mMp3.ToWaveSource(16).Loop();
-                mMixer.AddSource(mMp3.ChangeSampleRate(mMixer.WaveFormat.SampleRate).ToWaveSource(16).Loop().ToSampleSource());
-                
-                //mMp3.ToWaveSource(16).Loop();
-                //open the selected file
-                /*ISampleSource source = CodecFactory.Instance.GetCodec(openFileDialog.FileName)
-                    .ToSampleSource()
-                    .AppendSource(x => new PitchShifter(x), out _pitchShifter);
-
-                //play the audio
-
-                await Task.Run(() => SoundOut());
-
-                await Task.Delay(950);
-                
-                /*Mixer();
-                mMp3 = CodecFactory.Instance.GetCodec(openFileDialog.FileName).ToStereo().ToSampleSource();
-                mMixer.AddSource(mMp3.ChangeSampleRate(mMixer.WaveFormat.SampleRate));
-                await Task.Run(() => SoundOut());
-                await Task.Delay(950);
-                //mMixer.Dispose();
-                //mMp3.Dispose();
-                //Thread.Sleep(750);
-            } while (click != 0);*/
         }
 
         private void btnStop_Click(object sender, RoutedEventArgs e)
@@ -330,7 +295,7 @@ namespace SimpleNeurotuner
                 btnStart_Open.Content = "Старт";
                 btnStop.Content = "Стоп";
                 Help.Header = "Помощь";
-                lbVersion.Content = "Версия: 1.0";
+                lbVersion.Content = "Нейрокейс Версия: 1.0";
             }
             else
             {
@@ -343,7 +308,7 @@ namespace SimpleNeurotuner
                 btnStart_Open.Content = "Start";
                 btnStop.Content = "Stop";
                 Help.Header = "Help";
-                lbVersion.Content = "Version: 1.0";
+                lbVersion.Content = "Neurokeys Version: 1.0";
             }
         }
 
@@ -358,7 +323,7 @@ namespace SimpleNeurotuner
             {
                 if (cmbLanguage.SelectedIndex == 1)
                 {
-                    string msg = "Ошибка в измененном значении объема: \r\n" + "Сначала начните запись, затем переместите ползунок громкости.";
+                    string msg = "Ошибка в измененном значении объема: \r\n" + "Сначала запустите запись, затем переместите ползунок громкости.";
                     MessageBox.Show(msg);
                     Debug.WriteLine(msg);
                 }
@@ -373,9 +338,16 @@ namespace SimpleNeurotuner
 
         private void cmbRecord_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            //filename = cmbRecord.SelectedItem.ToString();
-            //filename = System.IO.Path.GetFullPath(cmbRecord.SelectedItem.ToString());
-            filename = @"Record\" + cmbRecord.SelectedItem.ToString();
+            try
+            {
+                //filename = cmbRecord.SelectedItem.ToString();
+                //filename = System.IO.Path.GetFullPath(cmbRecord.SelectedItem.ToString());
+                if (cmbRecord.SelectedItem != null)
+                {
+                    filename = @"Record\" + cmbRecord.SelectedItem.ToString();
+                }
+            }
+            catch { }
         }
     }
 }
