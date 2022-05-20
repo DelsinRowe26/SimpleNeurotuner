@@ -223,13 +223,6 @@ namespace SimpleNeurotuner
                 Mixer();
                 mMp3 = CodecFactory.Instance.GetCodec(filename).ToStereo().ToSampleSource();
                 mMixer.AddSource(mMp3.ChangeSampleRate(mMixer.WaveFormat.SampleRate).ToWaveSource(16).Loop().ToSampleSource());
-                
-                //mMp3.ToWaveSource(16).Loop();
-                //open the selected file
-                /*ISampleSource source = CodecFactory.Instance.GetCodec(openFileDialog.FileName)
-                    .ToSampleSource()
-                    .AppendSource(x => new PitchShifter(x), out _pitchShifter);*/
-                //play the audio
 
                 await Task.Run(() => SoundOut());
             } 
@@ -237,34 +230,6 @@ namespace SimpleNeurotuner
             {
                 Stop();
             }
-            /*do
-            {
-                Mixer();
-                mMp3 = CodecFactory.Instance.GetCodec(openFileDialog.FileName).ToStereo().ToSampleSource();
-                //mMp3.ToWaveSource(16).Loop();
-                mMixer.AddSource(mMp3.ChangeSampleRate(mMixer.WaveFormat.SampleRate).ToWaveSource(16).Loop().ToSampleSource());
-                
-                //mMp3.ToWaveSource(16).Loop();
-                //open the selected file
-                /*ISampleSource source = CodecFactory.Instance.GetCodec(openFileDialog.FileName)
-                    .ToSampleSource()
-                    .AppendSource(x => new PitchShifter(x), out _pitchShifter);
-
-                //play the audio
-
-                await Task.Run(() => SoundOut());
-
-                await Task.Delay(950);
-                
-                /*Mixer();
-                mMp3 = CodecFactory.Instance.GetCodec(openFileDialog.FileName).ToStereo().ToSampleSource();
-                mMixer.AddSource(mMp3.ChangeSampleRate(mMixer.WaveFormat.SampleRate));
-                await Task.Run(() => SoundOut());
-                await Task.Delay(950);
-                //mMixer.Dispose();
-                //mMp3.Dispose();
-                //Thread.Sleep(750);
-            } while (click != 0);*/
         }
 
         private void btnStop_Click(object sender, RoutedEventArgs e)
@@ -410,11 +375,11 @@ namespace SimpleNeurotuner
             {
                 mSoundIn.Device = mInputDevices[cmbInput.SelectedIndex];
                 mSoundIn.Initialize();
-                using(WaveWriter record = new WaveWriter("my.wav", mSoundIn.WaveFormat))
+                mSoundIn.Start();
+                using (WaveWriter record = new WaveWriter("my.wav", mSoundIn.WaveFormat))
                 {
                     mSoundIn.DataAvailable += (s, data) => record.Write(data.Data, data.Offset, data.ByteCount);
-                    mSoundIn.Start();
-                    Thread.Sleep(5000);
+                    Thread.Sleep(1500);
                     mSoundIn.Stop();
                 }
             }
