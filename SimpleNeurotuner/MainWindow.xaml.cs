@@ -298,12 +298,13 @@ namespace SimpleNeurotuner
                 cmbRecord.Items.Add("Выберите запись");
                 cmbRecord.SelectedIndex = cmbRecord.Items.Count - 1;
                 Filling();
+                Title = "Нейрокейс";
                 Window1 window1 = new Window1();
                 window1.index = cmbLanguage.SelectedIndex;
                 btnStart_Open.Content = "Старт";
                 btnStop.Content = "Стоп";
                 Help.Header = "Помощь";
-                lbVersion.Content = "Версия: 1.0";
+                lbVersion.Content = "Нейрокейс Версия: 1.1";
             }
             else
             {
@@ -311,12 +312,13 @@ namespace SimpleNeurotuner
                 cmbRecord.Items.Add("Select a record");
                 cmbRecord.SelectedIndex = cmbRecord.Items.Count - 1;
                 Filling();
+                Title = "Neurokeys";
                 Window1 window1 = new Window1();
                 window1.index = cmbLanguage.SelectedIndex;
                 btnStart_Open.Content = "Start";
                 btnStop.Content = "Stop";
                 Help.Header = "Help";
-                lbVersion.Content = "Version: 1.0";
+                lbVersion.Content = "Neurokeys Version: 1.1";
             }
         }
 
@@ -379,7 +381,7 @@ namespace SimpleNeurotuner
                 using (WaveWriter record = new WaveWriter("my.wav", mSoundIn.WaveFormat))
                 {
                     mSoundIn.DataAvailable += (s, data) => record.Write(data.Data, data.Offset, data.ByteCount);
-                    Thread.Sleep(1500);
+                    Thread.Sleep(5000);
                     mSoundIn.Stop();
                 }
             }
@@ -396,7 +398,10 @@ namespace SimpleNeurotuner
         {
             //filename = cmbRecord.SelectedItem.ToString();
             //filename = System.IO.Path.GetFullPath(cmbRecord.SelectedItem.ToString());
-            filename = @"Record\" + cmbRecord.SelectedItem.ToString();
+            if (cmbRecord.SelectedItem != null)
+            {
+                filename = @"Record\" + cmbRecord.SelectedItem.ToString();
+            }
         }
     }
 }
