@@ -27,6 +27,7 @@ using Microsoft.Win32;
 using System.Threading;
 using System.Diagnostics;
 using System.IO;
+using System.Runtime.InteropServices;
 
 namespace SimpleNeurotuner
 {
@@ -47,12 +48,83 @@ namespace SimpleNeurotuner
         private MMDeviceCollection mOutputDevices;
         private MMDeviceCollection mInputDevices;
         //private PitchShifter _pitchShifter;
+
+        TimeSpan cutFromStart = new TimeSpan(0, 0, 2);
+        TimeSpan cutFromEnd = new TimeSpan(0, 0, 4);
         private ISampleSource mMp3;
-        private OpenFileDialog openFileDialog;
         private string file, filename;
         private string record;
         private string[] allfile;
         private int click;
+
+        internal class WavHeader
+        {
+            public UInt32 ChunkId;
+            public UInt32 ChunkSize;
+            public UInt32 Format;
+            public UInt32 Subchunk1Id;
+            public UInt32 Subchunk1Size;
+            public UInt16 AudioFormat;
+            public UInt16 NumChannels;
+            public UInt32 SampleRate;
+            public UInt32 ByteRate;
+            public UInt16 BlockAlign;
+            public UInt16 BitsPerSample;
+            public UInt32 Subchunk2Id;
+            public UInt32 Subchunk2Size;
+        }
+
+        void CutFromWave(string WavFileName, string NewFileName, string tstart, string tend)
+        {
+            string[] arrtime = tstart.Split(new char[] { ':', ',' }, StringSplitOptions.None);
+            int hours = int.Parse(arrtime[0]);
+            int minitss = int.Parse(arrtime[1]);
+            int seconds = int.Parse(arrtime[2]);
+            int miliseconds = int.Parse(arrtime[3]);
+
+            int OSecSt = (hours * 3600000 + minitss * 60000 + seconds * 1000 + miliseconds);
+            arrtime = tend.Split(new char[] { ':', ',' }, StringSplitOptions.None);
+            hours = int.Parse(arrtime[0]);
+            minitss = int.Parse(arrtime[1]);
+            seconds = int.Parse(arrtime[2]);
+            miliseconds = int.Parse(arrtime[3]);
+
+            int OSecEn = (hours * 3600000 + minitss * 60000 + seconds * 1000 + miliseconds);
+            int FileLength = OSecEn - OSecSt;
+
+            WavHeader header = new WavHeader();
+            int headerSize = Marshal.SizeOf(header);
+
+            FileStream fileStream = new FileStream(WavFileName, FileMode.Open, FileAccess.Read);
+
+            byte[] buffer = new byte[headerSize];
+            fileStream.Read(buffer, 0, headerSize);
+            IntPtr headerPtr = Marshal.AllocHGlobal(headerSize);
+
+            Marshal.Copy(buffer, 0, headerPtr, headerSize);
+            Marshal.PtrToStructure(headerPtr, header);
+
+            const int FFb = 44;
+
+            fileStream.Seek((header.ByteRate / 1000) * OSecSt + FFb, SeekOrigin.Begin);
+
+            int BRDBT = (int)header.ByteRate / 1000;
+            byte[] WaveSent = new byte[FileLength * BRDBT];
+
+            fileStream.Read(WaveSent, 0, FileLength * BRDBT);
+
+            byte[] bytes = new byte[4];
+            bytes = BitConverter.GetBytes(BRDBT * FileLength);
+
+            buffer[40] = bytes[0];
+            buffer[41] = bytes[1];
+            buffer[42] = bytes[2];
+            buffer[43] = bytes[3];
+
+            IEnumerable<byte> arrays = buffer.Concat(WaveSent);
+            string path = string.Format(@"C:\mp3\Phrase\{0}.wav", NewFileName);
+            File.WriteAllBytes(path, arrays.ToArray());
+        }
 
         public MainWindow()
         {
@@ -366,7 +438,7 @@ namespace SimpleNeurotuner
             btnRecord.Style = style;
         }
 
-        private async void btnRecord_Click(object sender, RoutedEventArgs e)
+        private void btnRecord_Click(object sender, RoutedEventArgs e)
         {
            Recording();
         }
@@ -378,7 +450,7 @@ namespace SimpleNeurotuner
                 mSoundIn.Device = mInputDevices[cmbInput.SelectedIndex];
                 mSoundIn.Initialize();
                 mSoundIn.Start();
-                using (WaveWriter record = new WaveWriter("my.wav", mSoundIn.WaveFormat))
+                using (WaveWriter record = new WaveWriter("mymp.mp3", mSoundIn.WaveFormat))
                 {
                     mSoundIn.DataAvailable += (s, data) => record.Write(data.Data, data.Offset, data.ByteCount);
                     Thread.Sleep(5000);
@@ -387,17 +459,20 @@ namespace SimpleNeurotuner
             }
         }
 
+        
+
         private void button_Click(object sender, RoutedEventArgs e)
         {
-            TimeSpan cutFromStart = new TimeSpan(0, 0, 2);
-            TimeSpan cutFromEnd = new TimeSpan(0, 0, 4);
-            WavFileUtils.TrimWavFile("my.wav", "cutmy.wav", cutFromStart, cutFromEnd);
+
+            WavFileUtils.TrimWavFile("mymp.mp3", "cutmymp.mp3", cutFromStart, cutFromEnd);
+            /*string start = "00:00:03,157";
+            string end = "00:00:04,911";
+
+            CutFromWave("my.wav", "cutmy.wav", start, end);*/
         }
 
         private void cmbRecord_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            //filename = cmbRecord.SelectedItem.ToString();
-            //filename = System.IO.Path.GetFullPath(cmbRecord.SelectedItem.ToString());
             if (cmbRecord.SelectedItem != null)
             {
                 filename = @"Record\" + cmbRecord.SelectedItem.ToString();
