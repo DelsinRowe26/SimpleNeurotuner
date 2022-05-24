@@ -49,8 +49,8 @@ namespace SimpleNeurotuner
         private MMDeviceCollection mInputDevices;
         //private PitchShifter _pitchShifter;
 
-        TimeSpan cutFromStart = new TimeSpan(0, 0, 2);
-        TimeSpan cutFromEnd = new TimeSpan(0, 0, 4);
+        TimeSpan cutFromStart = new TimeSpan(0, 0, 1);
+        TimeSpan cutFromEnd = new TimeSpan(0, 0, 2);
         private ISampleSource mMp3;
         private string file, filename;
         private string record;

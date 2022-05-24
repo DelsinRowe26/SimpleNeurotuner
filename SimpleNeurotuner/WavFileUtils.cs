@@ -33,7 +33,7 @@ namespace SimpleNeurotuner
         private static void TrimWavFile(WaveFileReader reader, WaveWriter writer, int startPos, int endPos)
         {
             reader.Position = startPos;
-            byte[] buffer = new byte[2048];
+            byte[] buffer = new byte[1024];
             while (reader.Position < endPos)
             {
                 int bytesRequired = (int)(endPos - reader.Position);
