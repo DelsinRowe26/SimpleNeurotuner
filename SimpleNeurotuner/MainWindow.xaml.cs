@@ -1,9 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
-using System.Drawing;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using CSCore;
@@ -13,17 +11,9 @@ using CSCore.CoreAudioAPI;
 using CSCore.Streams;
 using CSCore.Codecs;
 using CSCore.Codecs.WAV;
-using CSCore.Streams.Effects;
-using CSCore.DSP;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using Microsoft.Win32;
 using System.Threading;
 using System.Diagnostics;
 using System.IO;
@@ -65,35 +55,35 @@ namespace SimpleNeurotuner
             public UInt32 Subchunk1Id;
             public UInt32 Subchunk1Size;
             public UInt16 AudioFormat;
-            public UInt16 NumChannels;
-            public UInt32 SampleRate;
-            public UInt32 ByteRate;
-            public UInt16 BlockAlign;
-            public UInt16 BitsPerSample;
+            public UInt16 NumChannels = 2;
+            public UInt32 SampleRate = 44100;
+            public UInt32 ByteRate = 384000;
+            public UInt16 BlockAlign = 8;
+            public UInt16 BitsPerSample = 32;
             public UInt32 Subchunk2Id;
             public UInt32 Subchunk2Size;
         }
 
         void CutFromWave(string WavFileName, string NewFileName, string tstart, string tend)
         {
-            string[] arrtime = tstart.Split(new char[] { ':', ',' }, StringSplitOptions.None);
-            int hours = int.Parse(arrtime[0]);
-            int minitss = int.Parse(arrtime[1]);
-            int seconds = int.Parse(arrtime[2]);
-            int miliseconds = int.Parse(arrtime[3]);
+            string[] arrtime = tstart.Split(new char[] { ':', ',' }, StringSplitOptions.None);//определяет часы минуты секунды и милисекунды если они есть
+            int hours = int.Parse(arrtime[0]);//запись часов
+            int minitss = int.Parse(arrtime[1]);//запись минут
+            int seconds = int.Parse(arrtime[2]);//запись секунд
+            int miliseconds = int.Parse(arrtime[3]);//запись милисекунд
 
             int OSecSt = (hours * 3600000 + minitss * 60000 + seconds * 1000 + miliseconds);
             arrtime = tend.Split(new char[] { ':', ',' }, StringSplitOptions.None);
-            hours = int.Parse(arrtime[0]);
-            minitss = int.Parse(arrtime[1]);
-            seconds = int.Parse(arrtime[2]);
-            miliseconds = int.Parse(arrtime[3]);
+            hours = int.Parse(arrtime[0]);//запись часов
+            minitss = int.Parse(arrtime[1]);//запись минут
+            seconds = int.Parse(arrtime[2]);//запись секунд
+            miliseconds = int.Parse(arrtime[3]);//запись милисекунд
 
             int OSecEn = (hours * 3600000 + minitss * 60000 + seconds * 1000 + miliseconds);
             int FileLength = OSecEn - OSecSt;
 
-            WavHeader header = new WavHeader();
-            int headerSize = Marshal.SizeOf(header);
+            WavHeader headerr = new WavHeader();
+            int headerSize = Marshal.SizeOf(headerr);
 
             FileStream fileStream = new FileStream(WavFileName, FileMode.Open, FileAccess.Read);
 
@@ -102,13 +92,13 @@ namespace SimpleNeurotuner
             IntPtr headerPtr = Marshal.AllocHGlobal(headerSize);
 
             Marshal.Copy(buffer, 0, headerPtr, headerSize);
-            Marshal.PtrToStructure(headerPtr, header);
+            Marshal.PtrToStructure(headerPtr, headerr);
 
             const int FFb = 44;
 
-            fileStream.Seek((header.ByteRate / 1000) * OSecSt + FFb, SeekOrigin.Begin);
+            fileStream.Seek((headerr.ByteRate / 1000) * OSecSt + FFb, SeekOrigin.Begin);
 
-            int BRDBT = (int)header.ByteRate / 1000;
+            int BRDBT = (int)headerr.ByteRate / 1000;
             byte[] WaveSent = new byte[FileLength * BRDBT];
 
             fileStream.Read(WaveSent, 0, FileLength * BRDBT);
@@ -464,11 +454,11 @@ namespace SimpleNeurotuner
         private void button_Click(object sender, RoutedEventArgs e)
         {
 
-            WavFileUtils.TrimWavFile("mymp.mp3", "cutmymp.mp3", cutFromStart, cutFromEnd);
-            /*string start = "00:00:03,157";
+            //WavFileUtils.TrimWavFile("mymp.mp3", "cutmymp.mp3", cutFromStart, cutFromEnd);
+            string start = "00:00:03,157";
             string end = "00:00:04,911";
 
-            CutFromWave("my.wav", "cutmy.wav", start, end);*/
+            CutFromWave("my.wav", "cutmy.wav", start, end);
         }
 
         private void cmbRecord_SelectionChanged(object sender, SelectionChangedEventArgs e)
