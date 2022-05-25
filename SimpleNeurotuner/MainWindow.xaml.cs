@@ -55,11 +55,11 @@ namespace SimpleNeurotuner
             public UInt32 Subchunk1Id;
             public UInt32 Subchunk1Size;
             public UInt16 AudioFormat;
-            public UInt16 NumChannels = 2;
-            public UInt32 SampleRate = 44100;
-            public UInt32 ByteRate = 384000;
-            public UInt16 BlockAlign = 8;
-            public UInt16 BitsPerSample = 32;
+            public UInt16 NumChannels;
+            public UInt32 SampleRate;
+            public UInt32 ByteRate;
+            public UInt16 BlockAlign;
+            public UInt16 BitsPerSample;
             public UInt32 Subchunk2Id;
             public UInt32 Subchunk2Size;
         }
@@ -82,7 +82,7 @@ namespace SimpleNeurotuner
             int OSecEn = (hours * 3600000 + minitss * 60000 + seconds * 1000 + miliseconds);
             int FileLength = OSecEn - OSecSt;
 
-            WavHeader headerr = new WavHeader();
+            var headerr = new WavHeader();
             int headerSize = Marshal.SizeOf(headerr);
 
             FileStream fileStream = new FileStream(WavFileName, FileMode.Open, FileAccess.Read);
