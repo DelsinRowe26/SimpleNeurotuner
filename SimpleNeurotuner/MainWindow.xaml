@@ -74,9 +74,13 @@
         </ComboBox>
         <Menu x:Name="menu" VerticalAlignment="Top" Height="22">
             <MenuItem x:Name="Help" Header="Help" Click="MenuItem_Click"></MenuItem>
-            <ComboBox x:Name="cmbLanguage" Width="40" SelectionChanged="cmbLanguage_SelectionChanged">
-                <ComboBoxItem Content="en"/>
+            <ComboBox x:Name="cmbLanguage" Width="40" SelectionChanged="cmbLanguage_SelectionChanged" ToolTip="Language">
+                <!--<ComboBoxItem Content="en"/>-->
                 <ComboBoxItem Content="ru"/>
+            </ComboBox>
+            <ComboBox x:Name="cmbModes" Width="120" SelectionChanged="cmbModes_SelectionChanged">
+                <!--<ComboBoxItem Content="Audition"/>-->
+                <ComboBoxItem Content="Record"/>
             </ComboBox>
         </Menu>
         <Label x:Name="label" Content="Label" HorizontalAlignment="Left" Margin="742,354,0,0" VerticalAlignment="Top"/>
@@ -107,7 +111,6 @@
                 </Style>
             </Button.Style>
         </Button>
-        <Button x:Name="button" Content="Button" HorizontalAlignment="Left" Margin="437,106,0,0" VerticalAlignment="Top" Click="button_Click"/>
 
     </Grid>
 </Window>

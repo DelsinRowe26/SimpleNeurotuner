@@ -62,6 +62,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="CreateWindow.xaml.cs">
+      <DependentUpon>CreateWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="PitchShifter.cs" />
     <Compile Include="SampleDSP.cs" />
     <Compile Include="SimpleMixer.cs" />
@@ -72,6 +75,10 @@
     <Compile Include="WelcomeWindow.xaml.cs">
       <DependentUpon>WelcomeWindow.xaml</DependentUpon>
     </Compile>
+    <Page Include="CreateWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

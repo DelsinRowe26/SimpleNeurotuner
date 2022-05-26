@@ -37,6 +37,8 @@ namespace SimpleNeurotuner
         private IWaveSource _source;
         private MMDeviceCollection mOutputDevices;
         private MMDeviceCollection mInputDevices;
+        string start = "00:00:02,0";
+        string end = "00:00:03,0";
         //private PitchShifter _pitchShifter;
 
         TimeSpan cutFromStart = new TimeSpan(0, 0, 1);
@@ -47,7 +49,8 @@ namespace SimpleNeurotuner
         private string[] allfile;
         private int click;
 
-        internal class WavHeader
+        [StructLayout(LayoutKind.Sequential)]
+        public partial class WavHeader
         {
             public UInt32 ChunkId;
             public UInt32 ChunkSize;
@@ -66,24 +69,25 @@ namespace SimpleNeurotuner
 
         void CutFromWave(string WavFileName, string NewFileName, string tstart, string tend)
         {
-            string[] arrtime = tstart.Split(new char[] { ':', ',' }, StringSplitOptions.None);//определяет часы минуты секунды и милисекунды если они есть
-            int hours = int.Parse(arrtime[0]);//запись часов
-            int minitss = int.Parse(arrtime[1]);//запись минут
-            int seconds = int.Parse(arrtime[2]);//запись секунд
-            int miliseconds = int.Parse(arrtime[3]);//запись милисекунд
+            var header = new WavHeader();
+            //var headerSize = Marshal.SizeOf(headerr);
+            var headerSize = Marshal.SizeOf(header);
 
-            int OSecSt = (hours * 3600000 + minitss * 60000 + seconds * 1000 + miliseconds);
+            string[] arrtime = tstart.Split(new char[] { ':', ',' }, StringSplitOptions.None);//определяет часы минуты секунды и милисекунды если они есть
+            var hours = int.Parse(arrtime[0]);//запись часов
+            var minitss = int.Parse(arrtime[1]);//запись минут
+            var seconds = int.Parse(arrtime[2]);//запись секунд
+            var miliseconds = int.Parse(arrtime[3]);//запись милисекунд
+
+            var OSecSt = (hours * 3600000 + minitss * 60000 + seconds * 1000 + miliseconds);
             arrtime = tend.Split(new char[] { ':', ',' }, StringSplitOptions.None);
             hours = int.Parse(arrtime[0]);//запись часов
             minitss = int.Parse(arrtime[1]);//запись минут
             seconds = int.Parse(arrtime[2]);//запись секунд
             miliseconds = int.Parse(arrtime[3]);//запись милисекунд
 
-            int OSecEn = (hours * 3600000 + minitss * 60000 + seconds * 1000 + miliseconds);
-            int FileLength = OSecEn - OSecSt;
-
-            var headerr = new WavHeader();
-            int headerSize = Marshal.SizeOf(headerr);
+            var OSecEn = (hours * 3600000 + minitss * 60000 + seconds * 1000 + miliseconds);
+            var FileLength = OSecEn - OSecSt;
 
             FileStream fileStream = new FileStream(WavFileName, FileMode.Open, FileAccess.Read);
 
@@ -92,13 +96,13 @@ namespace SimpleNeurotuner
             IntPtr headerPtr = Marshal.AllocHGlobal(headerSize);
 
             Marshal.Copy(buffer, 0, headerPtr, headerSize);
-            Marshal.PtrToStructure(headerPtr, headerr);
+            Marshal.PtrToStructure(headerPtr, header);
 
             const int FFb = 44;
 
-            fileStream.Seek((headerr.ByteRate / 1000) * OSecSt + FFb, SeekOrigin.Begin);
+            fileStream.Seek((header.ByteRate / 1000) * OSecSt + FFb, SeekOrigin.Begin);
 
-            int BRDBT = (int)headerr.ByteRate / 1000;
+            var BRDBT = (int)header.ByteRate / 1000;
             byte[] WaveSent = new byte[FileLength * BRDBT];
 
             fileStream.Read(WaveSent, 0, FileLength * BRDBT);
@@ -112,7 +116,7 @@ namespace SimpleNeurotuner
             buffer[43] = bytes[3];
 
             IEnumerable<byte> arrays = buffer.Concat(WaveSent);
-            string path = string.Format(@"C:\mp3\Phrase\{0}.wav", NewFileName);
+            string path = string.Format(@"{0}", NewFileName);
             File.WriteAllBytes(path, arrays.ToArray());
         }
 
@@ -160,6 +164,10 @@ namespace SimpleNeurotuner
             cmbRecord.Items.Add("Select a record");
             cmbRecord.SelectedIndex = cmbRecord.Items.Count - 1;
             Filling();
+            cmbLanguage.Items.Add("en");
+            cmbLanguage.SelectedIndex = cmbLanguage.Items.Count - 1;
+            //cmbModes.Items.Add("Audition");
+            //cmbModes.SelectedIndex = cmbModes.Items.Count - 1;
             //cmbRecord.SelectedIndex = cmbRecord.Items.Count - 1;
         }
 
@@ -176,22 +184,16 @@ namespace SimpleNeurotuner
 
         private async void btnStart_Open_Click(object sender, RoutedEventArgs e)
         {
-            click = 1;
-            /*openFileDialog = new OpenFileDialog()
+            if (cmbModes.SelectedIndex == 0)
             {
-                Filter = CodecFactory.SupportedFilesFilterEn,
-                Title = "Select a file..."
-            };
-            file = openFileDialog.FileName;
-            if (openFileDialog.ShowDialog() == true)
+                Recording();
+            }
+            else
             {
+                click = 1;
                 await Task.Run(() => Sound(file));
-                //await Task.Run(() => StartFullDuplex());
                 StartFullDuplex();
-            }*/
-            await Task.Run(() => Sound(file));
-            //await Task.Run(() => StartFullDuplex());
-            StartFullDuplex();
+            }
         }
 
         private void Stop()
@@ -354,12 +356,17 @@ namespace SimpleNeurotuner
 
         private void cmbLanguage_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (cmbLanguage.SelectedIndex == 1)
+            if (cmbLanguage.SelectedIndex == 0)
             {
+                cmbLanguage.ToolTip = "Язык";
                 cmbRecord.Items.Clear();
                 cmbRecord.Items.Add("Выберите запись");
                 cmbRecord.SelectedIndex = cmbRecord.Items.Count - 1;
                 Filling();
+                cmbModes.Items.Clear();
+                cmbModes.Items.Add("Записи");
+                cmbModes.Items.Add("Прослушивание");
+                cmbModes.SelectedIndex = cmbModes.Items.Count - 1;
                 Title = "Нейрокейс";
                 Window1 window1 = new Window1();
                 window1.index = cmbLanguage.SelectedIndex;
@@ -370,10 +377,15 @@ namespace SimpleNeurotuner
             }
             else
             {
+                cmbLanguage.ToolTip = "Language";
                 cmbRecord.Items.Clear();
                 cmbRecord.Items.Add("Select a record");
                 cmbRecord.SelectedIndex = cmbRecord.Items.Count - 1;
                 Filling();
+                cmbModes.Items.Clear();
+                cmbModes.Items.Add("Record");
+                cmbModes.Items.Add("Audition");
+                cmbModes.SelectedIndex = cmbModes.Items.Count - 1;
                 Title = "Neurokeys";
                 Window1 window1 = new Window1();
                 window1.index = cmbLanguage.SelectedIndex;
@@ -435,30 +447,64 @@ namespace SimpleNeurotuner
 
         private void Recording()
         {
-            using(mSoundIn = new WasapiCapture())
+            try
             {
-                mSoundIn.Device = mInputDevices[cmbInput.SelectedIndex];
-                mSoundIn.Initialize();
-                mSoundIn.Start();
-                using (WaveWriter record = new WaveWriter("mymp.mp3", mSoundIn.WaveFormat))
+                using (mSoundIn = new WasapiCapture())
                 {
-                    mSoundIn.DataAvailable += (s, data) => record.Write(data.Data, data.Offset, data.ByteCount);
-                    Thread.Sleep(5000);
-                    mSoundIn.Stop();
+                    mSoundIn.Device = mInputDevices[cmbInput.SelectedIndex];
+                    mSoundIn.Initialize();
+                    mSoundIn.Start();
+                    using (WaveWriter record = new WaveWriter("my.wav", mSoundIn.WaveFormat))
+                    {
+                        mSoundIn.DataAvailable += (s, data) => record.Write(data.Data, data.Offset, data.ByteCount);
+                        Thread.Sleep(5000);
+                        mSoundIn.Stop();
+                    }
+                    Thread.Sleep(2000);
+                    CutFromWave("my.wav", "cutmy.wav", start, end);
+                }
+                if (cmbLanguage.SelectedIndex == 0)
+                {
+                    string msg = "Запись и обработка завершена.";
+                    MessageBox.Show(msg);
+                }
+                else
+                {
+                    string msg = "Recording and processing completed.";
+                    MessageBox.Show(msg);
+                }
+            }
+            catch
+            {
+                if (cmbLanguage.SelectedIndex == 0)
+                {
+                    string msg = "Произошла ошибка, если она выскочила,\nзначит что-то сломалось,\nлибо вы удалили что-то нужное.";
+                    MessageBox.Show(msg);
+                }
+                else
+                {
+                    string msg = "An error occurred, if it popped up,\nsomething is broken,\nor you deleted something you needed.";
+                    MessageBox.Show(msg);
                 }
             }
         }
 
-        
+
 
         private void button_Click(object sender, RoutedEventArgs e)
         {
 
             //WavFileUtils.TrimWavFile("mymp.mp3", "cutmymp.mp3", cutFromStart, cutFromEnd);
-            string start = "00:00:03,157";
-            string end = "00:00:04,911";
 
-            CutFromWave("my.wav", "cutmy.wav", start, end);
+            //CutFromWave("my.wav", "cutmy.wav", start, end);
+        }
+
+        private void cmbModes_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if(cmbModes.SelectedIndex == 0)
+            {
+
+            }
         }
 
         private void cmbRecord_SelectionChanged(object sender, SelectionChangedEventArgs e)
