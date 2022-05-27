@@ -5,15 +5,9 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SimpleNeurotuner"
         mc:Ignorable="d"
-        Title="Help" Height="302" Width="370">
+        Title="Help" Height="302" Width="370" Loaded="Help_Loaded">
     <Grid>
-        <TextBox x:Name="tbHelp" HorizontalAlignment="Center" Margin="0,34,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="350" Height="242" Text="Welcome to Neurokeys.&#xA;&#xA;Instruction:&#xA;1. If the microphone and speakers (headphones) are not selected by default, then select them yourself.&#xA;2. Select an entry.&#xA;3. Press the start button, and enjoy. There was a desire to stop, press the stop button.&#xD;&#xA;&#xD;&#xA;Version: 1.0"/>
-        <Menu x:Name="menu" VerticalAlignment="Top" Height="29">
-            <ComboBox x:Name="cmbLanguage" Width="40" SelectionChanged="cmbLanguage_SelectionChanged">
-                <ComboBoxItem Content="en"/>
-                <ComboBoxItem Content="ru"/>
-            </ComboBox>
-        </Menu>
+        <TextBox x:Name="tbHelp" HorizontalAlignment="Center" TextWrapping="Wrap" VerticalAlignment="Center" Width="350" Height="266" Text="Welcome to Neurokeys.&#xA;&#xA;Instruction:&#xA;1. If the microphone and speakers (headphones) are not selected by default, then select them yourself.&#xA;2. Select an entry.&#xA;3. Press the start button, and enjoy. There was a desire to stop, press the stop button.&#xD;&#xA;&#xD;&#xA;Version: 1.0"/>
 
     </Grid>
 </Window>

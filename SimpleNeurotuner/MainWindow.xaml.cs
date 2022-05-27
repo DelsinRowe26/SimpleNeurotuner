@@ -27,6 +27,7 @@ namespace SimpleNeurotuner
     public partial class MainWindow : Window
     {
         private FileInfo fileInfo = new FileInfo("window.tmp");
+        private FileInfo FileLanguage = new FileInfo("Data_Language.dat");
         private SimpleMixer mMixer;
         private int SampleRate = 44100;
         private WasapiOut mSoundOut;
@@ -39,10 +40,12 @@ namespace SimpleNeurotuner
         private MMDeviceCollection mInputDevices;
         string start = "00:00:02,0";
         string end = "00:00:03,0";
+        string myfile;
+        string cutmyfile;
+        public int index;
+        string FileName, cutFileName;
         //private PitchShifter _pitchShifter;
 
-        TimeSpan cutFromStart = new TimeSpan(0, 0, 1);
-        TimeSpan cutFromEnd = new TimeSpan(0, 0, 2);
         private ISampleSource mMp3;
         private string file, filename;
         private string record;
@@ -123,6 +126,7 @@ namespace SimpleNeurotuner
         public MainWindow()
         {
             InitializeComponent();
+            this.index = cmbLanguage.SelectedIndex;
         }
 
         private void Mixer()
@@ -354,10 +358,11 @@ namespace SimpleNeurotuner
             window1.Show();
         }
 
-        private void cmbLanguage_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        public void cmbLanguage_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (cmbLanguage.SelectedIndex == 0)
             {
+                File.WriteAllText(FileLanguage.FullName, "0");
                 cmbLanguage.ToolTip = "Язык";
                 cmbRecord.Items.Clear();
                 cmbRecord.Items.Add("Выберите запись");
@@ -368,8 +373,6 @@ namespace SimpleNeurotuner
                 cmbModes.Items.Add("Прослушивание");
                 cmbModes.SelectedIndex = cmbModes.Items.Count - 1;
                 Title = "Нейрокейс";
-                Window1 window1 = new Window1();
-                window1.index = cmbLanguage.SelectedIndex;
                 btnStart_Open.Content = "Старт";
                 btnStop.Content = "Стоп";
                 Help.Header = "Помощь";
@@ -377,6 +380,7 @@ namespace SimpleNeurotuner
             }
             else
             {
+                File.WriteAllText(FileLanguage.FullName, "1");
                 cmbLanguage.ToolTip = "Language";
                 cmbRecord.Items.Clear();
                 cmbRecord.Items.Add("Select a record");
@@ -387,8 +391,6 @@ namespace SimpleNeurotuner
                 cmbModes.Items.Add("Audition");
                 cmbModes.SelectedIndex = cmbModes.Items.Count - 1;
                 Title = "Neurokeys";
-                Window1 window1 = new Window1();
-                window1.index = cmbLanguage.SelectedIndex;
                 btnStart_Open.Content = "Start";
                 btnStop.Content = "Stop";
                 Help.Header = "Help";
@@ -449,19 +451,25 @@ namespace SimpleNeurotuner
         {
             try
             {
+                StreamReader FileRecord = new StreamReader("Data_Create.dat");
+                StreamReader FileCutRecord = new StreamReader("Data_cutCreate.dat");
+                myfile = FileRecord.ReadToEnd();
+                cutmyfile = FileCutRecord.ReadToEnd();
                 using (mSoundIn = new WasapiCapture())
                 {
                     mSoundIn.Device = mInputDevices[cmbInput.SelectedIndex];
                     mSoundIn.Initialize();
                     mSoundIn.Start();
-                    using (WaveWriter record = new WaveWriter("my.wav", mSoundIn.WaveFormat))
+                    using (WaveWriter record = new WaveWriter(cutmyfile, mSoundIn.WaveFormat))
                     {
                         mSoundIn.DataAvailable += (s, data) => record.Write(data.Data, data.Offset, data.ByteCount);
                         Thread.Sleep(5000);
                         mSoundIn.Stop();
                     }
                     Thread.Sleep(2000);
-                    CutFromWave("my.wav", "cutmy.wav", start, end);
+                    CutFromWave(cutmyfile, myfile, start, end);
+                    //File.Delete(myfile);
+                    File.Move(myfile, @"Record\" + myfile);
                 }
                 if (cmbLanguage.SelectedIndex == 0)
                 {
@@ -489,21 +497,12 @@ namespace SimpleNeurotuner
             }
         }
 
-
-
-        private void button_Click(object sender, RoutedEventArgs e)
-        {
-
-            //WavFileUtils.TrimWavFile("mymp.mp3", "cutmymp.mp3", cutFromStart, cutFromEnd);
-
-            //CutFromWave("my.wav", "cutmy.wav", start, end);
-        }
-
         private void cmbModes_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if(cmbModes.SelectedIndex == 0)
             {
-
+                CreateWindow window = new CreateWindow();
+                window.Show();
             }
         }
 

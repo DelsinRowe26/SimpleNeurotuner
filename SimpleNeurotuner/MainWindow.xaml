@@ -72,7 +72,7 @@
                 </Style>
             </ComboBox.Style>
         </ComboBox>
-        <Menu x:Name="menu" VerticalAlignment="Top" Height="22">
+        <Menu x:Name="menu" VerticalAlignment="Top" Height="25">
             <MenuItem x:Name="Help" Header="Help" Click="MenuItem_Click"></MenuItem>
             <ComboBox x:Name="cmbLanguage" Width="40" SelectionChanged="cmbLanguage_SelectionChanged" ToolTip="Language">
                 <!--<ComboBoxItem Content="en"/>-->
