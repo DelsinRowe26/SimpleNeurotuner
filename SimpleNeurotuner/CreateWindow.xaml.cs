@@ -32,18 +32,19 @@ namespace SimpleNeurotuner
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            MainWindow window = new MainWindow();
-            if (window.index != 0)
-            {
-                lbRecordTitle.Content = "Record title";
-                Title = "Create window";
-                btnCreate.Content = "Create";
-            }
-            else
+            StreamReader FileLanguage = new StreamReader("Data_Language.dat");
+            string index = FileLanguage.ReadLine();
+            if (index == "0")
             {
                 lbRecordTitle.Content = "Название записи";
                 Title = "Создание файла";
                 btnCreate.Content = "Создать";
+            }
+            else
+            {
+                lbRecordTitle.Content = "Record title";
+                Title = "Create window";
+                btnCreate.Content = "Create";
             }
         }
 

@@ -65,13 +65,16 @@
     <Compile Include="CreateWindow.xaml.cs">
       <DependentUpon>CreateWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="CutRecord.cs" />
     <Compile Include="PitchShifter.cs" />
     <Compile Include="SampleDSP.cs" />
+    <Compile Include="SaveDeleteWindow.xaml.cs">
+      <DependentUpon>SaveDeleteWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="SimpleMixer.cs" />
     <Compile Include="Help.xaml.cs">
       <DependentUpon>Help.xaml</DependentUpon>
     </Compile>
-    <Compile Include="WavFileUtils.cs" />
     <Compile Include="WelcomeWindow.xaml.cs">
       <DependentUpon>WelcomeWindow.xaml</DependentUpon>
     </Compile>
@@ -92,6 +95,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="Help.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="SaveDeleteWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

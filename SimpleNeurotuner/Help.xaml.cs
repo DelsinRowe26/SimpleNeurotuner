@@ -27,20 +27,6 @@ namespace SimpleNeurotuner
             InitializeComponent();
         }
 
-        private void cmbLanguage_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (index == "0")
-            {
-                Title = "Помощь";
-                tbHelp.Text = "Добро пожаловать в Нейрокейс.\n\nИнструкция:\n1. Если по умолчанию не выбраны микрофон и колонки(наушники), то выберите их самостоятельно.\n2. Выбираем запись.\n3. Нажимаем кнопку старт, и наслаждаемся.Возникло желание остановить нажимаете кнопку стоп.\n\nВерсия: 1.0";
-            }
-            else
-            {
-                Title = "Help";
-                tbHelp.Text = "Welcome to Neurokeys.\n\nInstruction:\n1. If the microphone and speakers (headphones) are not selected by default, then select them yourself.\n2. Select an entry.\n3. Press the start button, and enjoy. There was a desire to stop, press the stop button.\n\nVersion: 1.0";
-            }
-        }
-
         private void Help_Loaded(object sender, RoutedEventArgs e)
         {
             StreamReader FileLanguage = new StreamReader("Data_Language.dat");
