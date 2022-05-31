@@ -64,5 +64,15 @@ namespace SimpleNeurotuner
             File.Delete(cutmyfile);
             this.Close();
         }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            StreamReader FileRecord = new StreamReader("Data_Create.dat");
+            StreamReader FileCutRecord = new StreamReader("Data_cutCreate.dat");
+            string myfile = FileRecord.ReadToEnd();
+            string cutmyfile = FileCutRecord.ReadToEnd();
+            File.Delete(@"Record\" + myfile);
+            File.Delete(cutmyfile);
+        }
     }
 }

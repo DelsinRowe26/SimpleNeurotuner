@@ -30,6 +30,8 @@ namespace SimpleNeurotuner
             FileInfo FileLanguage = new FileInfo("Data_Language.dat");
             if(cmbLanguage.SelectedIndex == 1)
             {
+                File.WriteAllText("DataTemp.dat", "1");
+                //File.Create("DataTemp.dat");
                 File.WriteAllText(FileLanguage.FullName, "0");
                 Title = "Добро пожаловать";
                 lbWelcome.Content = "Добро пожаловать в Нейрокейс";
@@ -37,6 +39,8 @@ namespace SimpleNeurotuner
             } 
             else
             {
+                File.WriteAllText("DataTemp.dat", "1");
+                //File.Create("DataTemp.dat");
                 File.WriteAllText(FileLanguage.FullName, "1");
                 Title = "Welcome";
                 lbWelcome.Content = "Welcome to Neurokeys";
@@ -47,6 +51,7 @@ namespace SimpleNeurotuner
         private void button_Click(object sender, RoutedEventArgs e)
         {
             this.Close();
+            //File.AppendAllText("Data_Load.dat", "1");
         }
     }
 }

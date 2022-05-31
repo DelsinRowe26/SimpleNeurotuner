@@ -29,12 +29,14 @@ namespace SimpleNeurotuner
         private FileInfo fileInfo = new FileInfo("window.tmp");
         private FileInfo fileInfo1 = new FileInfo("Data_Load.dat");
         private FileInfo FileLanguage = new FileInfo("Data_Language.dat");
+        private FileInfo fileinfo = new FileInfo("DataTemp.dat");
         private SimpleMixer mMixer;
         private int SampleRate = 44100;
         private WasapiOut mSoundOut;
         private WasapiCapture mSoundIn;
         private SampleDSP mDsp;
         string[] file1 = File.ReadAllLines("window.tmp");
+        
         string folder = "Record";
         private IWaveSource _source;
         private MMDeviceCollection mOutputDevices;
@@ -43,7 +45,7 @@ namespace SimpleNeurotuner
         string end = "00:00:04,0";
         string myfile;
         string cutmyfile;
-        public int index;
+        public int index = 1;
         string langindex;
         string FileName, cutFileName;
         //private PitchShifter _pitchShifter;
@@ -74,6 +76,7 @@ namespace SimpleNeurotuner
         {
             if (file1.Length == 0)
             {
+                //File.Create("DataTemp.dat");
                 WelcomeWindow window = new WelcomeWindow();
                 window.Show();
                 File.AppendAllText(fileInfo.FullName, "1");
@@ -400,10 +403,12 @@ namespace SimpleNeurotuner
         private void Languages()
         {
             StreamReader FileLanguage = new StreamReader("Data_Language.dat");
-            File.WriteAllText(fileInfo1.FullName, "1");
+            File.WriteAllText("Data_Load.dat", "1");
+            File.WriteAllText("DataTemp.dat", "0");
             langindex = FileLanguage.ReadToEnd();
             if (langindex == "0")
             {
+                index = 0;
                 cmbRecord.Items.Clear();
                 cmbRecord.Items.Add("Выберите запись");
                 cmbRecord.SelectedIndex = cmbRecord.Items.Count - 1;
@@ -425,6 +430,7 @@ namespace SimpleNeurotuner
             }
             else
             {
+                index = 0;
                 cmbRecord.Items.Clear();
                 cmbRecord.Items.Add("Select a record");
                 cmbRecord.SelectedIndex = cmbRecord.Items.Count - 1;
@@ -448,8 +454,10 @@ namespace SimpleNeurotuner
 
         private void SimpleNeurotuner_Activated(object sender, EventArgs e)
         {
-            string[] filename = File.ReadAllLines(fileInfo1.FullName);
-            if (filename.Length != 1)
+            string[] text = File.ReadAllLines("Data_Load.dat");
+            string[] text1 = File.ReadAllLines(fileinfo.FullName);
+            //string[] filename = File.ReadAllLines(fileInfo1.FullName);
+            if (text.Length == 0 && text1.Length == 1)
             {
                 Languages();
             }
