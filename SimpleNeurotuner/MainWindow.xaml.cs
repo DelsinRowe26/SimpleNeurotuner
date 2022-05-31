@@ -41,8 +41,8 @@ namespace SimpleNeurotuner
         private IWaveSource _source;
         private MMDeviceCollection mOutputDevices;
         private MMDeviceCollection mInputDevices;
-        string start = "00:00:03,0";
-        string end = "00:00:04,0";
+        string start = "00:00:03,5";
+        string end = "00:00:04,5";
         string myfile;
         string cutmyfile;
         public int index = 1;
