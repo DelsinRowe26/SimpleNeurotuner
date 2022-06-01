@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.IO;
+using CSCore;
+using CSCore.Codecs.WAV;
 using System.Text;
 using System.Threading.Tasks;
 using System.Runtime.InteropServices;
@@ -50,10 +52,16 @@ namespace SimpleNeurotuner
             var FileLength = OSecEn - OSecSt;
 
             FileStream fileStream = new FileStream(WavFileName, FileMode.Open, FileAccess.Read);
+            WaveFileReader waveFileReader = new WaveFileReader(fileStream);
+
+            
 
             byte[] buffer = new byte[headerSize];
+            float[] buffer2 = new float[headerSize];
             fileStream.Read(buffer, 0, headerSize);
             IntPtr headerPtr = Marshal.AllocHGlobal(headerSize);
+
+            PitchShifter.PitchShift(0, 2, waveFileReader.WaveFormat.SampleRate, buffer2);
 
             Marshal.Copy(buffer, 0, headerPtr, headerSize);
             Marshal.PtrToStructure(headerPtr, header);

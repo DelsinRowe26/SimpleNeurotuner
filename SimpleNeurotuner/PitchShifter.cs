@@ -60,6 +60,8 @@ namespace SimpleNeurotuner
         public static int[] max = new int[10];
         public static int[] Vol = new int[10];
         public static int SampleRate2;
+        private static float MAX;
+        private static long Index;
         private static int MAX_FRAME_LENGTH = 16000;
         private static float[] gInFIFO = new float[MAX_FRAME_LENGTH];
         private static float[] gOutFIFO = new float[MAX_FRAME_LENGTH];
@@ -160,6 +162,15 @@ namespace SimpleNeurotuner
                         gAnaFreq[k] = (float)tmp;
                         //File.AppendAllText("tmp.txt", gAnaFreq[k].ToString() + "\n");
 
+                    }
+
+                    for (k = 0; k <= fftFrameSize2; k++)
+                    {
+                        if (gAnaMagn[k] > MAX)
+                        {
+                            MAX = gAnaMagn[k];
+                            Index = k;
+                        }
                     }
 
                     for (k = 0; k <= fftFrameSize2; k++)
