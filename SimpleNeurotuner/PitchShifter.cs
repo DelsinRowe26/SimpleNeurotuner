@@ -164,12 +164,39 @@ namespace SimpleNeurotuner
 
                     }
 
+                    MAX = gAnaMagn[0];
                     for (k = 0; k <= fftFrameSize2; k++)
                     {
                         if (gAnaMagn[k] > MAX)
                         {
                             MAX = gAnaMagn[k];
                             Index = k;
+                        }
+                    }
+
+                    MAX = gAnaMagn[0];
+                    for (k = Index; k <= fftFrameSize2; k--)
+                    {
+                        if(gAnaFreq[k] > 0)
+                        {
+                            gAnaMagn[k] = gAnaFreq[k];
+                        }
+                        else
+                        {
+                            break;
+                        }
+                    }
+
+                    MAX = gAnaMagn[0];
+                    for (k = Index; k <= fftFrameSize2; k++)
+                    {
+                        if (gAnaFreq[k] > 0)
+                        {
+                            gAnaMagn[k] = gAnaFreq[k];
+                        }
+                        else
+                        {
+                            break;
                         }
                     }
 
