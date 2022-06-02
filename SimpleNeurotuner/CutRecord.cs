@@ -52,16 +52,16 @@ namespace SimpleNeurotuner
             var FileLength = OSecEn - OSecSt;
 
             FileStream fileStream = new FileStream(WavFileName, FileMode.Open, FileAccess.Read);
-            WaveFileReader waveFileReader = new WaveFileReader(fileStream);
+            //WaveFileReader waveFileReader = new WaveFileReader(fileStream);
 
             
 
             byte[] buffer = new byte[headerSize];
-            float[] buffer2 = new float[headerSize];
+            //float[] buffer2 = new float[headerSize];
             fileStream.Read(buffer, 0, headerSize);
             IntPtr headerPtr = Marshal.AllocHGlobal(headerSize);
 
-            PitchShifter.PitchShift(0, 2, waveFileReader.WaveFormat.SampleRate, buffer2);
+            //PitchShifter.PitchShift(0, 2, 2, 2048, 4, waveFileReader.WaveFormat.SampleRate, buffer2);
 
             Marshal.Copy(buffer, 0, headerPtr, headerSize);
             Marshal.PtrToStructure(headerPtr, header);

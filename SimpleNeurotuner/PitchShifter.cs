@@ -61,7 +61,7 @@ namespace SimpleNeurotuner
         public static int[] Vol = new int[10];
         public static int SampleRate2;
         private static float MAX;
-        private static long Index;
+        private static long IndexMAX, IndexSTART, IndexEND, IndexMAX1, IndexMAX2;
         private static int MAX_FRAME_LENGTH = 16000;
         private static float[] gInFIFO = new float[MAX_FRAME_LENGTH];
         private static float[] gOutFIFO = new float[MAX_FRAME_LENGTH];
@@ -170,33 +170,55 @@ namespace SimpleNeurotuner
                         if (gAnaMagn[k] > MAX)
                         {
                             MAX = gAnaMagn[k];
-                            Index = k;
+                            IndexMAX = k;
                         }
                     }
 
                     MAX = gAnaMagn[0];
-                    for (k = Index; k <= fftFrameSize2; k--)
+                    for (k = IndexMAX; k <= fftFrameSize2; k--)
                     {
-                        if(gAnaFreq[k] > 0)
+                        if(gAnaMagn[k] - gAnaMagn[k - 1] > 0)//Идем в левую сторону от Максимума
                         {
-                            gAnaMagn[k] = gAnaFreq[k];
+                            Console.WriteLine(gAnaMagn[k]);
                         }
                         else
                         {
+                            IndexSTART = k;
                             break;
                         }
                     }
 
                     MAX = gAnaMagn[0];
-                    for (k = Index; k <= fftFrameSize2; k++)
+                    for (k = IndexMAX; k <= fftFrameSize2; k++)
                     {
-                        if (gAnaFreq[k] > 0)
+                        if (gAnaMagn[k] - gAnaMagn[k + 1] > 0)//Идем в правую сторону от Максимума
                         {
-                            gAnaMagn[k] = gAnaFreq[k];
+                            Console.WriteLine(gAnaMagn[k]);
                         }
                         else
                         {
+                            IndexEND = k;
                             break;
+                        }
+                    }
+
+                    MAX = gAnaMagn[0];
+                    for(k = 0; k <= IndexSTART; k++)
+                    {
+                        if (gAnaMagn[k] > MAX)
+                        {
+                            MAX = gAnaMagn[k];//Поиск максимума с начала всего массива до начала первого максимума
+                            IndexMAX1 = k;
+                        }
+                    }
+
+                    MAX = gAnaMagn[0];
+                    for(k = IndexEND; k <= fftFrameSize2; k++)
+                    {
+                        if (gAnaMagn[k] > MAX)
+                        {
+                            MAX = gAnaMagn[k];//Поиск максимума с конца первого максимума и до конца массива
+                            IndexMAX2 = k;
                         }
                     }
 
