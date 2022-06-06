@@ -365,6 +365,7 @@ namespace SimpleNeurotuner
                     using (WaveWriter record = new WaveWriter(cutmyfile, mSoundIn.WaveFormat))
                     {
                         mSoundIn.DataAvailable += (s, data) => record.Write(data.Data, data.Offset, data.ByteCount);
+                        //mSoundIn.DataAvailable += (s, data) => PitchShifter.PitchShift(0, data.Offset, data.ByteCount, 2048, 4, (byte)mSoundIn.WaveFormat.SampleRate, data.Data);
                         Thread.Sleep(5000);
                         mSoundIn.Stop();
                     }

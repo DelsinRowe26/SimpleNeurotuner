@@ -63,33 +63,33 @@ namespace SimpleNeurotuner
         private static float MAX;
         private static long IndexMAX, IndexSTART, IndexEND, IndexMAX1, IndexMAX2;
         private static int MAX_FRAME_LENGTH = 16000;
-        private static float[] gInFIFO = new float[MAX_FRAME_LENGTH];
-        private static float[] gOutFIFO = new float[MAX_FRAME_LENGTH];
-        private static float[] gFFTworksp = new float[2 * MAX_FRAME_LENGTH];
-        private static float[] gLastPhase = new float[MAX_FRAME_LENGTH / 2 + 1];
-        private static float[] gSumPhase = new float[MAX_FRAME_LENGTH / 2 + 1];
-        private static float[] gOutputAccum = new float[2 * MAX_FRAME_LENGTH];
-        private static float[] gAnaFreq = new float[MAX_FRAME_LENGTH];
-        private static float[] gAnaMagn = new float[MAX_FRAME_LENGTH];
-        private static float[] gSynFreq = new float[MAX_FRAME_LENGTH];
-        private static float[] gSynMagn = new float[MAX_FRAME_LENGTH];
+        private static byte[] gInFIFO = new byte[MAX_FRAME_LENGTH];
+        private static byte[] gOutFIFO = new byte[MAX_FRAME_LENGTH];
+        private static byte[] gFFTworksp = new byte[2 * MAX_FRAME_LENGTH];
+        private static byte[] gLastPhase = new byte[MAX_FRAME_LENGTH / 2 + 1];
+        private static byte[] gSumPhase = new byte[MAX_FRAME_LENGTH / 2 + 1];
+        private static byte[] gOutputAccum = new byte[2 * MAX_FRAME_LENGTH];
+        private static byte[] gAnaFreq = new byte[MAX_FRAME_LENGTH];
+        private static byte[] gAnaMagn = new byte[MAX_FRAME_LENGTH];
+        private static byte[] gSynFreq = new byte[MAX_FRAME_LENGTH];
+        private static byte[] gSynMagn = new byte[MAX_FRAME_LENGTH];
         private static long gRover, gInit;
         #endregion
 
         #region Public Static  Methods
-        public static void PitchShift(float pitchShift, long sampleCount, float sampleRate, float[] indata)
+        public static void PitchShift(byte pitchShift, long sampleCount, byte sampleRate, byte[] indata)
         {
             PitchShift(pitchShift, 0, sampleCount, (long)2048, (long)4, sampleRate, indata);
         }
-        public static void PitchShift(float pitchShift, long offset, long sampleCount, long fftFrameSize,
-            long osamp, float sampleRate, float[] indata)
+        public static void PitchShift(byte pitchShift, long offset, long sampleCount, long fftFrameSize,
+            long osamp, byte sampleRate, byte[] indata)
         {
             double magn, phase, tmp, window, real, imag;
             double freqPerBin, expct;
             long i, k, qpd, index, inFifoLatency, stepSize, fftFrameSize2;
 
 
-            float[] outdata = indata;
+            byte[] outdata = indata;
             /* set up some handy variables/настроить некоторые удобные переменные */
             fftFrameSize2 = fftFrameSize / 2;
             stepSize = fftFrameSize / osamp;
@@ -116,8 +116,8 @@ namespace SimpleNeurotuner
                     for (k = 0; k < fftFrameSize; k++)
                     {
                         window = -.5 * Math.Cos(2.0 * Math.PI * (double)k / (double)fftFrameSize) + .5;
-                        gFFTworksp[2 * k] = (float)(gInFIFO[k] * window);
-                        gFFTworksp[2 * k + 1] = 0.0F;
+                        gFFTworksp[2 * k] = (byte)(gInFIFO[k] * window);
+                        gFFTworksp[2 * k + 1] = (byte)0.0F;
                     }
 
 
@@ -139,7 +139,7 @@ namespace SimpleNeurotuner
 
                         /* compute phase difference/вычислить разность фаз */
                         tmp = phase - gLastPhase[k];//частота
-                        gLastPhase[k] = (float)phase;
+                        gLastPhase[k] = (byte)phase;
 
                         /* subtract expected phase difference/вычесть ожидаемую разность фаз */
                         tmp -= (double)k * expct;
@@ -157,9 +157,9 @@ namespace SimpleNeurotuner
                         tmp = (double)k * freqPerBin + tmp * freqPerBin;
 
                         /* store magnitude and true frequency in analysis arrays/хранить величину и истинную частоту в массивах анализа */
-                        gAnaMagn[k] = (float)magn;
+                        gAnaMagn[k] = (byte)magn;
                         //File.AppendAllText("magn.txt", gAnaMagn[k].ToString() + "\n");
-                        gAnaFreq[k] = (float)tmp;
+                        gAnaFreq[k] = (byte)tmp;
                         //File.AppendAllText("tmp.txt", gAnaFreq[k].ToString() + "\n");
 
                     }
@@ -231,41 +231,41 @@ namespace SimpleNeurotuner
                             {
                                 magn1 = gAnaMagn[k];
                                 magn1 = magn1 * Vol[0];
-                                gAnaMagn[k] = (float)magn1;
+                                gAnaMagn[k] = (byte)magn1;
                                 //Thread.Sleep(100);
                             }
                             else if (min[1] >= (780 * fftFrameSize2) / SampleRate2 && k <= (max[1] * fftFrameSize2) / SampleRate2 && min[1] != 0)
                             {
                                 magn1 = gAnaMagn[k];
                                 magn1 *= Vol[1];
-                                gAnaMagn[k] = (float)magn1;
+                                gAnaMagn[k] = (byte)magn1;
                                 //Thread.Sleep(100);
                             }
                             else if (k >= (min[2] * fftFrameSize2) / SampleRate2 && k <= (max[2] * fftFrameSize2) / SampleRate2 && min[2] != 0)
                             {
                                 magn1 = gAnaMagn[k];
                                 magn1 *= Vol[2];
-                                gAnaMagn[k] = (float)magn1;
+                                gAnaMagn[k] = (byte)magn1;
                                 //Thread.Sleep(100);
                             }
                             else if (k >= (min[3] * fftFrameSize2) / SampleRate2 && k <= (max[3] * fftFrameSize2) / SampleRate2 && min[3] != 0)
                             {
                                 magn1 = gAnaMagn[k];
                                 magn1 *= Vol[3];
-                                gAnaMagn[k] = (float)magn1;
+                                gAnaMagn[k] = (byte)magn1;
                                 //Thread.Sleep(100);
                             }
                             else if (k >= (min[4] * fftFrameSize2) / SampleRate2 && k <= (max[4] * fftFrameSize2) / SampleRate2 && min[4] != 0)
                             {
                                 magn1 = gAnaMagn[k];
                                 magn1 *= Vol[4];
-                                gAnaMagn[k] = (float)magn1;
+                                gAnaMagn[k] = (byte)magn1;
                                 //Thread.Sleep(100);
                             }
                             else
                             {
                                 magn1 = gAnaMagn[k];
-                                gAnaMagn[k] = (float)magn1;
+                                gAnaMagn[k] = (byte)magn1;
                             }
                         }
                         else { break; }
@@ -285,7 +285,7 @@ namespace SimpleNeurotuner
                         if (index <= fftFrameSize2)
                         {
                             gSynMagn[index] += gAnaMagn[k];
-                            gSynFreq[index] = gAnaFreq[k] * pitchShift;
+                            gSynFreq[index] = (byte)(gAnaFreq[k] * pitchShift);
                         }
                     }
 
@@ -311,18 +311,18 @@ namespace SimpleNeurotuner
                         tmp += (double)k * expct;
 
                         /* accumulate delta phase to get bin phase/накапливать дельта-фазу, чтобы получить бин-фазу */
-                        gSumPhase[k] += (float)tmp;
+                        gSumPhase[k] += (byte)tmp;
                         phase = gSumPhase[k];
 
                         /* get real and imag part and re-interleave/получить реальную часть и часть изображения и повторно чередовать */
-                        gFFTworksp[2 * k] = (float)(magn * Math.Cos(phase));
-                        gFFTworksp[2 * k + 1] = (float)(magn * Math.Sin(phase));
+                        gFFTworksp[2 * k] = (byte)(magn * Math.Cos(phase));
+                        gFFTworksp[2 * k + 1] = (byte)(magn * Math.Sin(phase));
                         //File.AppendAllText("AfterSTFT.txt", gFFTworksp[2 *k].ToString() + "\n");
                         //File.AppendAllText("AfterSTFT.txt", gFFTworksp[2 * k + 1].ToString() + "\n");
                     }
 
                     /* zero negative frequencies/ноль отрицательных частот */
-                    for (k = fftFrameSize + 2; k < 2 * fftFrameSize; k++) { gFFTworksp[k] = 0.0F; /*File.AppendAllText("AfterSTFT.txt", gFFTworksp[k].ToString() + "\n");*/ }
+                    for (k = fftFrameSize + 2; k < 2 * fftFrameSize; k++) { gFFTworksp[k] = (byte)0.0F; /*File.AppendAllText("AfterSTFT.txt", gFFTworksp[k].ToString() + "\n");*/ }
 
                     /* do inverse transform/сделать обратное преобразование */
                     ShortTimeFourierTransform(gFFTworksp, fftFrameSize, 1);
@@ -332,7 +332,7 @@ namespace SimpleNeurotuner
                     for (k = 0; k < fftFrameSize; k++)
                     {
                         window = -.5 * Math.Cos(2.0 * Math.PI * (double)k / (double)fftFrameSize) + .5;
-                        gOutputAccum[k] += (float)(2.0 * window * gFFTworksp[2 * k] / (fftFrameSize2 * osamp));
+                        gOutputAccum[k] += (byte)(2.0 * window * gFFTworksp[2 * k] / (fftFrameSize2 * osamp));
                     }
                     for (k = 0; k < stepSize; k++) gOutFIFO[k] = gOutputAccum[k];
 
@@ -351,10 +351,10 @@ namespace SimpleNeurotuner
         #endregion
 
         #region Private Static Methods
-        public static void ShortTimeFourierTransform(float[] fftBuffer, long fftFrameSize, long sign)
+        public static void ShortTimeFourierTransform(byte[] fftBuffer, long fftFrameSize, long sign)
         {
-            float wr, wi, arg, temp;//temp для замены, arg для вычисления косинусоида, wr для записи косинусоида, wi для записи синусоида
-            float tr, ti, ur, ui;//
+            byte wr, wi, arg, temp;//temp для замены, arg для вычисления косинусоида, wr для записи косинусоида, wi для записи синусоида
+            byte tr, ti, ur, ui;//
             long i, bitm, j, le, le2, k;//le,le2 это длина кажется но не точно. i и j индексы массива.
 
             for (i = 2; i < 2 * fftFrameSize - 2; i += 2)
@@ -379,26 +379,26 @@ namespace SimpleNeurotuner
             {
                 le <<= 1;
                 le2 = le >> 1;
-                ur = 1.0F;
-                ui = 0.0F;
-                arg = (float)Math.PI / (le2 >> 1);
-                wr = (float)(Math.Cos(arg));//нихуя не умножать и не прибовлять иначе ушам придет пиздец
-                wi = (float)(sign * Math.Sin(arg));//нихуя не умножать и не прибовлять иначе ушам придет пиздец
+                ur = (byte)1.0F;
+                ui = (byte)0.0F;
+                arg = (byte)(Math.PI / (le2 >> 1));
+                wr = (byte)(Math.Cos(arg));//нихуя не умножать и не прибовлять иначе ушам придет пиздец
+                wi = (byte)(sign * Math.Sin(arg));//нихуя не умножать и не прибовлять иначе ушам придет пиздец
                 for (j = 0; j < le2; j += 2)
                 {
 
                     for (i = j; i < 2 * fftFrameSize; i += le)
                     {
-                        tr = fftBuffer[i + le2] * ur - fftBuffer[i + le2 + 1] * ui;//нихуя не умножать и не прибовлять иначе ушам придет пиздец
-                        ti = fftBuffer[i + le2] * ui + fftBuffer[i + le2 + 1] * ur;//нихуя не умножать и не прибовлять иначе ушам придет пиздец
-                        fftBuffer[i + le2] = fftBuffer[i] - tr;//нихуя не умножать и не прибовлять иначе ушам придет пиздец
-                        fftBuffer[i + le2 + 1] = fftBuffer[i + 1] - ti;//нихуя не умножать и не прибовлять иначе ушам придет пиздец
+                        tr = (byte)(fftBuffer[i + le2] * ur - fftBuffer[i + le2 + 1] * ui);//нихуя не умножать и не прибовлять иначе ушам придет пиздец
+                        ti = (byte)(fftBuffer[i + le2] * ui + fftBuffer[i + le2 + 1] * ur);//нихуя не умножать и не прибовлять иначе ушам придет пиздец
+                        fftBuffer[i + le2] = (byte)(fftBuffer[i] - tr);//нихуя не умножать и не прибовлять иначе ушам придет пиздец
+                        fftBuffer[i + le2 + 1] = (byte)(fftBuffer[i + 1] - ti);//нихуя не умножать и не прибовлять иначе ушам придет пиздец
                         fftBuffer[i] += tr;//нихуя не умножать и не прибовлять иначе ушам придет пиздец
                         fftBuffer[i + 1] += ti;//нихуя не умножать и не прибовлять иначе ушам придет пиздец
 
                     }
-                    tr = ur * wr - ui * wi;//нихуя не умножать и не прибовлять иначе ушам придет пиздец
-                    ui = ur * wi + ui * wr;//нихуя не умножать и не прибовлять иначе ушам придет пиздец
+                    tr = (byte)(ur * wr - ui * wi);//нихуя не умножать и не прибовлять иначе ушам придет пиздец
+                    ui = (byte)(ur * wi + ui * wr);//нихуя не умножать и не прибовлять иначе ушам придет пиздец
                     ur = tr;
                 }
             }
