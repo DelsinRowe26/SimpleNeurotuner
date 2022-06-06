@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Input;
 using CSCore;
 using CSCore.SoundIn;//Вход звука
 using CSCore.SoundOut;//Выход звука
@@ -12,7 +13,6 @@ using CSCore.Streams;
 using CSCore.Codecs;
 using CSCore.Codecs.WAV;
 using System.Windows.Controls;
-using System.Windows.Input;
 using System.Windows.Media;
 using System.Threading;
 using System.Diagnostics;
@@ -125,7 +125,8 @@ namespace SimpleNeurotuner
         {
             if (cmbModes.SelectedIndex == 0)
             {
-                Recording();
+                //Recording();
+                Recordind2();
             }
             else
             {
@@ -399,6 +400,27 @@ namespace SimpleNeurotuner
                     MessageBox.Show(msg);
                 }
             }
+        }
+
+        private void Recordind2()
+        {
+            float[] buffer = new float[2048];
+            mSoundIn = new WasapiCapture();
+            mSoundIn.Device = mInputDevices[cmbInput.SelectedIndex];
+            mSoundIn.Initialize();
+            mSoundIn.Start();
+
+            //mSoundIn.DataAvailable += (s, data) => PitchShifter.PitchShift(0, data.Offset, data.ByteCount, 4096, 4, mSoundIn.WaveFormat.SampleRate, buffer);
+
+            var source = new SoundInSource(mSoundIn) { FillWithZeros = true };
+
+            //Init DSP для смещения высоты тона
+            mDsp = new SampleDSP(source.ToSampleSource());
+            mDsp.PitchShift = 0;
+            mDsp.Read(buffer, 0, buffer.Count());
+            
+            //PitchShifter.PitchShift(0, 2, 2, 2048, 4, mSoundIn.WaveFormat.SampleRate, );
+            //mSoundIn.DataAvailable += (s, data) => PitchShifter.PitchShift(0, data.Offset, data.ByteCount, 2048, 4, mSoundIn.WaveFormat.SampleRate, data.Data);
         }
 
         private void Languages()

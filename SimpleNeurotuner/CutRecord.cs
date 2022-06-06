@@ -60,7 +60,7 @@ namespace SimpleNeurotuner
 
             
 
-            PitchShifter.PitchShift(0, 2, waveFileReader.Chunks.Count, 2048, 4, (byte)waveFileReader.WaveFormat.SampleRate, buffer);
+            //PitchShifter.PitchShift(0, 2, waveFileReader.Chunks.Count, 2048, 4, (byte)waveFileReader.WaveFormat.SampleRate, buffer);
 
             Marshal.Copy(buffer, 0, headerPtr, headerSize);
             Marshal.PtrToStructure(headerPtr, header);
