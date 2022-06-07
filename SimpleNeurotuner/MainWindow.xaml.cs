@@ -346,8 +346,9 @@ namespace SimpleNeurotuner
 
         private void btnRecord_Click(object sender, RoutedEventArgs e)
         {
-            audioclick = 1;
-            Audition();
+            //audioclick = 1;
+            mDsp.PitchShift = 0;
+            //Audition();
         }
 
         private void Recording()
@@ -404,21 +405,44 @@ namespace SimpleNeurotuner
 
         private void Recordind2()
         {
-            float[] buffer = new float[2048];
-            mSoundIn = new WasapiCapture();
+            float[] buffer = new float[4096];
+            mSoundIn = new WasapiCapture(/*false, AudioClientShareMode.Exclusive, 1*/);
             mSoundIn.Device = mInputDevices[cmbInput.SelectedIndex];
             mSoundIn.Initialize();
-            mSoundIn.Start();
-
-            //mSoundIn.DataAvailable += (s, data) => PitchShifter.PitchShift(0, data.Offset, data.ByteCount, 4096, 4, mSoundIn.WaveFormat.SampleRate, buffer);
 
             var source = new SoundInSource(mSoundIn) { FillWithZeros = true };
 
             //Init DSP для смещения высоты тона
-            mDsp = new SampleDSP(source.ToSampleSource());
-            mDsp.PitchShift = 0;
-            mDsp.Read(buffer, 0, buffer.Count());
+            mDsp = new SampleDSP(source.ToSampleSource().ToStereo());
+            //mDsp.GainDB = (float)slVolume.Value;
             
+            //mDsp.GainDB = 10;
+            //mDsp.Read(buffer, 0, buffer.Count());
+            //SetPitchShiftValue();
+            mSoundIn.Start();
+
+            //Инициальный микшер
+            Mixer();
+
+            //Добавляем наш источник звука в микшер
+            mMixer.AddSource(/*source.ToSampleSource().ToStereo()*/mDsp.ChangeSampleRate(mMixer.WaveFormat.SampleRate));
+
+            SoundOut();
+            Thread.Sleep(6000);
+            mDsp.PitchShift = 0;
+            Thread.Sleep(5000);
+            Stop();
+            mSoundIn.Stop();
+            if (langindex == "0")
+            {
+                string msg = "Запись и обработка завершена.";
+                MessageBox.Show(msg);
+            }
+            else
+            {
+                string msg = "Recording and processing completed.";
+                MessageBox.Show(msg);
+            }
             //PitchShifter.PitchShift(0, 2, 2, 2048, 4, mSoundIn.WaveFormat.SampleRate, );
             //mSoundIn.DataAvailable += (s, data) => PitchShifter.PitchShift(0, data.Offset, data.ByteCount, 2048, 4, mSoundIn.WaveFormat.SampleRate, data.Data);
         }

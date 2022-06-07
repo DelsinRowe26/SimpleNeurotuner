@@ -166,21 +166,41 @@ namespace SimpleNeurotuner
                     }
 
                     MAX = gAnaMagn[0];
-                    for(k = 0; k <+ fftFrameSize2; k++)
+                    for(k = 0; k < fftFrameSize2; k++)
                     {
                         if (gAnaMagn[k] >= MAX)
                         {
                             MAX = gAnaMagn[k];
                             IndexMAX = k;
+                            //File.WriteAllText("magnmax.txt", gAnaMagn[k].ToString());
                         }
                     }
 
                     MAX = gAnaMagn[0];
-                    for (k = IndexMAX; k <= fftFrameSize2; k--)
+                    /*k = IndexMAX;
+                    while(k < fftFrameSize2)
                     {
-                        if (gAnaMagn[k] - gAnaMagn[k - 1] > 0)//Идем в левую сторону от Максимума
+                        if (gAnaMagn[k] - gAnaMagn[k - 1] > 0 && k != 1)//Идем в левую сторону от Максимума
                         {
-                            Console.WriteLine(gAnaMagn[k]);
+
+                            //Console.WriteLine(gAnaMagn[k]);
+                            File.AppendAllText("magn1.txt", gAnaMagn[k].ToString() + "\n");
+                            k--;
+                        }
+                        else
+                        {
+                            IndexSTART = k;
+                            k--;
+                            break;
+                        }
+                    }*/
+                    for (k = IndexMAX; k < fftFrameSize2; k--)
+                    {
+                        if (gAnaMagn[k] - gAnaMagn[k - 1] >= 0 && k != 1)//Идем в левую сторону от Максимума
+                        {
+
+                            //Console.WriteLine(gAnaMagn[k]);
+                            File.AppendAllText("magn1.txt", gAnaMagn[k].ToString() + "\n");
                         }
                         else
                         {
@@ -190,11 +210,12 @@ namespace SimpleNeurotuner
                     }
 
                     MAX = gAnaMagn[0];
-                    for (k = IndexMAX; k <= fftFrameSize2; k++)
+                    for (k = IndexMAX; k < fftFrameSize2; k++)
                     {
                         if (gAnaMagn[k] - gAnaMagn[k + 1] > 0)//Идем в правую сторону от Максимума
                         {
-                            Console.WriteLine(gAnaMagn[k]);
+                            File.AppendAllText("magn2.txt", gAnaMagn[k].ToString() + "\n");
+                            //Console.WriteLine(gAnaMagn[k]);
                         }
                         else
                         {
@@ -204,7 +225,7 @@ namespace SimpleNeurotuner
                     }
 
                     MAX = gAnaMagn[0];
-                    for (k = 0; k <= IndexSTART; k++)
+                    for (k = 0; k < IndexSTART; k++)
                     {
                         if (gAnaMagn[k] > MAX)
                         {
@@ -214,7 +235,7 @@ namespace SimpleNeurotuner
                     }
 
                     MAX = gAnaMagn[0];
-                    for (k = IndexEND; k <= fftFrameSize2; k++)
+                    for (k = IndexEND; k < fftFrameSize2; k++)
                     {
                         if (gAnaMagn[k] > MAX)
                         {
