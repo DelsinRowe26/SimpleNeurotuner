@@ -370,6 +370,7 @@ namespace SimpleNeurotuner
                         //mSoundIn.DataAvailable += (s, data) => PitchShifter.PitchShift(0, data.Offset, data.ByteCount, 2048, 4, (byte)mSoundIn.WaveFormat.SampleRate, data.Data);
                         Thread.Sleep(5000);
                         mSoundIn.Stop();
+                        
                     }
                     Thread.Sleep(2000);
                     CutRecord cutRecord = new CutRecord();
@@ -405,27 +406,22 @@ namespace SimpleNeurotuner
 
         private void Recordind2()
         {
-            float[] buffer = new float[4096];
-            mSoundIn = new WasapiCapture(/*false, AudioClientShareMode.Exclusive, 1*/);
+            //float[] buffer = new float[4096];
+            mSoundIn = new WasapiCapture();
             mSoundIn.Device = mInputDevices[cmbInput.SelectedIndex];
             mSoundIn.Initialize();
 
             var source = new SoundInSource(mSoundIn) { FillWithZeros = true };
 
-            //Init DSP для смещения высоты тона
             mDsp = new SampleDSP(source.ToSampleSource().ToStereo());
-            //mDsp.GainDB = (float)slVolume.Value;
             
-            //mDsp.GainDB = 10;
-            //mDsp.Read(buffer, 0, buffer.Count());
-            //SetPitchShiftValue();
             mSoundIn.Start();
 
             //Инициальный микшер
             Mixer();
 
             //Добавляем наш источник звука в микшер
-            mMixer.AddSource(/*source.ToSampleSource().ToStereo()*/mDsp.ChangeSampleRate(mMixer.WaveFormat.SampleRate));
+            mMixer.AddSource(mDsp.ChangeSampleRate(mMixer.WaveFormat.SampleRate));
 
             SoundOut();
             Thread.Sleep(6000);

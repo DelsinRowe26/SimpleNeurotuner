@@ -1,5 +1,7 @@
 ﻿using System;
 using CSCore;
+using System.IO;
+using CSCore.Codecs.WAV;
 
 namespace SimpleNeurotuner
 {

@@ -177,6 +177,7 @@ namespace SimpleNeurotuner
                     }
 
                     MAX = gAnaMagn[0];
+                    
                     /*k = IndexMAX;
                     while(k < fftFrameSize2)
                     {
