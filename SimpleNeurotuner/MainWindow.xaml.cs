@@ -424,7 +424,7 @@ namespace SimpleNeurotuner
             mMixer.AddSource(mDsp.ChangeSampleRate(mMixer.WaveFormat.SampleRate));
 
             SoundOut();
-            Thread.Sleep(6000);
+            Thread.Sleep(5000);
             mDsp.PitchShift = 0;
             Thread.Sleep(5000);
             Stop();
