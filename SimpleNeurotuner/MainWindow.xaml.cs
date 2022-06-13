@@ -17,6 +17,8 @@ using System.Windows.Media;
 using System.Threading;
 using System.Diagnostics;
 using System.IO;
+using Microsoft.DirectX.DirectSound;
+using Buffer = Microsoft.DirectX.DirectSound.Buffer;
 using System.Runtime.InteropServices;
 
 namespace SimpleNeurotuner
