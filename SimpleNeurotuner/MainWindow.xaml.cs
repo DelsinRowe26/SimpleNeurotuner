@@ -127,8 +127,8 @@ namespace SimpleNeurotuner
         {
             if (cmbModes.SelectedIndex == 0)
             {
-                //Recording();
-                Recordind2();
+                Recording();
+                //Recordind2();
             }
             else
             {
@@ -349,8 +349,8 @@ namespace SimpleNeurotuner
         private void btnRecord_Click(object sender, RoutedEventArgs e)
         {
             //audioclick = 1;
-            mDsp.PitchShift = 0;
-            //Audition();
+            //mDsp.PitchShift = 0;
+            Audition();
         }
 
         private void Recording()
@@ -369,7 +369,6 @@ namespace SimpleNeurotuner
                     using (WaveWriter record = new WaveWriter(cutmyfile, mSoundIn.WaveFormat))
                     {
                         mSoundIn.DataAvailable += (s, data) => record.Write(data.Data, data.Offset, data.ByteCount);
-                        //mSoundIn.DataAvailable += (s, data) => PitchShifter.PitchShift(0, data.Offset, data.ByteCount, 2048, 4, (byte)mSoundIn.WaveFormat.SampleRate, data.Data);
                         Thread.Sleep(5000);
                         mSoundIn.Stop();
                         
@@ -377,7 +376,6 @@ namespace SimpleNeurotuner
                     Thread.Sleep(2000);
                     CutRecord cutRecord = new CutRecord();
                     cutRecord.CutFromWave(cutmyfile, myfile, start, end);
-                    //File.Delete(myfile);
                     File.Move(myfile, @"Record\" + myfile);
                 }
                 if (langindex == "0")

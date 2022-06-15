@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SimpleNeurotuner"
         mc:Ignorable="d"
-        Title="Welcome" Height="440" Width="482" Topmost="True">
+        Title="Welcome" Height="547" Width="482" Topmost="True">
     <Grid>
         <Label x:Name="lbWelcome" Content="Welcome to Neurokeys" HorizontalAlignment="Center" Margin="0,25,0,0" VerticalAlignment="Top" FontSize="24">
             <Label.Style>
@@ -21,14 +21,17 @@
                 <ComboBoxItem Content="ru"/>
             </ComboBox>
         </Menu>
-        <Button x:Name="button" Content="OK" HorizontalAlignment="Left" Margin="350,352,0,0" VerticalAlignment="Top" Height="34" Width="74" FontSize="16" FontFamily="Times New Roman" Click="button_Click"/>
-        <Label x:Name="lbDescriptionText" Content="Version: 1.0&#xA;&#xA;The program is intended for a course on entering the resource state.&#xA;&#xA;Instruction:&#xA;&#xA;1. If the microphone and speakers (headphones) &#xA;are not selected by default, then select them yourself.&#xA;&#xA;2. Select an entry.&#xA;&#xA;3. Press the start button, and enjoy. There was a desire to stop,&#xA;press the stop button." HorizontalAlignment="Left" Margin="20,80,0,0" VerticalAlignment="Top" FontSize="16">
-            <Label.Style>
-                <Style>
-                    <Setter Property="Control.FontFamily" Value="Times New Roman"/>
-                </Style>
-            </Label.Style>
-        </Label>
+        <Button x:Name="button" Content="OK" HorizontalAlignment="Left" Margin="353,463,0,0" VerticalAlignment="Top" Height="34" Width="74" FontSize="16" FontFamily="Times New Roman" Click="button_Click"/>
+        <ScrollViewer HorizontalAlignment="Center" Margin="0,68,0,0" VerticalAlignment="Top" Height="378">
+            <Label x:Name="lbDescriptionText" Content="Version: 1.1&#xA;&#xA;The program is intended for a course on entering the resource state.&#xA;&#xA;In this window, you can select the language Russian or English.&#xA;&#xA;Instruction:&#xA;&#xA;1. If the microphone and speakers (headphones) &#xA;are not selected by default, then select them yourself.&#xA;&#xA;2. Select an entry.&#xA;&#xA;3. Press the start button, and enjoy. You can also use the slider to&#xA;adjust the volume of your voice in the microphone. There was&#xA;a desire to stop, press the stop button.&#xA;&#xA;4. If you want to make your own recording, then switch the&#xA;mode from listening to recording mode.&#xA;&#xA;5. You will have a window in which you can name your entry.&#xA;&#xA;6. After you name your entry and press the create button,&#xA;you will go to the main window in which an additional&#xA;button will appear.&#xA;&#xA;7. To make a recording, first start making a sound, and then&#xA;press the start button, then the recording will begin, after&#xA;the end of the recording, a window will pop up about&#xA;the completion of the recording.&#xA;&#xA;8. Then you click on the listen button and listen to your recording.&#xA;After you have listened to the recording, press the stop button.&#xA;A window pops up in which you choose to keep your entry,&#xA;or delete and overwrite." FontSize="16" Height="857" Width="442">
+                <Label.Style>
+                    <Style>
+                        <Setter Property="Control.FontFamily" Value="Times New Roman"/>
+                    </Style>
+                </Label.Style>
+            </Label>
+
+        </ScrollViewer>
 
     </Grid>
 </Window>

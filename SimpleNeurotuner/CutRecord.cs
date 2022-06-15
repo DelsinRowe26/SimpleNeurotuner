@@ -52,7 +52,7 @@ namespace SimpleNeurotuner
             var FileLength = OSecEn - OSecSt;
 
             FileStream fileStream = new FileStream(WavFileName, FileMode.Open, FileAccess.Read);
-            WaveFileReader waveFileReader = new WaveFileReader("cutMyRecord.wav");
+            //WaveFileReader waveFileReader = new WaveFileReader("cutMyRecord.wav");
 
             byte[] buffer = new byte[headerSize];
             fileStream.Read(buffer, 0, headerSize);
