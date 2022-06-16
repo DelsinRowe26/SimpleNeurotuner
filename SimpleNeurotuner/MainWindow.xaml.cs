@@ -36,7 +36,7 @@ namespace SimpleNeurotuner
         private int SampleRate = 44100;
         private WasapiOut mSoundOut;
         private WasapiCapture mSoundIn;
-        private SampleDSP mDsp;
+        private SampleDSP mDsp, mDsp1;
         string[] file1 = File.ReadAllLines("window.tmp");
         
         string folder = "Record";
@@ -228,7 +228,9 @@ namespace SimpleNeurotuner
             {
                 Mixer();
                 mMp3 = CodecFactory.Instance.GetCodec(filename).ToStereo().ToSampleSource();
-                mMixer.AddSource(mMp3.ChangeSampleRate(mMixer.WaveFormat.SampleRate).ToWaveSource(16).Loop().ToSampleSource());
+                mDsp1 = new SampleDSP(mMp3.ToWaveSource(16).ToSampleSource());
+                //mDsp1.GainDB = (float)slVolumeRecord.Value;
+                mMixer.AddSource(mDsp1.ChangeSampleRate(mMixer.WaveFormat.SampleRate).ToWaveSource(16).Loop().ToSampleSource());
 
                 await Task.Run(() => SoundOut());
             }

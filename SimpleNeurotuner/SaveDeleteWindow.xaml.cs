@@ -71,8 +71,8 @@ namespace SimpleNeurotuner
             StreamReader FileCutRecord = new StreamReader("Data_cutCreate.dat");
             string myfile = FileRecord.ReadToEnd();
             string cutmyfile = FileCutRecord.ReadToEnd();
-            File.Delete(@"Record\" + myfile);
-            File.Delete(cutmyfile);
+            //File.Delete(@"Record\" + myfile);
+            //File.Delete(cutmyfile);
         }
     }
 }
