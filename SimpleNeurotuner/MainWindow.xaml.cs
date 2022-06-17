@@ -229,7 +229,7 @@ namespace SimpleNeurotuner
                 Mixer();
                 mMp3 = CodecFactory.Instance.GetCodec(filename).ToStereo().ToSampleSource();
                 mDsp1 = new SampleDSP(mMp3.ToWaveSource(16).ToSampleSource());
-                //mDsp1.GainDB = (float)slVolumeRecord.Value;
+                //mDsp1.GainDB = (float)slVolume.Value;
                 mMixer.AddSource(mDsp1.ChangeSampleRate(mMixer.WaveFormat.SampleRate).ToWaveSource(16).Loop().ToSampleSource());
 
                 await Task.Run(() => SoundOut());
@@ -355,7 +355,7 @@ namespace SimpleNeurotuner
             Audition();
         }
 
-        private void Recording()
+        private async void Recording()
         {
             try
             {
@@ -367,15 +367,22 @@ namespace SimpleNeurotuner
                 {
                     mSoundIn.Device = mInputDevices[cmbInput.SelectedIndex];
                     mSoundIn.Initialize();
+                    lbRecordPB.Visibility = Visibility.Visible; 
                     mSoundIn.Start();
                     using (WaveWriter record = new WaveWriter(cutmyfile, mSoundIn.WaveFormat))
                     {
                         mSoundIn.DataAvailable += (s, data) => record.Write(data.Data, data.Offset, data.ByteCount);
-                        Thread.Sleep(5000);
+                        for(int i = 0; i < 100; i++)
+                        {
+                            pbRecord.Value++;
+                            await Task.Delay(50);
+                        }
+                        //Thread.Sleep(5000);
                         mSoundIn.Stop();
-                        
+                        lbRecordPB.Visibility = Visibility.Hidden;
+                        pbRecord.Value = 0;
                     }
-                    Thread.Sleep(2000);
+                    Thread.Sleep(1000);
                     CutRecord cutRecord = new CutRecord();
                     cutRecord.CutFromWave(cutmyfile, myfile, start, end);
                     File.Move(myfile, @"Record\" + myfile);
@@ -472,6 +479,7 @@ namespace SimpleNeurotuner
                 cmbOutput.ToolTip = "Наушники";
                 cmbRecord.ToolTip = "Записи";
                 cmbModes.ToolTip = "Режимы";
+                lbRecordPB.Content = "Идёт запись...";
             }
             else
             {
@@ -494,6 +502,7 @@ namespace SimpleNeurotuner
                 cmbOutput.ToolTip = "Speaker";
                 cmbRecord.ToolTip = "Record";
                 cmbModes.ToolTip = "Modes";
+                lbRecordPB.Content = "Recording in progress...";
             }
         }
 
@@ -529,10 +538,13 @@ namespace SimpleNeurotuner
                 CreateWindow window = new CreateWindow();
                 window.Show();
                 btnRecord.Visibility = Visibility.Visible;
+                pbRecord.Visibility = Visibility.Visible;
+                pbRecord.Value = 0;
             }
             else
             {
                 btnRecord.Visibility = Visibility.Hidden;
+                pbRecord.Visibility = Visibility.Hidden;
             }
         }
 

@@ -107,6 +107,8 @@
                 </Style>
             </Button.Style>
         </Button>
+        <ProgressBar x:Name="pbRecord" HorizontalAlignment="Center" Height="16" Margin="0,324,0,0" VerticalAlignment="Top" Width="200" Foreground="#FF0AF7DE" Visibility="Hidden"/>
+        <Label x:Name="lbRecordPB" Content="Recording in progress..." HorizontalAlignment="Left" Margin="224,319,0,0" VerticalAlignment="Top" Visibility="Hidden"/>
 
     </Grid>
 </Window>
