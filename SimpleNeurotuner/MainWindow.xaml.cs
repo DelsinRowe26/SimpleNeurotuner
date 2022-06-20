@@ -43,8 +43,8 @@ namespace SimpleNeurotuner
         private IWaveSource _source;
         private MMDeviceCollection mOutputDevices;
         private MMDeviceCollection mInputDevices;
-        string start = "00:00:03,5";
-        string end = "00:00:04,5";
+        string start = "00:00:03,25";
+        string end = "00:00:04,25";
         string myfile;
         string cutmyfile;
         public int index = 1;
@@ -127,8 +127,8 @@ namespace SimpleNeurotuner
         {
             if (cmbModes.SelectedIndex == 0)
             {
-                Recording();
-                //Recordind2();
+                //Recording();
+                Recordind2();
             }
             else
             {

@@ -17,18 +17,24 @@ namespace SimpleNeurotuner
         }
         public int Read(float[] buffer, int offset, int count)
         {
+            double[] buffer1 = new double[count];
             float gainAmplification = (float)(Math.Pow(10.0, GainDB / 20.0));//получить Усиление
-            int samples = mSource.Read(buffer, offset, count);//образцы 
-            if (gainAmplification != 1.0f) 
-            {
+            int samples = mSource.Read(buffer, offset, count);//образцы
+            //if (gainAmplification != 1.0f) 
+            //{
                 for (int i = offset; i < offset + samples; i++)
                 {
                     buffer[i] = Math.Max(Math.Min(buffer[i] * gainAmplification, 1), -1);
+                    buffer1[i] = (double)buffer[i];
+                    
                 }
-            }
+            FrequencyUtils.FindFundamentalFrequency(buffer1, mSource.WaveFormat.SampleRate, 60, 22050);
+            //}
             if (PitchShift != 1.0f)
             {
+                //FrequencyUtils.FindFundamentalFrequency(buffer1, mSource.WaveFormat.SampleRate, 60, 22050);
                 PitchShifter.PitchShift(PitchShift, offset, count, 4096, 4, mSource.WaveFormat.SampleRate, buffer);
+
             }
           
             return samples;

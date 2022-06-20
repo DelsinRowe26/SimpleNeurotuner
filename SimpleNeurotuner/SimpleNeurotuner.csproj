@@ -74,6 +74,7 @@
       <DependentUpon>CreateWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="CutRecord.cs" />
+    <Compile Include="FrequencyUtils.cs" />
     <Compile Include="PitchShifter.cs" />
     <Compile Include="SampleDSP.cs" />
     <Compile Include="SaveDeleteWindow.xaml.cs">
@@ -146,6 +147,12 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Icon.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\SoundAnalysis\SoundAnalysis.csproj">
+      <Project>{aba54dc3-324b-49de-b79e-c4f573306e4f}</Project>
+      <Name>SoundAnalysis</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -60,7 +60,7 @@ namespace SimpleNeurotuner
         public static int[] max = new int[10];
         public static int[] Vol = new int[10];
         public static int SampleRate2;
-        private static float MAX;
+        private static float MAX, MAX1, MAX2;
         private static long IndexMAX, IndexMAX1, IndexMAX2;
         private static long IndexSTART, IndexEND;
         private static int MAX_FRAME_LENGTH = 16000;
@@ -176,7 +176,7 @@ namespace SimpleNeurotuner
                         }
                     }
 
-                    MAX = gAnaMagn[0];
+                    //MAX = gAnaMagn[0];
                     
                     for (k = IndexMAX; k < fftFrameSize2; k--)
                     {
@@ -193,7 +193,7 @@ namespace SimpleNeurotuner
                         }
                     }
 
-                    MAX = gAnaMagn[0];
+                    //MAX = gAnaMagn[0];
                     for (k = IndexMAX; k < fftFrameSize2; k++)
                     {
                         if (gAnaMagn[k] - gAnaMagn[k + 1] > 0)//Идем в правую сторону от Максимума
@@ -208,22 +208,22 @@ namespace SimpleNeurotuner
                         }
                     }
 
-                    MAX = gAnaMagn[0];
+                    MAX1 = gAnaMagn[0];
                     for (k = 0; k < IndexSTART; k++)
                     {
-                        if (gAnaMagn[k] > MAX)
+                        if (gAnaMagn[k] > MAX1)
                         {
-                            MAX = gAnaMagn[k];//Поиск максимума с начала всего массива до начала первого максимума
+                            MAX1 = gAnaMagn[k];//Поиск максимума с начала всего массива до начала первого максимума
                             IndexMAX1 = k;
                         }
                     }
 
-                    MAX = gAnaMagn[0];
+                    MAX2 = gAnaMagn[0];
                     for (k = IndexEND; k < fftFrameSize2; k++)
                     {
-                        if (gAnaMagn[k] > MAX)
+                        if (gAnaMagn[k] > MAX2)
                         {
-                            MAX = gAnaMagn[k];//Поиск максимума с конца первого максимума и до конца массива
+                            MAX2 = gAnaMagn[k];//Поиск максимума с конца первого максимума и до конца массива
                             IndexMAX2 = k;
                         }
                     }

@@ -5,6 +5,8 @@ VisualStudioVersion = 17.1.32414.318
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleNeurotuner", "SimpleNeurotuner\SimpleNeurotuner.csproj", "{ACD62AC5-2516-42ED-8209-73B716432192}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SoundAnalysis", "SoundAnalysis\SoundAnalysis.csproj", "{ABA54DC3-324B-49DE-B79E-C4F573306E4F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{ACD62AC5-2516-42ED-8209-73B716432192}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{ACD62AC5-2516-42ED-8209-73B716432192}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{ACD62AC5-2516-42ED-8209-73B716432192}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ABA54DC3-324B-49DE-B79E-C4F573306E4F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ABA54DC3-324B-49DE-B79E-C4F573306E4F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ABA54DC3-324B-49DE-B79E-C4F573306E4F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ABA54DC3-324B-49DE-B79E-C4F573306E4F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
