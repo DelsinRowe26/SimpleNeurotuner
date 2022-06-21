@@ -7,7 +7,7 @@
         mc:Ignorable="d"
         Title="Welcome" Height="547" Width="482" Topmost="True">
     <Grid>
-        <Label x:Name="lbWelcome" Content="Welcome to Neurokeys" HorizontalAlignment="Center" Margin="0,25,0,0" VerticalAlignment="Top" FontSize="24">
+        <Label x:Name="lbWelcome" Content="Welcome to Neurotuner NFT" HorizontalAlignment="Center" Margin="0,25,0,0" VerticalAlignment="Top" FontSize="24">
             <Label.Style>
                 <Style>
                     <Setter Property="Control.FontFamily" Value="Times New Roman"/>

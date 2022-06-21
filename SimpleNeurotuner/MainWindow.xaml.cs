@@ -469,16 +469,19 @@ namespace SimpleNeurotuner
                 cmbModes.Items.Add("Записи");
                 cmbModes.Items.Add("Прослушивание");
                 cmbModes.SelectedIndex = cmbModes.Items.Count - 1;
-                Title = "Нейрокейс";
+                Title = "Нейротюнер NFT";
                 btnStart_Open.Content = "Старт";
                 btnStop.Content = "Стоп";
                 Help.Header = "Помощь";
-                lbVersion.Content = "Нейрокейс Версия: 1.1";
+                TabNFT.Header = "gNeuro NFT";
+                TabSettings.Header = "Настройки";
+                lbVersion.Content = "Версия: 1.1";
                 btnRecord.Content = "Прослушать";
                 cmbInput.ToolTip = "Микрофон";
                 cmbOutput.ToolTip = "Наушники";
                 cmbRecord.ToolTip = "Записи";
                 cmbModes.ToolTip = "Режимы";
+                lbPBNFT.Content = "Идёт загрузка NFT...";
                 lbRecordPB.Content = "Идёт запись...";
             }
             else
@@ -492,16 +495,19 @@ namespace SimpleNeurotuner
                 cmbModes.Items.Add("Record");
                 cmbModes.Items.Add("Audition");
                 cmbModes.SelectedIndex = cmbModes.Items.Count - 1;
-                Title = "Neurokeys";
+                Title = "Neurotuner NFT";
                 btnStart_Open.Content = "Start";
                 btnStop.Content = "Stop";
                 Help.Header = "Help";
-                lbVersion.Content = "Neurokeys Version: 1.1";
+                TabNFT.Header = "gNeuro NFT";
+                TabSettings.Header = "Settings";
+                lbVersion.Content = "Version: 1.1";
                 btnRecord.Content = "Audition";
                 cmbInput.ToolTip = "Microphone";
                 cmbOutput.ToolTip = "Speaker";
                 cmbRecord.ToolTip = "Record";
                 cmbModes.ToolTip = "Modes";
+                lbPBNFT.Content = "NFT loading in progress...";
                 lbRecordPB.Content = "Recording in progress...";
             }
         }
@@ -560,11 +566,16 @@ namespace SimpleNeurotuner
             await Task.Run(() => SoundOut());
         }
 
-        private void cmbRecord_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private async void cmbRecord_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (cmbRecord.SelectedItem != null)
             {
                 filename = @"Record\" + cmbRecord.SelectedItem.ToString();
+            }
+            for (int i = 0; i < 100; i++)
+            {
+                PBNFT.Value++;
+                await Task.Delay(200);
             }
         }
     }

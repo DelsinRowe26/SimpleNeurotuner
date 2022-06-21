@@ -5,12 +5,12 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SimpleNeurotuner"
         mc:Ignorable="d"
-        Title="Neurokeys" Height="573" Width="569" Loaded="SimpleNeurotuner_Loaded" Closing="SimpleNeurotuner_Closing" ResizeMode="CanMinimize" Activated="SimpleNeurotuner_Activated">
+        Title="Neurotuner NFT" Height="590" Width="569" Loaded="SimpleNeurotuner_Loaded" Closing="SimpleNeurotuner_Closing" ResizeMode="CanMinimize" Activated="SimpleNeurotuner_Activated">
     <Window.Background>
         <ImageBrush ImageSource="/ad5ddc9e-b9a1-4d8f-9e45-b6bed5b338ca.jpg" TileMode="Tile" Stretch="Uniform"/>
     </Window.Background>
     <Grid x:Name="grid">
-        <Button x:Name="btnStart_Open" Content="Start" HorizontalAlignment="Center" Margin="0,110,0,0" VerticalAlignment="Top" Height="39" Width="122" Click="btnStart_Open_Click" MouseMove="btnStart_Open_MouseMove" MouseLeave="btnStart_Open_MouseLeave" FontSize="18">
+        <Button x:Name="btnStart_Open" Content="Start" HorizontalAlignment="Left" Margin="68,408,0,0" VerticalAlignment="Top" Height="30" Width="95" Click="btnStart_Open_Click" MouseMove="btnStart_Open_MouseMove" MouseLeave="btnStart_Open_MouseLeave" FontSize="16">
             <Button.Template>
                 <ControlTemplate>
                     <Border BorderBrush="{TemplateBinding Control.BorderBrush}" BorderThickness="1" CornerRadius="25">
@@ -31,7 +31,7 @@
                 </Style>
             </Button.Style>
         </Button>
-        <Button x:Name="btnStop" Content="Stop" HorizontalAlignment="Center" Margin="0,357,0,0" VerticalAlignment="Top" Height="40" Width="122" Click="btnStop_Click" MouseMove="btnStop_MouseMove" MouseLeave="btnStop_MouseLeave" FontSize="18">
+        <Button x:Name="btnStop" Content="Stop" HorizontalAlignment="Left" Margin="68,485,0,0" VerticalAlignment="Top" Height="30" Width="95" Click="btnStop_Click" MouseMove="btnStop_MouseMove" MouseLeave="btnStop_MouseLeave" FontSize="16">
             <Button.Template>
                 <ControlTemplate>
                     <Border BorderBrush="{TemplateBinding Control.BorderBrush}" BorderThickness="1" CornerRadius="25">
@@ -49,23 +49,11 @@
                 </Style>
             </Button.Style>
         </Button>
-        <ComboBox x:Name="cmbOutput" HorizontalAlignment="Center" Margin="0,253,0,0" VerticalAlignment="Top" Width="200" ToolTip="Speaker">
-            <ComboBox.Style>
-                <Style>
-                    <Setter Property="Control.Background" Value="Gainsboro"/>
-                </Style>
-            </ComboBox.Style>
-        </ComboBox>
-        <ComboBox x:Name="cmbInput" HorizontalAlignment="Center" Margin="0,218,0,0" VerticalAlignment="Top" Width="200" Visibility="Visible" ToolTip="Microphone">
-            <ComboBox.Style>
-                <Style>
-                    <Setter Property="Control.Background" Value="Gainsboro"/>
-                </Style>
-            </ComboBox.Style>
-        </ComboBox>
+
+
         <Label x:Name="lbSpeaker" Content="Speaker" HorizontalAlignment="Left" Margin="73,164,0,0" VerticalAlignment="Top" Visibility="Hidden"/>
         <Label x:Name="lbMicrophone" Content="Microphone" HorizontalAlignment="Left" Margin="53,129,0,0" VerticalAlignment="Top" Visibility="Hidden"/>
-        <ComboBox x:Name="cmbRecord" HorizontalAlignment="Center" Margin="0,290,0,0" VerticalAlignment="Top" Width="200" SelectionChanged="cmbRecord_SelectionChanged" ToolTip="Record">
+        <ComboBox x:Name="cmbRecord" HorizontalAlignment="Center" Margin="0,412,0,0" VerticalAlignment="Top" Width="200" SelectionChanged="cmbRecord_SelectionChanged" ToolTip="Record">
             <ComboBox.Style>
                 <Style>
                     <Setter Property="Control.Background" Value="Gainsboro"/>
@@ -80,7 +68,7 @@
             </ComboBox>
         </Menu>
         <Label x:Name="label" Content="Label" HorizontalAlignment="Left" Margin="742,354,0,0" VerticalAlignment="Top"/>
-        <Label x:Name="lbVersion" Content="Neurokeys Version: 1.1" HorizontalAlignment="Left" Margin="358,499,0,0" VerticalAlignment="Top" FontSize="18">
+        <Label x:Name="lbVersion" Content="Version: 1.1" HorizontalAlignment="Left" Margin="452,500,0,0" VerticalAlignment="Top" FontSize="18">
             <Label.Style>
                 <Style>
                     <Setter Property="Control.FontFamily" Value="Times New Roman"/>
@@ -89,7 +77,7 @@
         </Label>
         <Slider x:Name="slVolume" HorizontalAlignment="Left" Margin="513,130,0,0" VerticalAlignment="Top" Width="24" Orientation="Vertical" Height="255" TickPlacement="BottomRight" ValueChanged="slVolume_ValueChanged"/>
         <Label x:Name="lbVolValue" Content="0" HorizontalAlignment="Left" Margin="513,390,0,0" VerticalAlignment="Top" Height="32" Width="36" FontSize="18"/>
-        <Button x:Name="btnRecord" Content="Audition" HorizontalAlignment="Center" Margin="0,167,0,0" VerticalAlignment="Top" Height="39" Width="122" FontSize="18" MouseMove="btnRecord_MouseMove" MouseLeave="btnRecord_MouseLeave" Click="btnRecord_Click" Visibility="Hidden">
+        <Button x:Name="btnRecord" Content="Audition" HorizontalAlignment="Left" Margin="68,446,0,0" VerticalAlignment="Top" Height="30" Width="95" MouseMove="btnRecord_MouseMove" MouseLeave="btnRecord_MouseLeave" Click="btnRecord_Click" Visibility="Hidden" FontSize="14">
             <Button.Template>
                 <ControlTemplate>
                     <Border BorderBrush="{TemplateBinding Control.BorderBrush}" BorderThickness="1" CornerRadius="25">
@@ -107,8 +95,47 @@
                 </Style>
             </Button.Style>
         </Button>
-        <ProgressBar x:Name="pbRecord" HorizontalAlignment="Center" Height="16" Margin="0,324,0,0" VerticalAlignment="Top" Width="200" Foreground="#FF0AF7DE" Visibility="Hidden"/>
-        <Label x:Name="lbRecordPB" Content="Recording in progress..." HorizontalAlignment="Left" Margin="224,319,0,0" VerticalAlignment="Top" Visibility="Hidden"/>
+        <ProgressBar x:Name="pbRecord" HorizontalAlignment="Center" Height="16" VerticalAlignment="Top" Width="200" Visibility="Hidden" Margin="0,136,0,0" BorderBrush="Black">
+            <ProgressBar.Foreground>
+                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                    <GradientStop Color="#FF00DCDC"/>
+                    <GradientStop Color="#FF00FF87" Offset="1"/>
+                </LinearGradientBrush>
+            </ProgressBar.Foreground>
+        </ProgressBar>
+        <Label x:Name="lbRecordPB" Content="Recording in progress..." HorizontalAlignment="Left" Margin="226,130,0,0" VerticalAlignment="Top" Visibility="Hidden"/>
+        <TabControl x:Name="tabControl" Margin="168,152,165,162">
+            <TabItem x:Name="TabNFT" Header="gNeuro NFT">
+                <Grid Background="#FFE5E5E5"/>
+            </TabItem>
+            <TabItem x:Name="TabSettings" Header="Settings">
+                <Grid Background="#FFE5E5E5">
+                    <ComboBox x:Name="cmbInput" HorizontalAlignment="Center" Margin="0,10,0,0" VerticalAlignment="Top" Width="200" Visibility="Visible" ToolTip="Microphone">
+                        <ComboBox.Style>
+                            <Style>
+                                <Setter Property="Control.Background" Value="Gainsboro"/>
+                            </Style>
+                        </ComboBox.Style>
+                    </ComboBox>
+                    <ComboBox x:Name="cmbOutput" HorizontalAlignment="Center" Margin="0,47,0,0" VerticalAlignment="Top" Width="200" ToolTip="Speaker">
+                        <ComboBox.Style>
+                            <Style>
+                                <Setter Property="Control.Background" Value="Gainsboro"/>
+                            </Style>
+                        </ComboBox.Style>
+                    </ComboBox>
+                </Grid>
+            </TabItem>
+        </TabControl>
+        <ProgressBar x:Name="PBNFT" HorizontalAlignment="Center" Height="24" Margin="0,32,0,0" VerticalAlignment="Top" Width="200" BorderBrush="Black">
+            <ProgressBar.Foreground>
+                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                    <GradientStop Color="#FF067515"/>
+                    <GradientStop Color="#FF00FF7E" Offset="1"/>
+                </LinearGradientBrush>
+            </ProgressBar.Foreground>
+        </ProgressBar>
+        <Label x:Name="lbPBNFT" Content="NFT loading in progress..." HorizontalAlignment="Center" Margin="0,30,0,0" VerticalAlignment="Top"/>
 
     </Grid>
 </Window>
