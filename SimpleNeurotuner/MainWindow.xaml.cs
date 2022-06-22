@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 using CSCore;
 using CSCore.SoundIn;//Вход звука
@@ -12,11 +13,11 @@ using CSCore.CoreAudioAPI;
 using CSCore.Streams;
 using CSCore.Codecs;
 using CSCore.Codecs.WAV;
-using System.Windows.Controls;
 using System.Windows.Media;
 using System.Threading;
 using System.Diagnostics;
 using System.IO;
+using SoundCapture;
 using Microsoft.DirectX.DirectSound;
 using Buffer = Microsoft.DirectX.DirectSound.Buffer;
 using System.Runtime.InteropServices;
@@ -28,6 +29,7 @@ namespace SimpleNeurotuner
     /// </summary>
     public partial class MainWindow : Window
     {
+        private string freq;
         private FileInfo fileInfo = new FileInfo("window.tmp");
         private FileInfo fileInfo1 = new FileInfo("Data_Load.dat");
         private FileInfo FileLanguage = new FileInfo("Data_Language.dat");
@@ -50,6 +52,7 @@ namespace SimpleNeurotuner
         public int index = 1;
         string langindex;
         string FileName, cutFileName;
+        private bool InvokeRequired;
         //private PitchShifter _pitchShifter;
 
         private ISampleSource mMp3;
@@ -58,7 +61,14 @@ namespace SimpleNeurotuner
         private string[] allfile;
         private int click, audioclick = 0;
 
-        
+        FrequencyInfoSource frequencyInfoSource;
+
+        bool isListenning = false;
+
+        public bool IsListenning
+        {
+            get { return isListenning; }
+        }
 
         public MainWindow()
         {
@@ -190,6 +200,8 @@ namespace SimpleNeurotuner
                 
                 //Init DSP для смещения высоты тона
                 mDsp = new SampleDSP(source.ToSampleSource().ToStereo());
+                freq = mDsp.freq;
+                lbFreq.Content = freq;
                 mDsp.GainDB = (float)slVolume.Value;
                 //SetPitchShiftValue();
                 mSoundIn.Start();
@@ -202,6 +214,8 @@ namespace SimpleNeurotuner
 
                 //Запускает устройство воспроизведения звука с задержкой 1 мс.
                 await Task.Run(() => SoundOut());
+                Thread.Sleep(2000);
+                mDsp.PitchShift = 0;
                 //return true;
             }
             catch (Exception ex)

@@ -7,6 +7,7 @@ namespace SimpleNeurotuner
 {
     class SampleDSP: ISampleSource
     {
+        public string freq;
         ISampleSource mSource;
         public SampleDSP(ISampleSource source)
         {
@@ -28,12 +29,14 @@ namespace SimpleNeurotuner
                     buffer1[i] = (double)buffer[i];
                     
                 }
-            FrequencyUtils.FindFundamentalFrequency(buffer1, mSource.WaveFormat.SampleRate, 60, 22050);
+            
             //}
             if (PitchShift != 1.0f)
             {
                 //FrequencyUtils.FindFundamentalFrequency(buffer1, mSource.WaveFormat.SampleRate, 60, 22050);
-                PitchShifter.PitchShift(PitchShift, offset, count, 4096, 4, mSource.WaveFormat.SampleRate, buffer);
+                //PitchShifter.PitchShift(PitchShift, offset, count, 4096, 4, mSource.WaveFormat.SampleRate, buffer);
+                FrequencyUtils.FindFundamentalFrequency(buffer1, mSource.WaveFormat.SampleRate, 60, 24000);
+                freq = FrequencyUtils.FindFundamentalFrequency(buffer1, mSource.WaveFormat.SampleRate, 60, 24000).ToString();
 
             }
           
