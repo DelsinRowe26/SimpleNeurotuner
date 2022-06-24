@@ -67,7 +67,7 @@ namespace SimpleNeurotuner
         private int click, audioclick = 0;
 
         BackgroundWorker worker;
-
+        //
         public MainWindow()
         {
             InitializeComponent();
