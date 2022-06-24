@@ -56,6 +56,8 @@ namespace SimpleNeurotuner
     {
 
         #region Private Static Memebers
+        public static double Freq;
+        public static string NoteName;
         public static int[] min = new int[10];
         public static int[] max = new int[10];
         public static int[] Vol = new int[10];
@@ -74,6 +76,8 @@ namespace SimpleNeurotuner
         private static float[] gAnaMagn = new float[MAX_FRAME_LENGTH];
         private static float[] gSynFreq = new float[MAX_FRAME_LENGTH];
         private static float[] gSynMagn = new float[MAX_FRAME_LENGTH];
+        private static string[] NoteNames = { "A", "A#", "B/H", "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#" };
+        private static float ToneStep = (float)Math.Pow(2, 1.0 / 12);//рассчет шага тоны
         private static long gRover, gInit;
         #endregion
 
@@ -82,13 +86,25 @@ namespace SimpleNeurotuner
         {
             PitchShift(pitchShift, 0, sampleCount, (long)2048, (long)4, sampleRate, indata);
         }
+
+        public static void FindClosestNote(double frequency, out double closestFrequency/*, out string noteName*/)//нахождение ближайшей ноты
+        {
+            const float AFrequency = 440.0f;// какое-то значение частоты
+            const int ToneIndexOffsetToPositives = 120;//Смещение индекса тона к положительным значениям
+
+            int toneIndex = (int)Math.Round(Math.Log(frequency / AFrequency, ToneStep));//высчитывание индекса тоны
+            //noteName = NoteNames[(ToneIndexOffsetToPositives + toneIndex) % NoteNames.Length];//определение ноты из списка
+            closestFrequency = (float)Math.Pow(ToneStep, toneIndex) * AFrequency;//ближайшая нота
+        }
+
         public static void PitchShift(float pitchShift, long offset, long sampleCount, long fftFrameSize,
             long osamp, float sampleRate, float[] indata)
         {
             double magn, phase, tmp, window, real, imag;
             double freqPerBin, expct;
             long i, k, qpd, index, inFifoLatency, stepSize, fftFrameSize2;
-
+            double closestFrequency;//ближайшая частота
+            string noteName;
 
             float[] outdata = indata;
             /* set up some handy variables/настроить некоторые удобные переменные */
@@ -157,6 +173,10 @@ namespace SimpleNeurotuner
                         /* compute the k-th partials' true frequency/вычислить истинную частоту k-го парциала */
                         tmp = (double)k * freqPerBin + tmp * freqPerBin;
 
+                        FindClosestNote(tmp, out closestFrequency/*, out noteName*/);
+                        //NoteName = noteName;
+                        //Freq = closestFrequency;
+
                         /* store magnitude and true frequency in analysis arrays/хранить величину и истинную частоту в массивах анализа */
                         gAnaMagn[k] = (float)magn;
                         //File.AppendAllText("magn.txt", gAnaMagn[k].ToString() + "\n");
@@ -164,6 +184,8 @@ namespace SimpleNeurotuner
                         //File.AppendAllText("tmp.txt", gAnaFreq[k].ToString() + "\n");
 
                     }
+
+
 
                     MAX = gAnaMagn[0];
                     for(k = 0; k < fftFrameSize2; k++)
@@ -184,7 +206,7 @@ namespace SimpleNeurotuner
                         {
 
                             //Console.WriteLine(gAnaMagn[k]);
-                            File.AppendAllText("magn1.txt", gAnaMagn[k].ToString() + "\n");
+                            //File.AppendAllText("magn1.txt", gAnaMagn[k].ToString() + "\n");
                         }
                         else
                         {
@@ -198,7 +220,7 @@ namespace SimpleNeurotuner
                     {
                         if (gAnaMagn[k] - gAnaMagn[k + 1] > 0)//Идем в правую сторону от Максимума
                         {
-                            File.AppendAllText("magn2.txt", gAnaMagn[k].ToString() + "\n");
+                            //File.AppendAllText("magn2.txt", gAnaMagn[k].ToString() + "\n");
                             //Console.WriteLine(gAnaMagn[k]);
                         }
                         else
@@ -304,7 +326,7 @@ namespace SimpleNeurotuner
                         /* get magnitude and true frequency from synthesis arrays/получить величину и истинную частоту из массивов синтеза */
                         magn = gSynMagn[k];
                         tmp = gSynFreq[k];
-
+                        
                         /* subtract bin mid frequency/вычесть среднюю частоту бина */
                         tmp -= (double)k * freqPerBin;
 
@@ -316,6 +338,7 @@ namespace SimpleNeurotuner
 
                         /* add the overlap phase advance back in/добавить фазу перекрытия обратно в */
                         tmp += (double)k * expct;
+                        
 
                         /* accumulate delta phase to get bin phase/накапливать дельта-фазу, чтобы получить бин-фазу */
                         gSumPhase[k] += (float)tmp;
@@ -330,7 +353,7 @@ namespace SimpleNeurotuner
 
                     /* zero negative frequencies/ноль отрицательных частот */
                     for (k = fftFrameSize + 2; k < 2 * fftFrameSize; k++) { gFFTworksp[k] = 0.0F; /*File.AppendAllText("AfterSTFT.txt", gFFTworksp[k].ToString() + "\n");*/ }
-
+                    
                     /* do inverse transform/сделать обратное преобразование */
                     ShortTimeFourierTransform(gFFTworksp, fftFrameSize, 1);
                     

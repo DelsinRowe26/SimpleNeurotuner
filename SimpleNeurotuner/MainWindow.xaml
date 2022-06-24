@@ -53,7 +53,7 @@
 
         <Label x:Name="lbSpeaker" Content="Speaker" HorizontalAlignment="Left" Margin="73,164,0,0" VerticalAlignment="Top" Visibility="Hidden"/>
         <Label x:Name="lbMicrophone" Content="Microphone" HorizontalAlignment="Left" Margin="53,129,0,0" VerticalAlignment="Top" Visibility="Hidden"/>
-        <ComboBox x:Name="cmbRecord" HorizontalAlignment="Center" Margin="182,406,183,0" VerticalAlignment="Top" Width="200" SelectionChanged="cmbRecord_SelectionChanged" ToolTip="Record" SelectedIndex="0" Height="23">
+        <ComboBox x:Name="cmbRecord" HorizontalAlignment="Center" Margin="0,406,0,0" VerticalAlignment="Top" Width="198" SelectionChanged="cmbRecord_SelectionChanged" ToolTip="Record" SelectedIndex="0" Height="23">
             <ComboBox.Style>
                 <Style>
                     <Setter Property="Control.Background" Value="Gainsboro"/>
@@ -104,16 +104,16 @@
             </ProgressBar.Foreground>
         </ProgressBar>
         <Label x:Name="lbRecordPB" Content="Recording in progress..." HorizontalAlignment="Left" Margin="226,130,0,0" VerticalAlignment="Top" Visibility="Hidden"/>
-        <TabControl x:Name="tabControl" Margin="168,131,162,170" Height="260" Width="235">
+        <TabControl x:Name="tabControl" Margin="159,138,161,168">
             <TabItem x:Name="TabNFT" Header="gNeuro NFT">
-                <Grid Background="#FFE5E5E5" Width="230" Margin="-4,0,0,-2" Height="230">
+                <Grid Background="#FFE5E5E5" Width="230" Margin="7,0,8,0" Height="230">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="82*"/>
                         <ColumnDefinition Width="33*"/>
                     </Grid.ColumnDefinitions>
-                    <Image x:Name="Image1" HorizontalAlignment="Left" Height="230" VerticalAlignment="Top" Width="230" Grid.ColumnSpan="2"/>
-                    <Image Grid.ColumnSpan="2" HorizontalAlignment="Left" Height="100" Margin="73,117,0,0" VerticalAlignment="Top" Width="100"/>
-                    <Image Grid.ColumnSpan="2" HorizontalAlignment="Left" Height="100" Margin="74,96,0,0" VerticalAlignment="Top" Width="100"/>
+                    <Image x:Name="Image1" HorizontalAlignment="Left" Height="230" VerticalAlignment="Center" Width="230" Grid.ColumnSpan="2"/>
+                    <Image Grid.ColumnSpan="2" HorizontalAlignment="Left" Height="100" Margin="70,117,0,0" VerticalAlignment="Top" Width="100"/>
+                    <Image Grid.ColumnSpan="2" HorizontalAlignment="Left" Height="100" Margin="70,96,0,0" VerticalAlignment="Top" Width="100"/>
                 </Grid>
             </TabItem>
             <TabItem x:Name="TabSettings" Header="Settings">
@@ -139,7 +139,7 @@
                 </Grid>
             </TabItem>
         </TabControl>
-        <ProgressBar x:Name="PBNFT" HorizontalAlignment="Center" Height="24" Margin="170,32,164,0" VerticalAlignment="Top" Width="231" BorderBrush="Black">
+        <ProgressBar x:Name="PBNFT" HorizontalAlignment="Center" Height="24" Margin="0,32,0,0" VerticalAlignment="Top" Width="212" BorderBrush="Black">
             <ProgressBar.Foreground>
                 <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
                     <GradientStop Color="#FF067515"/>
@@ -149,6 +149,8 @@
         </ProgressBar>
         <Label x:Name="lbPBNFT" Content="NFT loading in progress..." HorizontalAlignment="Center" Margin="221,30,200,0" VerticalAlignment="Top"/>
         <Image HorizontalAlignment="Left" Height="100" Margin="751,337,-286,0" VerticalAlignment="Top" Width="100"/>
+        <TextBox x:Name="tbNoteName" HorizontalAlignment="Left" Height="28" Margin="461,32,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="76" RenderTransformOrigin="0.672,0.573"/>
+        <TextBox x:Name="tbFreq" HorizontalAlignment="Left" Margin="461,76,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="76" Height="33"/>
 
     </Grid>
 </Window>

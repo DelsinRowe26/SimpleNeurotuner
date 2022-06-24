@@ -235,11 +235,15 @@ namespace SimpleNeurotuner
                 //Запускает устройство воспроизведения звука с задержкой 1 мс.
                 await Task.Run(() => SoundOut());
                 //return true;
+                Thread.Sleep(2000);
+                mDsp.PitchShift = 0;
+                //tbFreq.Text = PitchShifter.Freq.ToString("f3");
+                //tbNoteName.Text = PitchShifter.NoteName;
             }
             catch (Exception ex)
             {
                 string msg = "Error in StartFullDuplex: \r\n" + ex.Message;
-                System.Windows.MessageBox.Show(msg);
+                MessageBox.Show(msg);
                 Debug.WriteLine(msg);
             }
             //return false;

@@ -28,7 +28,7 @@ namespace SimpleNeurotuner
                     buffer1[i] = (double)buffer[i];
                     
                 }
-            FrequencyUtils.FindFundamentalFrequency(buffer1, mSource.WaveFormat.SampleRate, 60, 22050);
+            //FrequencyUtils.FindFundamentalFrequency(buffer1, mSource.WaveFormat.SampleRate, 60, 22050);
             //}
             if (PitchShift != 1.0f)
             {
