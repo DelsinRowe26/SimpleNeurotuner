@@ -150,7 +150,7 @@
         <Label x:Name="lbPBNFT" Content="NFT loading in progress..." HorizontalAlignment="Center" Margin="221,30,200,0" VerticalAlignment="Top"/>
         <Image HorizontalAlignment="Left" Height="100" Margin="751,337,-286,0" VerticalAlignment="Top" Width="100"/>
         <TextBox x:Name="tbNoteName" HorizontalAlignment="Left" Height="28" Margin="461,32,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="76" RenderTransformOrigin="0.672,0.573"/>
-        <TextBox x:Name="tbFreq" HorizontalAlignment="Left" Margin="461,76,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="76" Height="33"/>
+        <TextBox x:Name="tbFreq" HorizontalAlignment="Left" Margin="461,76,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="76" Height="33" TextChanged="tbFreq_TextChanged"/>
 
     </Grid>
 </Window>

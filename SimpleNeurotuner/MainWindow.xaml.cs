@@ -235,9 +235,11 @@ namespace SimpleNeurotuner
                 //Запускает устройство воспроизведения звука с задержкой 1 мс.
                 await Task.Run(() => SoundOut());
                 //return true;
-                Thread.Sleep(2000);
-                mDsp.PitchShift = 0;
-                //tbFreq.Text = PitchShifter.Freq.ToString("f3");
+                //Thread.Sleep(2000);
+                //mDsp.PitchShift = 0;
+
+                //await Task.Run(() => SoundOut());
+                //tbFreq.Text = mDsp.freq;
                 //tbNoteName.Text = PitchShifter.NoteName;
             }
             catch (Exception ex)
@@ -251,7 +253,7 @@ namespace SimpleNeurotuner
 
         private void SoundOut()
         {
-            mSoundOut = new WasapiOut();
+            mSoundOut = new WasapiOut(/*false, AudioClientShareMode.Exclusive, 1*/);
             //mSoundOut.Device = mOutputDevices[cmbOutput.SelectedIndex];
             mSoundOut.Initialize(mMixer.ToWaveSource(16));
             mSoundOut.Play();
@@ -264,9 +266,9 @@ namespace SimpleNeurotuner
             {
                 Mixer();
                 mMp3 = CodecFactory.Instance.GetCodec(filename).ToStereo().ToSampleSource();
-                mDsp1 = new SampleDSP(mMp3.ToWaveSource(16).ToSampleSource());
+                //mDsp1 = new SampleDSP(mMp3.ToWaveSource(16).ToSampleSource());
                 //mDsp1.GainDB = (float)slVolume.Value;
-                mMixer.AddSource(mDsp1.ChangeSampleRate(mMixer.WaveFormat.SampleRate).ToWaveSource(16).Loop().ToSampleSource());
+                mMixer.AddSource(mMp3.ChangeSampleRate(mMixer.WaveFormat.SampleRate).ToWaveSource(16).Loop().ToSampleSource());
 
                 await Task.Run(() => SoundOut());
             }
@@ -546,6 +548,11 @@ namespace SimpleNeurotuner
                 lbPBNFT.Content = "NFT loading in progress...";
                 lbRecordPB.Content = "Recording in progress...";
             }
+        }
+
+        public void tbFreq_TextChanged(object sender, TextChangedEventArgs e)
+        {
+
         }
 
         private void SimpleNeurotuner_Activated(object sender, EventArgs e)

@@ -8,7 +8,7 @@ namespace SoundAnalysis
     {
         //х - входные данные
         //return - спектрограмма данных
-        public static double[] Calculate(double[] x)
+        public static double[] Calculate(float[] x)
         {
             int length;
             int bitsInLength;

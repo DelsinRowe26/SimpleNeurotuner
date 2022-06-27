@@ -19,7 +19,7 @@ namespace SimpleNeurotuner
         //maxFreq максимальная полезная частота
         //returns Найденная частота, 0 - в противном случае
         
-        internal static double FindFundamentalFrequency(double[] x, int sampleRate, double minFreq, double maxFreq)
+        internal static double FindFundamentalFrequency(float[] x, int sampleRate, double minFreq, double maxFreq)
         {
             double[] spectr = FftAlgorithm.Calculate(x);
 
@@ -71,7 +71,7 @@ namespace SimpleNeurotuner
             return (double)sampleRate / minOptimalInterval;
         }
 
-        private static void ScanSignalIntervals(double[] x, int index, int length,
+        private static void ScanSignalIntervals(float[] x, int index, int length,
             int intervalMin, int intervalMax, out int optimalInterval, out double optimalValue)
         {
             optimalValue = Double.PositiveInfinity;

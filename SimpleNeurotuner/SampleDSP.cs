@@ -8,6 +8,7 @@ namespace SimpleNeurotuner
     class SampleDSP: ISampleSource
     {
         ISampleSource mSource;
+        public string freq;
         public SampleDSP(ISampleSource source)
         {
             if (source == null)
@@ -17,7 +18,8 @@ namespace SimpleNeurotuner
         }
         public int Read(float[] buffer, int offset, int count)
         {
-            double[] buffer1 = new double[count];
+            //double[] buffer1 = new double[count];
+            double closestfreq;
             float gainAmplification = (float)(Math.Pow(10.0, GainDB / 20.0));//получить Усиление
             int samples = mSource.Read(buffer, offset, count);//образцы
             //if (gainAmplification != 1.0f) 
@@ -25,10 +27,14 @@ namespace SimpleNeurotuner
                 for (int i = offset; i < offset + samples; i++)
                 {
                     buffer[i] = Math.Max(Math.Min(buffer[i] * gainAmplification, 1), -1);
-                    buffer1[i] = (double)buffer[i];
+                    //buffer1[i] = (double)buffer[i];
                     
                 }
-            //FrequencyUtils.FindFundamentalFrequency(buffer1, mSource.WaveFormat.SampleRate, 60, 22050);
+            FrequencyUtils.FindFundamentalFrequency(buffer, mSource.WaveFormat.SampleRate, 60, 22050);
+            PitchShifter.FindClosestNote(FrequencyUtils.FindFundamentalFrequency(buffer, mSource.WaveFormat.SampleRate, 60, 22050), out closestfreq);
+            File.WriteAllText("ClosestFreq.txt", closestfreq.ToString());
+            File.AppendAllText("Freq.txt", FrequencyUtils.FindFundamentalFrequency(buffer, mSource.WaveFormat.SampleRate, 60, 22050).ToString("f3") + "\n");
+            
             //}
             if (PitchShift != 1.0f)
             {

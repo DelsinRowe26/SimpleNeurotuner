@@ -49,6 +49,7 @@ using System.Threading;
 using System.Collections.Generic;
 using System.Text;
 using System.IO;
+using System.Threading.Tasks;
 
 namespace SimpleNeurotuner
 {
@@ -69,6 +70,7 @@ namespace SimpleNeurotuner
         private static float[] gInFIFO = new float[MAX_FRAME_LENGTH];
         private static float[] gOutFIFO = new float[MAX_FRAME_LENGTH];
         private static float[] gFFTworksp = new float[2 * MAX_FRAME_LENGTH];
+        private static double[] gFFTworksp2 = new double[2 * MAX_FRAME_LENGTH];
         private static float[] gLastPhase = new float[MAX_FRAME_LENGTH / 2 + 1];
         private static float[] gSumPhase = new float[MAX_FRAME_LENGTH / 2 + 1];
         private static float[] gOutputAccum = new float[2 * MAX_FRAME_LENGTH];
@@ -97,7 +99,7 @@ namespace SimpleNeurotuner
             closestFrequency = (float)Math.Pow(ToneStep, toneIndex) * AFrequency;//ближайшая нота
         }
 
-        public static void PitchShift(float pitchShift, long offset, long sampleCount, long fftFrameSize,
+        public static async void PitchShift(float pitchShift, long offset, long sampleCount, long fftFrameSize,
             long osamp, float sampleRate, float[] indata)
         {
             double magn, phase, tmp, window, real, imag;
@@ -187,7 +189,7 @@ namespace SimpleNeurotuner
 
 
 
-                    MAX = gAnaMagn[0];
+                    /*MAX = gAnaMagn[0];
                     for(k = 0; k < fftFrameSize2; k++)
                     {
                         if (gAnaMagn[k] >= MAX)
@@ -248,7 +250,7 @@ namespace SimpleNeurotuner
                             MAX2 = gAnaMagn[k];//Поиск максимума с конца первого максимума и до конца массива
                             IndexMAX2 = k;
                         }
-                    }
+                    }*/
 
                     /*for (k = 0; k <= fftFrameSize2; k++)
                     {
@@ -353,8 +355,9 @@ namespace SimpleNeurotuner
 
                     /* zero negative frequencies/ноль отрицательных частот */
                     for (k = fftFrameSize + 2; k < 2 * fftFrameSize; k++) { gFFTworksp[k] = 0.0F; /*File.AppendAllText("AfterSTFT.txt", gFFTworksp[k].ToString() + "\n");*/ }
-                    
+
                     /* do inverse transform/сделать обратное преобразование */
+                    //await Task.Run(() => FrequencyUtils.FindFundamentalFrequency(gFFTworksp, 44100, 60, 22050));
                     ShortTimeFourierTransform(gFFTworksp, fftFrameSize, 1);
                     
 
