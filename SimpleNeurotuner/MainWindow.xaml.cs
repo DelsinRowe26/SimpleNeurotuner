@@ -10,6 +10,7 @@ using CSCore.SoundIn;//Вход звука
 using CSCore.SoundOut;//Выход звука
 using CSCore.CoreAudioAPI;
 using CSCore.Streams;
+//using CSCore.Streams.Effects;
 using CSCore.Codecs;
 using CSCore.Codecs.WAV;
 using System.Windows.Controls;
@@ -17,11 +18,14 @@ using System.Windows.Media;
 using System.Threading;
 using System.Diagnostics;
 using System.IO;
+using WinformsVisualization.Visualization;
 using Microsoft.DirectX.DirectSound;
 using Buffer = Microsoft.DirectX.DirectSound.Buffer;
 using System.Runtime.InteropServices;
 using System.Windows.Media.Imaging;
+using System.Drawing;
 using System.Windows.Threading;
+using CSCore.DSP;
 
 namespace SimpleNeurotuner
 {
@@ -42,11 +46,17 @@ namespace SimpleNeurotuner
         private FileInfo fileinfo = new FileInfo("DataTemp.dat");
         private SimpleMixer mMixer;
         private int SampleRate = 44100;
+        //private Equalizer equalizer;
         private WasapiOut mSoundOut;
         private WasapiCapture mSoundIn;
         private SampleDSP mDsp, mDsp1;
         string[] file1 = File.ReadAllLines("window.tmp");
-        
+
+        private LineSpectrum mLineSpectrum;
+        private VoicePrint3DSpectrum mVoicePrint3DSpectrum;
+        private readonly Bitmap mBitmap = new Bitmap(2000, 600);
+        private int mXpos;
+
         string folder = "Record";
         private IWaveSource _source;
         private MMDeviceCollection mOutputDevices;
@@ -97,6 +107,39 @@ namespace SimpleNeurotuner
         {
             PBNFT.Value = e.ProgressPercentage;
         }
+
+        private void SetupSampleSource(ISampleSource mSampleSource)
+        {
+            const FftSize fftSize = FftSize.Fft4096;
+
+            var spectrumProvider = new BasicSpectrumProvider(mSampleSource.WaveFormat.Channels, mSampleSource.WaveFormat.SampleRate, fftSize);
+
+            mLineSpectrum = new LineSpectrum(fftSize)
+            {
+                SpectrumProvider = spectrumProvider,
+                UseAverage = true,
+                BarCount = 50,
+                BarSpacing = 2,
+                IsXLogScale = true,
+                ScalingStrategy = ScalingStrategy.Sqrt
+            };
+            mVoicePrint3DSpectrum = new VoicePrint3DSpectrum(fftSize)
+            {
+                SpectrumProvider = spectrumProvider,
+                UseAverage = true,
+                PointCount = 200,
+                IsXLogScale = true,
+                ScalingStrategy =ScalingStrategy.Sqrt
+            };
+
+            var notificationSource = new SingleBlockNotificationStream(mSampleSource);
+            notificationSource.SingleBlockRead += (s, a) => spectrumProvider.Add(a.Left, a.Right);
+
+            _source = notificationSource.ToWaveSource(16);
+        }
+
+
+
         private void Mixer()
         {
             mMixer = new SimpleMixer(2, SampleRate) //стерео, 44,1 КГц
@@ -553,6 +596,14 @@ namespace SimpleNeurotuner
         public void tbFreq_TextChanged(object sender, TextChangedEventArgs e)
         {
 
+        }
+
+        private void UpdateFrequencyDisplay(double frequency)
+        {
+            if (frequency > 0)
+            {
+                //frequenciesScale1.SignalDetected = true;
+            }
         }
 
         private void SimpleNeurotuner_Activated(object sender, EventArgs e)
