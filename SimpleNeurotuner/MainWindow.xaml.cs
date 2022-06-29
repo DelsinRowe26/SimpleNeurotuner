@@ -51,14 +51,16 @@ namespace SimpleNeurotuner
         private WasapiCapture mSoundIn;
         private SampleDSP mDsp, mDsp1;
         string[] file1 = File.ReadAllLines("window.tmp");
-
+        /// <summary>
+        /// рисование спектра
+        /// </summary>
         private LineSpectrum mLineSpectrum;
         private VoicePrint3DSpectrum mVoicePrint3DSpectrum;
         private readonly Bitmap mBitmap = new Bitmap(2000, 600);
         private int mXpos;
 
         string folder = "Record";
-        private IWaveSource _source;
+        private IWaveSource mSource;
         private MMDeviceCollection mOutputDevices;
         private MMDeviceCollection mInputDevices;
         string start = "00:00:03,25";
@@ -68,6 +70,7 @@ namespace SimpleNeurotuner
         public int index = 1;
         string langindex;
         string FileName, cutFileName;
+        DispatcherTimer timer1 = new DispatcherTimer();
         //private PitchShifter _pitchShifter;
 
         private ISampleSource mMp3;
@@ -135,10 +138,22 @@ namespace SimpleNeurotuner
             var notificationSource = new SingleBlockNotificationStream(mSampleSource);
             notificationSource.SingleBlockRead += (s, a) => spectrumProvider.Add(a.Left, a.Right);
 
-            _source = notificationSource.ToWaveSource(16);
+            mSource = notificationSource.ToWaveSource(16);
         }
 
-
+        private void GenerateLineSpectrum()
+        {
+            System.Drawing.Image image = pictureBoxTop1.Image;
+            var newImage = mLineSpectrum.CreateSpectrumLine(pictureBoxTop1.Size, System.Drawing.Color.Green, System.Drawing.Color.Red, System.Drawing.Color.Black, true);
+            if(newImage != null)
+            {
+                pictureBoxTop1.Image = newImage;
+                if (image != null)
+                {
+                    image.Dispose();
+                }
+            }
+        }
 
         private void Mixer()
         {
@@ -185,6 +200,14 @@ namespace SimpleNeurotuner
             {
                 Languages();
             }
+
+            
+            //timer1.Start();
+        }
+
+        private void timer1_Tick(object sender, EventArgs e)
+        {
+            GenerateLineSpectrum();
         }
 
         private void Filling()
@@ -217,6 +240,7 @@ namespace SimpleNeurotuner
         {
             try
             {
+                timer1.Stop();
                 if (mMixer != null)
                 {
                     mMixer.Dispose();
@@ -235,10 +259,10 @@ namespace SimpleNeurotuner
                     mSoundIn.Dispose();
                     mSoundIn = null;
                 }
-                if (_source != null)
+                if (mSource != null)
                 {
-                    _source.Dispose();
-                    _source = null;
+                    mSource.Dispose();
+                    mSource = null;
                 }
                 if (mMp3 != null)
                 {
@@ -256,6 +280,8 @@ namespace SimpleNeurotuner
         {
             try
             {
+                timer1.Tick += new EventHandler(timer1_Tick);
+                timer1.Interval = new TimeSpan(0, 0, 1);
                 //Запускает устройство захвата звука с задержкой 1 мс.
                 mSoundIn = new WasapiCapture(/*false, AudioClientShareMode.Exclusive, 1*/);
                 mSoundIn.Device = mInputDevices[cmbInput.SelectedIndex];
@@ -266,6 +292,8 @@ namespace SimpleNeurotuner
                 //Init DSP для смещения высоты тона
                 mDsp = new SampleDSP(source.ToSampleSource().ToStereo());
                 mDsp.GainDB = (float)slVolume.Value;
+                SetupSampleSource(mDsp);
+
                 //SetPitchShiftValue();
                 mSoundIn.Start();
 
@@ -277,6 +305,8 @@ namespace SimpleNeurotuner
 
                 //Запускает устройство воспроизведения звука с задержкой 1 мс.
                 await Task.Run(() => SoundOut());
+
+                timer1.Start();
                 //return true;
                 //Thread.Sleep(2000);
                 //mDsp.PitchShift = 0;
@@ -299,6 +329,7 @@ namespace SimpleNeurotuner
             mSoundOut = new WasapiOut(/*false, AudioClientShareMode.Exclusive, 1*/);
             //mSoundOut.Device = mOutputDevices[cmbOutput.SelectedIndex];
             mSoundOut.Initialize(mMixer.ToWaveSource(16));
+            //mSoundOut.Initialize(mSource);
             mSoundOut.Play();
         }
 

@@ -3,9 +3,10 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:wf="clr-namespace:System.Windows.Forms;assembly=System.Windows.Forms"
         xmlns:local="clr-namespace:SimpleNeurotuner"
         mc:Ignorable="d"
-        Title="Neurotuner NFT" Height="899" Width="569" Loaded="SimpleNeurotuner_Loaded" Closing="SimpleNeurotuner_Closing" ResizeMode="CanMinimize" Activated="SimpleNeurotuner_Activated">
+        Title="Neurotuner NFT" Height="588" Width="569" Loaded="SimpleNeurotuner_Loaded" Closing="SimpleNeurotuner_Closing" ResizeMode="CanMinimize" Activated="SimpleNeurotuner_Activated">
     <Window.Background>
         <ImageBrush ImageSource="/ad5ddc9e-b9a1-4d8f-9e45-b6bed5b338ca.jpg" TileMode="Tile" Stretch="Uniform"/>
     </Window.Background>
@@ -104,7 +105,7 @@
             </ProgressBar.Foreground>
         </ProgressBar>
         <Label x:Name="lbRecordPB" Content="Recording in progress..." HorizontalAlignment="Left" Margin="226,130,0,0" VerticalAlignment="Top" Visibility="Hidden"/>
-        <TabControl x:Name="tabControl" Margin="159,138,161,168" Width="251" Height="268">
+        <TabControl x:Name="tabControl" Margin="159,136,159,166" Visibility="Hidden">
             <TabItem x:Name="TabNFT" Header="gNeuro NFT">
                 <Grid Background="#FFE5E5E5" Width="230" Margin="7,0,8,0" Height="230">
                     <Grid.ColumnDefinitions>
@@ -151,7 +152,10 @@
         <Image HorizontalAlignment="Left" Height="100" Margin="751,337,-286,0" VerticalAlignment="Top" Width="100"/>
         <TextBox x:Name="tbNoteName" HorizontalAlignment="Left" Height="28" Margin="461,32,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="76" RenderTransformOrigin="0.672,0.573"/>
         <TextBox x:Name="tbFreq" HorizontalAlignment="Left" Margin="461,76,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="76" Height="33" TextChanged="tbFreq_TextChanged"/>
-        <Image x:Name="pictureBoxTop" HorizontalAlignment="Left" Height="169" Margin="10,609,0,0" VerticalAlignment="Top" Width="505"/>
-        
+        <!--<Image x:Name="pictureBoxTop" HorizontalAlignment="Left" Height="169" Margin="10,609,0,0" VerticalAlignment="Top" Width="505" Visibility="Hidden"/>-->
+        <WindowsFormsHost x:Name="pictureBox" Margin="10,198,106,205" Height="169" Visibility="Visible">
+            <wf:PictureBox x:Name="pictureBoxTop1" Height="169" Width="505"/>
+            <!--<wf:Timer x:Name="timer2"/>-->
+        </WindowsFormsHost>
     </Grid>
 </Window>
