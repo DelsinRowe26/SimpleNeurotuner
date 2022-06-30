@@ -18,14 +18,17 @@ using System.Windows.Media;
 using System.Threading;
 using System.Diagnostics;
 using System.IO;
+using System.Drawing;
+
 using WinformsVisualization.Visualization;
 using Microsoft.DirectX.DirectSound;
 using Buffer = Microsoft.DirectX.DirectSound.Buffer;
 using System.Runtime.InteropServices;
 using System.Windows.Media.Imaging;
-using System.Drawing;
+//using System.Drawing;
 using System.Windows.Threading;
 using CSCore.DSP;
+using System.Windows.Shapes;
 
 namespace SimpleNeurotuner
 {
@@ -56,13 +59,13 @@ namespace SimpleNeurotuner
         /// </summary>
         private LineSpectrum mLineSpectrum;
         private VoicePrint3DSpectrum mVoicePrint3DSpectrum;
-        private readonly Bitmap mBitmap = new Bitmap(2000, 600);
         private int mXpos;
 
         string folder = "Record";
         private IWaveSource mSource;
         private MMDeviceCollection mOutputDevices;
         private MMDeviceCollection mInputDevices;
+        public double Magn;
         string start = "00:00:03,25";
         string end = "00:00:04,25";
         string myfile;
@@ -71,6 +74,8 @@ namespace SimpleNeurotuner
         string langindex;
         string FileName, cutFileName;
         DispatcherTimer timer1 = new DispatcherTimer();
+        private System.Windows.Point startPoint;
+        private System.Windows.Shapes.Rectangle rectangle;
         //private PitchShifter _pitchShifter;
 
         private ISampleSource mMp3;
@@ -109,50 +114,6 @@ namespace SimpleNeurotuner
         void worker_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
             PBNFT.Value = e.ProgressPercentage;
-        }
-
-        private void SetupSampleSource(ISampleSource mSampleSource)
-        {
-            const FftSize fftSize = FftSize.Fft4096;
-
-            var spectrumProvider = new BasicSpectrumProvider(mSampleSource.WaveFormat.Channels, mSampleSource.WaveFormat.SampleRate, fftSize);
-
-            mLineSpectrum = new LineSpectrum(fftSize)
-            {
-                SpectrumProvider = spectrumProvider,
-                UseAverage = true,
-                BarCount = 50,
-                BarSpacing = 2,
-                IsXLogScale = true,
-                ScalingStrategy = ScalingStrategy.Sqrt
-            };
-            mVoicePrint3DSpectrum = new VoicePrint3DSpectrum(fftSize)
-            {
-                SpectrumProvider = spectrumProvider,
-                UseAverage = true,
-                PointCount = 200,
-                IsXLogScale = true,
-                ScalingStrategy =ScalingStrategy.Sqrt
-            };
-
-            var notificationSource = new SingleBlockNotificationStream(mSampleSource);
-            notificationSource.SingleBlockRead += (s, a) => spectrumProvider.Add(a.Left, a.Right);
-
-            mSource = notificationSource.ToWaveSource(16);
-        }
-
-        private void GenerateLineSpectrum()
-        {
-            System.Drawing.Image image = pictureBoxTop1.Image;
-            var newImage = mLineSpectrum.CreateSpectrumLine(pictureBoxTop1.Size, System.Drawing.Color.Green, System.Drawing.Color.Red, System.Drawing.Color.Black, true);
-            if(newImage != null)
-            {
-                pictureBoxTop1.Image = newImage;
-                if (image != null)
-                {
-                    image.Dispose();
-                }
-            }
         }
 
         private void Mixer()
@@ -203,11 +164,6 @@ namespace SimpleNeurotuner
 
             
             //timer1.Start();
-        }
-
-        private void timer1_Tick(object sender, EventArgs e)
-        {
-            GenerateLineSpectrum();
         }
 
         private void Filling()
@@ -276,12 +232,24 @@ namespace SimpleNeurotuner
             }
         }
 
+        private void PictRectangle(double znach)
+        {
+            startPoint = new System.Windows.Point(0, 0);
+            //var line = new Line();
+            rectangle = new System.Windows.Shapes.Rectangle
+            {
+                Height = (int)znach,
+                Width = 2,
+                Stroke = System.Windows.Media.Brushes.Black,
+            };
+            //IMGSpectre.Source = rectangle;
+            CSSpectre.Children.Add(rectangle);
+        }
+
         private async void StartFullDuplex()//запуск пича и громкости
         {
             try
             {
-                timer1.Tick += new EventHandler(timer1_Tick);
-                timer1.Interval = new TimeSpan(0, 0, 1);
                 //Запускает устройство захвата звука с задержкой 1 мс.
                 mSoundIn = new WasapiCapture(/*false, AudioClientShareMode.Exclusive, 1*/);
                 mSoundIn.Device = mInputDevices[cmbInput.SelectedIndex];
@@ -292,7 +260,8 @@ namespace SimpleNeurotuner
                 //Init DSP для смещения высоты тона
                 mDsp = new SampleDSP(source.ToSampleSource().ToStereo());
                 mDsp.GainDB = (float)slVolume.Value;
-                SetupSampleSource(mDsp);
+
+                
 
                 //SetPitchShiftValue();
                 mSoundIn.Start();

@@ -152,10 +152,7 @@
         <Image HorizontalAlignment="Left" Height="100" Margin="751,337,-286,0" VerticalAlignment="Top" Width="100"/>
         <TextBox x:Name="tbNoteName" HorizontalAlignment="Left" Height="28" Margin="461,32,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="76" RenderTransformOrigin="0.672,0.573"/>
         <TextBox x:Name="tbFreq" HorizontalAlignment="Left" Margin="461,76,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="76" Height="33" TextChanged="tbFreq_TextChanged"/>
+        <Canvas x:Name="CSSpectre" HorizontalAlignment="Left" Height="203" Margin="10,164,0,0" VerticalAlignment="Top" Width="489"/>
         <!--<Image x:Name="pictureBoxTop" HorizontalAlignment="Left" Height="169" Margin="10,609,0,0" VerticalAlignment="Top" Width="505" Visibility="Hidden"/>-->
-        <WindowsFormsHost x:Name="pictureBox" Margin="10,198,106,205" Height="169" Visibility="Visible">
-            <wf:PictureBox x:Name="pictureBoxTop1" Height="169" Width="505"/>
-            <!--<wf:Timer x:Name="timer2"/>-->
-        </WindowsFormsHost>
     </Grid>
 </Window>
