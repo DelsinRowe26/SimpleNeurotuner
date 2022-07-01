@@ -1,9 +1,12 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Windows;
 using System.Drawing;
+/*using System.Drawing.Drawing2D;
+using System.Drawing.Text;*/
+using CSCore.DSP;
 using System.Drawing.Drawing2D;
 using System.Drawing.Text;
-using CSCore.DSP;
 
 namespace WinformsVisualization.Visualization
 {
@@ -12,7 +15,7 @@ namespace WinformsVisualization.Visualization
         private int _barCount;
         private double _barSpacing;
         private double _barWidth;
-        private Size _currentSize;
+        private System.Windows.Size _currentSize;
 
         public LineSpectrum(FftSize fftSize)
         {
@@ -57,7 +60,7 @@ namespace WinformsVisualization.Visualization
         }
 
         [BrowsableAttribute(false)]
-        public Size CurrentSize
+        public System.Windows.Size CurrentSize
         {
             get { return _currentSize; }
             protected set
@@ -67,7 +70,7 @@ namespace WinformsVisualization.Visualization
             }
         }
 
-        public Bitmap CreateSpectrumLine(Size size, Brush brush, Color background, bool highQuality)
+        public Bitmap CreateSpectrumLine(System.Windows.Size size, Brush brush, Color background, bool highQuality)
         {
             if (!UpdateFrequencyMappingIfNessesary(size))
                 return null;
@@ -79,7 +82,7 @@ namespace WinformsVisualization.Visualization
             {
                 using (var pen = new Pen(brush, (float) _barWidth))
                 {
-                    var bitmap = new Bitmap(size.Width, size.Height);
+                    var bitmap = new Bitmap(Convert.ToString(size.Width), Convert.ToBoolean(size.Height));
 
                     using (Graphics graphics = Graphics.FromImage(bitmap))
                     {
@@ -95,22 +98,22 @@ namespace WinformsVisualization.Visualization
             return null;
         }
 
-        public Bitmap CreateSpectrumLine(Size size, Color color1, Color color2, Color background, bool highQuality)
+        public Bitmap CreateSpectrumLine(System.Windows.Size size, Color color1, Color color2, Color background, bool highQuality)
         {
             if (!UpdateFrequencyMappingIfNessesary(size))
                 return null;
 
             using (
-                Brush brush = new LinearGradientBrush(new RectangleF(0, 0, (float) _barWidth, size.Height), color2,
+                Brush brush = new LinearGradientBrush(new RectangleF(0, 0, (float) _barWidth, (float)size.Height), color2,
                     color1, LinearGradientMode.Vertical))
             {
                 return CreateSpectrumLine(size, brush, background, highQuality);
             }
         }
 
-        private void CreateSpectrumLineInternal(Graphics graphics, Pen pen, float[] fftBuffer, Size size)
+        private void CreateSpectrumLineInternal(Graphics graphics, Pen pen, float[] fftBuffer, System.Windows.Size size)
         {
-            int height = size.Height;
+            int height = (int)size.Height;
             //prepare the fft result for rendering 
             SpectrumPointData[] spectrumPoints = CalculateSpectrumPoints(height, fftBuffer);
 
@@ -134,7 +137,7 @@ namespace WinformsVisualization.Visualization
             base.UpdateFrequencyMapping();
         }
 
-        private bool UpdateFrequencyMappingIfNessesary(Size newSize)
+        private bool UpdateFrequencyMappingIfNessesary(System.Windows.Size newSize)
         {
             if (newSize != CurrentSize)
             {

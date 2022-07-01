@@ -18,7 +18,7 @@ using System.Windows.Media;
 using System.Threading;
 using System.Diagnostics;
 using System.IO;
-using System.Drawing;
+//using System.Drawing;
 
 using WinformsVisualization.Visualization;
 using Microsoft.DirectX.DirectSound;
@@ -232,9 +232,46 @@ namespace SimpleNeurotuner
             }
         }
 
-        private void PictRectangle(double znach)
+        private void SetupSampleSource(ISampleSource mSampleSource)
         {
-            startPoint = new System.Windows.Point(0, 0);
+            const FftSize fftSize = FftSize.Fft4096;
+            var spectrumProvider = new BasicSpectrumProvider(mSampleSource.WaveFormat.Channels, mSampleSource.WaveFormat.SampleRate, fftSize);
+
+            mLineSpectrum = new LineSpectrum(fftSize)
+            {
+                SpectrumProvider = spectrumProvider,
+                UseAverage = true,
+                BarCount = 50,
+                BarSpacing = 2,
+                IsXLogScale = true,
+                ScalingStrategy = ScalingStrategy.Sqrt
+            };
+            
+            var notificationSource = new SingleBlockNotificationStream(mSampleSource);
+
+            notificationSource.SingleBlockRead += (s, a) => spectrumProvider.Add(a.Left, a.Right);
+
+            mSource = notificationSource.ToWaveSource(16);
+        }
+
+        private void GenerateLineSpectrum()
+        {
+            ImageSource image = IMGSpectr.Source;
+            var newImage = mLineSpectrum.CreateSpectrumLine(IMGSpectr.RenderSize, System.Drawing.Color.Green, System.Drawing.Color.Red, System.Drawing.Color.Black, true);
+            if(newImage != null)
+            {
+                //IMGSpectr.Source = newImage;
+                if(image != null)
+                {
+                    //image.
+                }
+            }
+        }
+
+        /*private void PictRectangle(double znach, int x, int y)
+        {
+            startPoint = new System.Windows.Point(x, y);
+            
             //var line = new Line();
             rectangle = new System.Windows.Shapes.Rectangle
             {
@@ -243,8 +280,13 @@ namespace SimpleNeurotuner
                 Stroke = System.Windows.Media.Brushes.Black,
             };
             //IMGSpectre.Source = rectangle;
+            rectangle.PointFromScreen(startPoint);
             CSSpectre.Children.Add(rectangle);
-        }
+            //CSSpectre.SetLeft(rectangle, startPoint.X);
+            CSSpectre.VerticalAlignment = VerticalAlignment.Center;
+            
+            //CSSpectre.
+        }*/
 
         private async void StartFullDuplex()//запуск пича и громкости
         {
@@ -596,14 +638,6 @@ namespace SimpleNeurotuner
         public void tbFreq_TextChanged(object sender, TextChangedEventArgs e)
         {
 
-        }
-
-        private void UpdateFrequencyDisplay(double frequency)
-        {
-            if (frequency > 0)
-            {
-                //frequenciesScale1.SignalDetected = true;
-            }
         }
 
         private void SimpleNeurotuner_Activated(object sender, EventArgs e)

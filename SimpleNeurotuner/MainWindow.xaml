@@ -152,7 +152,7 @@
         <Image HorizontalAlignment="Left" Height="100" Margin="751,337,-286,0" VerticalAlignment="Top" Width="100"/>
         <TextBox x:Name="tbNoteName" HorizontalAlignment="Left" Height="28" Margin="461,32,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="76" RenderTransformOrigin="0.672,0.573"/>
         <TextBox x:Name="tbFreq" HorizontalAlignment="Left" Margin="461,76,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="76" Height="33" TextChanged="tbFreq_TextChanged"/>
-        <Canvas x:Name="CSSpectre" HorizontalAlignment="Left" Height="203" Margin="10,164,0,0" VerticalAlignment="Top" Width="489"/>
+        <Image x:Name="IMGSpectr" HorizontalAlignment="Left" Height="190" Margin="10,177,0,0" VerticalAlignment="Top" Width="479"/>
         <!--<Image x:Name="pictureBoxTop" HorizontalAlignment="Left" Height="169" Margin="10,609,0,0" VerticalAlignment="Top" Width="505" Visibility="Hidden"/>-->
     </Grid>
 </Window>
