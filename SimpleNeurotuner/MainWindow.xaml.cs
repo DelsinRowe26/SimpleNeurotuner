@@ -260,7 +260,8 @@ namespace SimpleNeurotuner
             var newImage = mLineSpectrum.CreateSpectrumLine(IMGSpectr.RenderSize, System.Drawing.Color.Green, System.Drawing.Color.Red, System.Drawing.Color.Black, true);
             if(newImage != null)
             {
-                //IMGSpectr.Source = newImage;
+
+                IMGSpectr.Source = BitmapImageSource.ChangeBitmapToImageSource(newImage);   
                 if(image != null)
                 {
                     //image.
