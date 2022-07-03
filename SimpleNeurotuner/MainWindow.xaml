@@ -76,8 +76,8 @@
                 </Style>
             </Label.Style>
         </Label>
-        <Slider x:Name="slVolume" HorizontalAlignment="Left" Margin="513,130,0,0" VerticalAlignment="Top" Width="24" Orientation="Vertical" Height="255" TickPlacement="BottomRight" ValueChanged="slVolume_ValueChanged"/>
-        <Label x:Name="lbVolValue" Content="0" HorizontalAlignment="Left" Margin="513,390,0,0" VerticalAlignment="Top" Height="32" Width="36" FontSize="18"/>
+        <Slider x:Name="slVol10" HorizontalAlignment="Left" Margin="513,130,0,0" VerticalAlignment="Top" Width="24" Orientation="Vertical" Height="255" TickPlacement="BottomRight" ValueChanged="slEq_ValueChanged" Tag="01" Minimum="-20" Maximum="20"/>
+        <Label x:Name="lbVolValue5" Content="0" HorizontalAlignment="Left" Margin="206,376,0,0" VerticalAlignment="Top" Height="32" Width="36" FontSize="18"/>
         <Button x:Name="btnRecord" Content="Audition" HorizontalAlignment="Left" Margin="68,446,0,0" VerticalAlignment="Top" Height="30" Width="95" MouseMove="btnRecord_MouseMove" MouseLeave="btnRecord_MouseLeave" Click="btnRecord_Click" Visibility="Hidden" FontSize="14">
             <Button.Template>
                 <ControlTemplate>
@@ -152,7 +152,25 @@
         <Image HorizontalAlignment="Left" Height="100" Margin="751,337,-286,0" VerticalAlignment="Top" Width="100"/>
         <TextBox x:Name="tbNoteName" HorizontalAlignment="Left" Height="28" Margin="461,32,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="76" RenderTransformOrigin="0.672,0.573"/>
         <TextBox x:Name="tbFreq" HorizontalAlignment="Left" Margin="461,76,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="76" Height="33" TextChanged="tbFreq_TextChanged"/>
-        <Image x:Name="IMGSpectr" HorizontalAlignment="Left" Height="190" Margin="10,177,0,0" VerticalAlignment="Top" Width="479"/>
+        <Image x:Name="IMGSpectr" HorizontalAlignment="Left" Height="190" Margin="10,177,0,0" VerticalAlignment="Top" Width="479" Visibility="Hidden"/>
+        <Slider x:Name="slVol1" HorizontalAlignment="Left" Height="255" Margin="25,130,0,0" VerticalAlignment="Top" Width="28" Orientation="Vertical" TickPlacement="TopLeft" ValueChanged="slEq_ValueChanged" Tag="1" Minimum="-20" Maximum="20"/>
+        <Slider x:Name="slVol9" HorizontalAlignment="Left" Margin="475,130,0,0" VerticalAlignment="Top" Width="24" Orientation="Vertical" Height="255" TickPlacement="BottomRight" ValueChanged="slEq_ValueChanged" Tag="9" Minimum="-20" Maximum="20"/>
+        <Slider x:Name="slVol2" HorizontalAlignment="Left" Height="255" Margin="61,130,0,0" VerticalAlignment="Top" Width="29" Orientation="Vertical" TickPlacement="TopLeft" ValueChanged="slEq_ValueChanged" Tag="2" Minimum="-20" Maximum="20"/>
+        <Slider x:Name="slVol3" HorizontalAlignment="Left" Height="255" Margin="104,130,0,0" VerticalAlignment="Top" Width="30" Orientation="Vertical" TickPlacement="TopLeft" ValueChanged="slEq_ValueChanged" Tag="3" Minimum="-20" Maximum="20"/>
+        <Label x:Name="lbVolValue1" Content="0" HorizontalAlignment="Left" Margin="25,382,0,0" VerticalAlignment="Top" Height="32" Width="36" FontSize="18"/>
+        <Label x:Name="lbVolValue2" Content="0" HorizontalAlignment="Left" Margin="66,376,0,0" VerticalAlignment="Top" Height="32" Width="36" FontSize="18"/>
+        <Label x:Name="lbVolValue3" Content="0" HorizontalAlignment="Left" Margin="107,376,0,0" VerticalAlignment="Top" Height="32" Width="36" FontSize="18"/>
+        <Label x:Name="lbVolValue4" Content="0" HorizontalAlignment="Left" Margin="159,376,0,0" VerticalAlignment="Top" Height="32" Width="36" FontSize="18"/>
+        <Slider x:Name="slVol8" HorizontalAlignment="Left" Margin="433,130,0,0" VerticalAlignment="Top" Width="24" Orientation="Vertical" Height="255" TickPlacement="BottomRight" ValueChanged="slEq_ValueChanged" Tag="8" Minimum="-20" Maximum="20"/>
+        <Slider x:Name="slVol4" HorizontalAlignment="Left" Height="255" Margin="156,130,0,0" VerticalAlignment="Top" Width="30" Orientation="Vertical" TickPlacement="TopLeft" ValueChanged="slEq_ValueChanged" Tag="4" Minimum="-20" Maximum="20"/>
+        <Slider x:Name="slVol5" HorizontalAlignment="Left" Height="255" Margin="209,130,0,0" VerticalAlignment="Top" Width="30" Orientation="Vertical" TickPlacement="TopLeft" ValueChanged="slEq_ValueChanged" Tag="5" Minimum="-20" Maximum="20"/>
+        <Slider x:Name="slVol7" HorizontalAlignment="Left" Margin="386,130,0,0" VerticalAlignment="Top" Width="24" Orientation="Vertical" Height="255" TickPlacement="BottomRight" ValueChanged="slEq_ValueChanged" Tag="7" Minimum="-20" Maximum="20"/>
+        <Slider x:Name="slVol6" HorizontalAlignment="Left" Margin="336,130,0,0" VerticalAlignment="Top" Width="24" Orientation="Vertical" Height="255" TickPlacement="BottomRight" ValueChanged="slEq_ValueChanged" Tag="6" Minimum="-20" Maximum="20"/>
+        <Label x:Name="lbVolValue6" Content="0" HorizontalAlignment="Left" Margin="336,369,0,0" VerticalAlignment="Top" Height="32" Width="36" FontSize="18"/>
+        <Label x:Name="lbVolValue7" Content="0" HorizontalAlignment="Left" Margin="386,369,0,0" VerticalAlignment="Top" Height="32" Width="36" FontSize="18"/>
+        <Label x:Name="lbVolValue8" Content="0" HorizontalAlignment="Left" Margin="433,390,0,0" VerticalAlignment="Top" Height="32" Width="36" FontSize="18"/>
+        <Label x:Name="lbVolValue9" Content="0" HorizontalAlignment="Left" Margin="469,390,0,0" VerticalAlignment="Top" Height="32" Width="36" FontSize="18"/>
+        <Label x:Name="lbVolValue10" Content="0" HorizontalAlignment="Left" Margin="513,390,0,0" VerticalAlignment="Top" Height="32" Width="36" FontSize="18"/>
         <!--<Image x:Name="pictureBoxTop" HorizontalAlignment="Left" Height="169" Margin="10,609,0,0" VerticalAlignment="Top" Width="505" Visibility="Hidden"/>-->
     </Grid>
 </Window>

@@ -1,7 +1,7 @@
 ﻿using CSCore;
 using CSCore.DSP;
 
-namespace Neurotuner
+namespace SimpleNeurotuner
 {
     public class BiQuadFilterSource : SampleAggregatorBase
     {

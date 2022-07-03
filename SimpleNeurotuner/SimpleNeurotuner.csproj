@@ -80,6 +80,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="BiQuadFilter.cs" />
     <Compile Include="BitmapImageSource.cs" />
     <Compile Include="CreateWindow.xaml.cs">
       <DependentUpon>CreateWindow.xaml</DependentUpon>

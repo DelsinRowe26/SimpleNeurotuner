@@ -10,8 +10,9 @@ namespace SimpleNeurotuner
 
     // Утилита которая помогает найти фундаментальную чатсоту.
 
-    static class FrequencyUtils
+    public static class FrequencyUtils
     {
+        public static double magn;
         // Находим фундаментальную частоту: вычисляем спектрограмму, находим пики, анализируем
         //х - звуковые сэмплы
         //sampleRate частота семплирования
@@ -115,6 +116,7 @@ namespace SimpleNeurotuner
             for (int i = 0; i < peaksCount; i++)
             {
                 peakValues[i] = values[peakIndices[i] = i + index];
+                magn = peakValues[i];
             }
 
             // находим минимальное значение

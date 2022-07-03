@@ -8,7 +8,7 @@ namespace SimpleNeurotuner
     class SampleDSP: ISampleSource
     {
         ISampleSource mSource;
-        public string freq;
+        public double freq;
         public SampleDSP(ISampleSource source)
         {
             if (source == null)
@@ -30,7 +30,8 @@ namespace SimpleNeurotuner
                     //buffer1[i] = (double)buffer[i];
                     
                 }
-            FrequencyUtils.FindFundamentalFrequency(buffer, mSource.WaveFormat.SampleRate, 60, 22050);
+            FrequencyUtils.FindFundamentalFrequency(buffer, mSource.WaveFormat.SampleRate, 31, 16000);
+            freq = FrequencyUtils.FindFundamentalFrequency(buffer, mSource.WaveFormat.SampleRate, 31, 16000);
             PitchShifter.FindClosestNote(FrequencyUtils.FindFundamentalFrequency(buffer, mSource.WaveFormat.SampleRate, 60, 22050), out closestfreq);
             File.WriteAllText("ClosestFreq.txt", closestfreq.ToString());
             File.AppendAllText("Freq.txt", FrequencyUtils.FindFundamentalFrequency(buffer, mSource.WaveFormat.SampleRate, 60, 22050).ToString("f3") + "\n");

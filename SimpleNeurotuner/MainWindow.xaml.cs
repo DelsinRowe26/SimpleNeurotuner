@@ -30,6 +30,7 @@ using CSCore.DSP;
 using System.Windows.Shapes;
 using System.Globalization;
 using Intersoft.Crosslight;
+using CSCore.Streams.Effects;
 
 namespace SimpleNeurotuner
 {
@@ -53,7 +54,7 @@ namespace SimpleNeurotuner
         //private Equalizer equalizer;
         private WasapiOut mSoundOut;
         private WasapiCapture mSoundIn;
-        private SampleDSP mDsp, mDsp1;
+        private SampleDSP mDsp, mDsp1, mDsp2, mDsp3, mDsp4;
         string[] file1 = File.ReadAllLines("window.tmp");
         /// <summary>
         /// рисование спектра
@@ -79,6 +80,8 @@ namespace SimpleNeurotuner
         private System.Windows.Shapes.Rectangle rectangle;
         //private PitchShifter _pitchShifter;
 
+        private const double MaxDB = 20;
+        private Equalizer mEqualizer;
         private ISampleSource mMp3;
         private string file, filename;
         private string record;
@@ -289,8 +292,8 @@ namespace SimpleNeurotuner
         {
             if (cmbModes.SelectedIndex == 0)
             {
-                //Recording();
-                Recordind2();
+                Recording();
+                //Recordind2();
             }
             else
             {
@@ -362,6 +365,18 @@ namespace SimpleNeurotuner
             mSource = notificationSource.ToWaveSource(16);
         }
 
+        /*public ISampleSource BandPassFilter(WasapiCapture mSoundIn, int sampleRate, int bottomFreq, int topFreq)
+        {
+            var sampleSource = new SoundInSource(mSoundIn) { FillWithZeros = true }
+                    .ChangeSampleRate(sampleRate).ToStereo().ToSampleSource();
+            var tempFilter = sampleSource.AppendSource(x => new BiQuadFilterSource(x));
+            tempFilter.Filter = new HighpassFilter(sampleRate, bottomFreq);
+            var filteredSource = tempFilter.AppendSource(x => new BiQuadFilterSource(x));
+            filteredSource.Filter = new LowpassFilter(sampleRate, topFreq);
+
+            return filteredSource;
+        }*/
+
         /*private void GenerateLineSpectrum()
         {
             ImageSource image = IMGSpectr.Source;
@@ -405,14 +420,29 @@ namespace SimpleNeurotuner
                 mSoundIn = new WasapiCapture(/*false, AudioClientShareMode.Exclusive, 1*/);
                 mSoundIn.Device = mInputDevices[cmbInput.SelectedIndex];
                 mSoundIn.Initialize();
-               
+
                 var source = new SoundInSource(mSoundIn) { FillWithZeros = true };
                 
+                /*var source1 = BandPassFilter(mSoundIn, 44100, 60, 600);
+                var source2 = BandPassFilter(mSoundIn, 44100, 601, 1200);
+                var source3 = BandPassFilter(mSoundIn, 44100, 1201, 2400);
+                var source4 = BandPassFilter(mSoundIn, 44100, 2401, 4800);
+                var source5 = BandPassFilter(mSoundIn, 44100, 4801, 8000);*/
+
                 //Init DSP для смещения высоты тона
-                mDsp = new SampleDSP(source.ToSampleSource().ToStereo());
-                mDsp.GainDB = (float)slVolume.Value;
+                mDsp = new SampleDSP(source.ToSampleSource()/*.AppendSource(Equalizer.Create10BandEqualizer, out mEqualizer)*/.ToStereo());
+
+                /*mDsp1 = new SampleDSP(source2.ToStereo());
+                mDsp2 = new SampleDSP(source3.ToStereo());
+                mDsp3 = new SampleDSP(source4.ToStereo());
+                mDsp4 = new SampleDSP(source5.ToStereo());
+                mDsp.GainDB = (float)slVol1.Value;
+                mDsp1.GainDB = (float)slVol2.Value;
+                mDsp2.GainDB = (float)slVol3.Value;
+                mDsp3.GainDB = (float)slVol4.Value;
+                mDsp4.GainDB = (float)slVol5.Value;*/
                 //SetupSampleSource(mDsp);
-                
+
 
                 //SetPitchShiftValue();
                 mSoundIn.Start();
@@ -422,7 +452,11 @@ namespace SimpleNeurotuner
 
                 //Добавляем наш источник звука в микшер
                 mMixer.AddSource(/*source.ToSampleSource().ToStereo()*/mDsp.ChangeSampleRate(mMixer.WaveFormat.SampleRate));
-
+                /*mMixer.AddSource(/*source.ToSampleSource().ToStereo()mDsp1.ChangeSampleRate(mMixer.WaveFormat.SampleRate));
+                mMixer.AddSource(/*source.ToSampleSource().ToStereo()mDsp2.ChangeSampleRate(mMixer.WaveFormat.SampleRate));
+                mMixer.AddSource(/*source.ToSampleSource().ToStereo()mDsp3.ChangeSampleRate(mMixer.WaveFormat.SampleRate));
+                mMixer.AddSource(/*source.ToSampleSource().ToStereo()mDsp4.ChangeSampleRate(mMixer.WaveFormat.SampleRate));*/
+                
                 //Запускает устройство воспроизведения звука с задержкой 1 мс.
                 await Task.Run(() => SoundOut());
 
@@ -464,7 +498,7 @@ namespace SimpleNeurotuner
             if (click != 0)
             {
                 Mixer();
-                mMp3 = CodecFactory.Instance.GetCodec(filename).ToStereo().ToSampleSource();
+                mMp3 = CodecFactory.Instance.GetCodec(filename).ToStereo().ToSampleSource().AppendSource(Equalizer.Create10BandEqualizer, out mEqualizer);
                 //mDsp1 = new SampleDSP(mMp3.ToWaveSource(16).ToSampleSource());
                 //mDsp1.GainDB = (float)slVolume.Value;
                 mMixer.AddSource(mMp3.ChangeSampleRate(mMixer.WaveFormat.SampleRate).ToWaveSource(16).Loop().ToSampleSource());
@@ -475,6 +509,22 @@ namespace SimpleNeurotuner
             {
                 Stop();
             }
+            /*do
+            {
+                Mixer();
+                mMp3 = CodecFactory.Instance.GetCodec(filename).ToStereo().ToSampleSource();
+                mMixer.AddSource(mMp3.ChangeSampleRate(mMixer.WaveFormat.SampleRate));
+                //open the selected file
+                /*ISampleSource source = CodecFactory.Instance.GetCodec(openFileDialog.FileName)
+                    .ToSampleSource()
+                    .AppendSource(x => new PitchShifter(x), out _pitchShifter);
+
+                //play the audio
+
+                await Task.Run(() => SoundOut());
+
+                Thread.Sleep(900);
+            } while (click != 0);*/
         }
 
         private void btnStop_Click(object sender, RoutedEventArgs e)
@@ -541,12 +591,12 @@ namespace SimpleNeurotuner
             window1.Show();
         }
 
-        private void slVolume_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        private void slVol1_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             try
             {
-                mDsp.GainDB = (float)slVolume.Value;
-                lbVolValue.Content = (int)slVolume.Value;
+                mDsp.GainDB = (float)slVol1.Value;
+                lbVolValue1.Content = (int)slVol1.Value;
             }
             catch
             {
@@ -589,6 +639,7 @@ namespace SimpleNeurotuner
         {
             //audioclick = 1;
             //mDsp.PitchShift = 0;
+            click = 1;
             Audition();
         }
 
@@ -647,6 +698,134 @@ namespace SimpleNeurotuner
                     string msg = "An error occurred, if it popped up,\nsomething is broken,\nor you deleted something you needed.";
                     MessageBox.Show(msg);
                 }
+            }
+        }
+
+        private void slVol5_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            try
+            {
+                mDsp4.GainDB = (float)slVol5.Value;
+                lbVolValue5.Content = (int)slVol5.Value;
+            }
+            catch
+            {
+                if (langindex == "0")
+                {
+                    string msg = "Ошибка в измененном значении объема: \r\n" + "Сначала начните запись, затем переместите ползунок громкости.";
+                    MessageBox.Show(msg);
+                    Debug.WriteLine(msg);
+                }
+                else
+                {
+                    string msg = "Error in Volume Value Changed: \r\n" + "Start recording first, then move the volume slider.";
+                    MessageBox.Show(msg);
+                    Debug.WriteLine(msg);
+                }
+            }
+        }
+
+        private void slVol2_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            try
+            {
+                mDsp1.GainDB = (float)slVol2.Value;
+                lbVolValue2.Content = (int)slVol2.Value;
+            }
+            catch
+            {
+                if (langindex == "0")
+                {
+                    string msg = "Ошибка в измененном значении объема: \r\n" + "Сначала начните запись, затем переместите ползунок громкости.";
+                    MessageBox.Show(msg);
+                    Debug.WriteLine(msg);
+                }
+                else
+                {
+                    string msg = "Error in Volume Value Changed: \r\n" + "Start recording first, then move the volume slider.";
+                    MessageBox.Show(msg);
+                    Debug.WriteLine(msg);
+                }
+            }
+        }
+
+        private void slVol3_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            try
+            {
+                mDsp2.GainDB = (float)slVol3.Value;
+                lbVolValue3.Content = (int)slVol3.Value;
+            }
+            catch
+            {
+                if (langindex == "0")
+                {
+                    string msg = "Ошибка в измененном значении объема: \r\n" + "Сначала начните запись, затем переместите ползунок громкости.";
+                    MessageBox.Show(msg);
+                    Debug.WriteLine(msg);
+                }
+                else
+                {
+                    string msg = "Error in Volume Value Changed: \r\n" + "Start recording first, then move the volume slider.";
+                    MessageBox.Show(msg);
+                    Debug.WriteLine(msg);
+                }
+            }
+        }
+
+        private void slVol4_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            try
+            {
+                mDsp3.GainDB = (float)slVol4.Value;
+                lbVolValue4.Content = (int)slVol4.Value;
+            }
+            catch
+            {
+                if (langindex == "0")
+                {
+                    string msg = "Ошибка в измененном значении объема: \r\n" + "Сначала начните запись, затем переместите ползунок громкости.";
+                    MessageBox.Show(msg);
+                    Debug.WriteLine(msg);
+                }
+                else
+                {
+                    string msg = "Error in Volume Value Changed: \r\n" + "Start recording first, then move the volume slider.";
+                    MessageBox.Show(msg);
+                    Debug.WriteLine(msg);
+                }
+            }
+        }
+
+        private void slEq_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            var trackbar = sender as Slider;
+            if (mEqualizer != null && trackbar != null)
+            {
+                double perc = (trackbar.Value / (double)trackbar.Maximum);
+                var value = (float)(perc * MaxDB);
+
+                int filterIndex = Int32.Parse((string)trackbar.Tag);
+                EqualizerFilter filter = mEqualizer.SampleFilters[filterIndex];
+                filter.AverageGainDB = value;
+                if (filter.AverageFrequency == mDsp.freq)
+                {
+                    if (filter.AverageGainDB == FrequencyUtils.magn)
+                    {
+
+                    }
+                }
+                //filter.AverageFrequency = value;
+                lbVolValue1.Content = (int)slVol1.Value;
+                lbVolValue2.Content = (int)slVol2.Value;
+                lbVolValue3.Content = (int)slVol3.Value;
+                lbVolValue4.Content = (int)slVol4.Value;
+                lbVolValue5.Content = (int)slVol5.Value;
+                lbVolValue6.Content = (int)slVol6.Value;
+                lbVolValue7.Content = (int)slVol7.Value;
+                lbVolValue8.Content = (int)slVol8.Value;
+                lbVolValue9.Content = (int)slVol9.Value;
+                lbVolValue10.Content = (int)slVol10.Value;
             }
         }
 
@@ -804,7 +983,22 @@ namespace SimpleNeurotuner
             Mixer();
             mMp3 = CodecFactory.Instance.GetCodec(@"Record\" + myfile).ToStereo().ToSampleSource();
             mMixer.AddSource(mMp3.ChangeSampleRate(mMixer.WaveFormat.SampleRate).ToWaveSource(16).Loop().ToSampleSource());
+            /*do
+            {
+                Mixer();
+                mMp3 = CodecFactory.Instance.GetCodec(@"Record\" + myfile).ToStereo().ToSampleSource();
+                mMixer.AddSource(mMp3.ChangeSampleRate(mMixer.WaveFormat.SampleRate));
+                //open the selected file
+                /*ISampleSource source = CodecFactory.Instance.GetCodec(openFileDialog.FileName)
+                    .ToSampleSource()
+                    .AppendSource(x => new PitchShifter(x), out _pitchShifter);
 
+                //play the audio
+
+                await Task.Run(() => SoundOut());
+
+                Thread.Sleep(800);
+            } while (click != 0);*/
             await Task.Run(() => SoundOut());
         }
 
