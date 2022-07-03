@@ -10,7 +10,7 @@ using CSCore.SoundIn;//Вход звука
 using CSCore.SoundOut;//Выход звука
 using CSCore.CoreAudioAPI;
 using CSCore.Streams;
-//using CSCore.Streams.Effects;
+
 using CSCore.Codecs;
 using CSCore.Codecs.WAV;
 using System.Windows.Controls;
@@ -18,17 +18,18 @@ using System.Windows.Media;
 using System.Threading;
 using System.Diagnostics;
 using System.IO;
-//using System.Drawing;
 
 using WinformsVisualization.Visualization;
 using Microsoft.DirectX.DirectSound;
 using Buffer = Microsoft.DirectX.DirectSound.Buffer;
 using System.Runtime.InteropServices;
 using System.Windows.Media.Imaging;
-//using System.Drawing;
+
 using System.Windows.Threading;
 using CSCore.DSP;
 using System.Windows.Shapes;
+using System.Globalization;
+using Intersoft.Crosslight;
 
 namespace SimpleNeurotuner
 {
@@ -58,7 +59,7 @@ namespace SimpleNeurotuner
         /// рисование спектра
         /// </summary>
         private LineSpectrum mLineSpectrum;
-        private VoicePrint3DSpectrum mVoicePrint3DSpectrum;
+        //private VoicePrint3DSpectrum mVoicePrint3DSpectrum;
         private int mXpos;
 
         string folder = "Record";
@@ -94,7 +95,114 @@ namespace SimpleNeurotuner
             worker.WorkerSupportsCancellation = true;
             worker.DoWork += worker_DoWork;
             worker.ProgressChanged += worker_ProgressChanged;
+
+            int Np = 30;
+            double[] Data1 = new double[Np + 1];
+
+            for (int i = 0; i < Np; i++)
+            {
+                Data1[i] = Math.Sin(i / 5.0) + 1;
+            }
+
+            DrawingGroup mDrawingGroup = new DrawingGroup();
+
+            for (int DrawingStage = 0; DrawingStage < 10; DrawingStage++)
+            {
+                GeometryDrawing drw = new GeometryDrawing();
+                GeometryGroup gg = new GeometryGroup();
+
+                //Background
+                if( DrawingStage == 1)
+                {
+                    drw.Brush = Brushes.Beige;
+                    drw.Pen = new Pen(Brushes.LightGray, 0.01);
+
+                    RectangleGeometry myRectGeometry = new RectangleGeometry();
+                    myRectGeometry.Rect = new Rect(0, 0, 1, 1);
+                    gg.Children.Add(myRectGeometry);
+                }
+
+                //Мелкая сетка
+                if ( DrawingStage == 2)
+                {
+                    drw.Brush = Brushes.Beige;
+                    drw.Pen = new Pen(Brushes.Gray, 0.003);
+
+                    DoubleCollection dashes = new DoubleCollection();
+                    for(int i = 1; i < 10; i++)
+                        dashes.Add(0.1);
+                    drw.Pen.DashStyle = new DashStyle(dashes, 0);
+
+                    drw.Pen.EndLineCap = PenLineCap.Round;
+                    drw.Pen.StartLineCap = PenLineCap.Round;
+                    drw.Pen.DashCap = PenLineCap.Round;
+
+                    for(int i = 0; i < 10; i++)
+                    {
+                        LineGeometry myRectGeometry = new LineGeometry(new Point(1.1, i * 0.1), new Point(-0.1, i * 0.1));
+                        gg.Children.Add(myRectGeometry);
+                    }
+                }
+
+                //график #1
+                if(DrawingStage == 3)
+                {
+                    drw.Brush = Brushes.White;
+                    drw.Pen = new Pen(Brushes.Black, 0.005);
+
+                    gg = new GeometryGroup();
+                    for(int i = 0; i < Np; i++)
+                    {
+                        LineGeometry l = new LineGeometry(new Point((double)i / (double)Np, 1.0 - (Data1[i] / 2.0)),
+                            new Point((double)(i + 1) / (double)Np, 1.0 - (Data1[i + 1] / 2.0)));
+                        gg.Children.Add(l);
+                    }
+                }
+
+                //обрезка лишнего
+                if (DrawingStage == 5)
+                {
+                    drw.Brush = Brushes.Transparent;
+                    drw.Pen = new Pen(Brushes.White, 0.2);
+
+                    RectangleGeometry myRectGeometry = new RectangleGeometry();
+                    myRectGeometry.Rect = new Rect(-0.1, -0.1, 1.2, 1.2);
+                    gg.Children.Add(myRectGeometry);
+                }
+
+                //Рамка
+                if(DrawingStage == 6)
+                {
+                    drw.Brush = Brushes.Transparent;
+                    drw.Pen = new Pen(Brushes.LightGray, 0.01);
+
+                    RectangleGeometry myRectGeometry = new RectangleGeometry();
+                    myRectGeometry.Rect = new Rect(0, 0, 1, 1);
+                    gg.Children.Add(myRectGeometry);
+                }
+
+                //Надписи
+                if(DrawingStage == 7)
+                {
+                    drw.Brush = Brushes.LightGray;
+                    drw.Pen = new Pen(Brushes.Gray, 0.003);
+
+                    for(int i = 1; i < 10; i++)
+                    {
+                        FormattedText formattedText = new FormattedText(
+                            ((double)(1-i+0.1)).ToString(),
+                            CultureInfo.GetCultureInfo("en-us"),
+                            FlowDirection.LeftToRight,
+                            new Typeface("Verdana"),
+                            0.05,
+                            Brushes.Black);
+
+
+                    }
+                }
+            }
         }
+
         void worker_DoWork(object sender, DoWorkEventArgs e)
         {
             for (int i = 0; i < 100; i++)
@@ -254,7 +362,7 @@ namespace SimpleNeurotuner
             mSource = notificationSource.ToWaveSource(16);
         }
 
-        private void GenerateLineSpectrum()
+        /*private void GenerateLineSpectrum()
         {
             ImageSource image = IMGSpectr.Source;
             var newImage = mLineSpectrum.CreateSpectrumLine(IMGSpectr.RenderSize, System.Drawing.Color.Green, System.Drawing.Color.Red, System.Drawing.Color.Black, true);
@@ -264,10 +372,10 @@ namespace SimpleNeurotuner
                 IMGSpectr.Source = BitmapImageSource.ChangeBitmapToImageSource(newImage);   
                 if(image != null)
                 {
-                    //image.
-                }
+                    DependencyProperty property = null;
+                    image.ClearValue(property);                }
             }
-        }
+        }*/
 
         /*private void PictRectangle(double znach, int x, int y)
         {
@@ -303,7 +411,7 @@ namespace SimpleNeurotuner
                 //Init DSP для смещения высоты тона
                 mDsp = new SampleDSP(source.ToSampleSource().ToStereo());
                 mDsp.GainDB = (float)slVolume.Value;
-
+                //SetupSampleSource(mDsp);
                 
 
                 //SetPitchShiftValue();
@@ -318,7 +426,7 @@ namespace SimpleNeurotuner
                 //Запускает устройство воспроизведения звука с задержкой 1 мс.
                 await Task.Run(() => SoundOut());
 
-                timer1.Start();
+               
                 //return true;
                 //Thread.Sleep(2000);
                 //mDsp.PitchShift = 0;
@@ -336,12 +444,17 @@ namespace SimpleNeurotuner
             //return false;
         }
 
+        private void timer1_Tick(object sender, EventArgs e)
+        {
+            //GenerateLineSpectrum();
+        }
+
         private void SoundOut()
         {
             mSoundOut = new WasapiOut(/*false, AudioClientShareMode.Exclusive, 1*/);
             //mSoundOut.Device = mOutputDevices[cmbOutput.SelectedIndex];
             mSoundOut.Initialize(mMixer.ToWaveSource(16));
-            //mSoundOut.Initialize(mSource);
+             //mSoundOut.Initialize(mSource);
             mSoundOut.Play();
         }
 

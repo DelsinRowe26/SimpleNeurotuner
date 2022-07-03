@@ -43,6 +43,9 @@
     <Reference Include="CSCore">
       <HintPath>.\CSCore.dll</HintPath>
     </Reference>
+    <Reference Include="Intersoft.Crosslight, Version=6.0.5000.1, Culture=neutral, PublicKeyToken=71f3e3261ac778b5, processorArchitecture=MSIL">
+      <HintPath>..\packages\Intersoft.Crosslight.6.0.5000.975\lib\Intersoft.Crosslight.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.DirectX, Version=1.0.2902.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>.\Microsoft.DirectX.dll</HintPath>
@@ -104,7 +107,6 @@
     <Compile Include="Visualization\LineSpectrum.cs" />
     <Compile Include="Visualization\ScalingStrategy.cs" />
     <Compile Include="Visualization\SpectrumBase.cs" />
-    <Compile Include="Visualization\VoicePrint3DSpectrum.cs" />
     <Compile Include="WelcomeWindow.xaml.cs">
       <DependentUpon>WelcomeWindow.xaml</DependentUpon>
     </Compile>
@@ -158,6 +160,7 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

@@ -107,7 +107,7 @@ namespace SimpleNeurotuner
 
         private static int[] FindPeaks(double[] values, int index, int length, int peaksCount)
         {
-            MainWindow mainWindow = new MainWindow();
+            //MainWindow mainWindow = new MainWindow();
             //mainWindow.Magn = 0;
             double[] peakValues = new double[peaksCount];
             int[] peakIndices = new int[peaksCount];
@@ -142,7 +142,7 @@ namespace SimpleNeurotuner
                         if (minStoredPeak > peakValues[j])
                         {
                             minStoredPeak = peakValues[minIndex = j];
-                            mainWindow.Magn = peakValues[minIndex = j];
+                            //mainWindow.Magn = peakValues[minIndex = j];
                         }
                     }
                 }
