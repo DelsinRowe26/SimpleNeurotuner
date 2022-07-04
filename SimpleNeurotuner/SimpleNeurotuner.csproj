@@ -102,6 +102,7 @@
     <Compile Include="Help.xaml.cs">
       <DependentUpon>Help.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Visualization1.cs" />
     <Compile Include="Visualization\BasicSpectrumProvider.cs" />
     <Compile Include="Visualization\GradientCalculator.cs" />
     <Compile Include="Visualization\ISpectrumProvider.cs" />
@@ -177,6 +178,10 @@
     <Resource Include="Icon.ico" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\AudioAnalyzer\AudioAnalyzer.csproj">
+      <Project>{843950b1-80e0-4383-9f22-59e09c42f487}</Project>
+      <Name>AudioAnalyzer</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SoundAnalysis\SoundAnalysis.csproj">
       <Project>{aba54dc3-324b-49de-b79e-c4f573306e4f}</Project>
       <Name>SoundAnalysis</Name>

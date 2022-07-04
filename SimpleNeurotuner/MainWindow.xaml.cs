@@ -19,9 +19,10 @@ using System.Threading;
 using System.Diagnostics;
 using System.IO;
 
+using AudioAnalyzer;
 using WinformsVisualization.Visualization;
-using Microsoft.DirectX.DirectSound;
-using Buffer = Microsoft.DirectX.DirectSound.Buffer;
+//using Microsoft.DirectX.DirectSound;
+//using Buffer = Microsoft.DirectX.DirectSound.Buffer;
 using System.Runtime.InteropServices;
 using System.Windows.Media.Imaging;
 
@@ -74,6 +75,7 @@ namespace SimpleNeurotuner
         string cutmyfile;
         public int index = 1;
         string langindex;
+        double[] magnRec;
         string FileName, cutFileName;
         DispatcherTimer timer1 = new DispatcherTimer();
         private System.Windows.Point startPoint;
@@ -421,28 +423,10 @@ namespace SimpleNeurotuner
                 mSoundIn.Device = mInputDevices[cmbInput.SelectedIndex];
                 mSoundIn.Initialize();
 
-                var source = new SoundInSource(mSoundIn) { FillWithZeros = true };
-                
-                /*var source1 = BandPassFilter(mSoundIn, 44100, 60, 600);
-                var source2 = BandPassFilter(mSoundIn, 44100, 601, 1200);
-                var source3 = BandPassFilter(mSoundIn, 44100, 1201, 2400);
-                var source4 = BandPassFilter(mSoundIn, 44100, 2401, 4800);
-                var source5 = BandPassFilter(mSoundIn, 44100, 4801, 8000);*/
+                var source = new SoundInSource(mSoundIn) { FillWithZeros = true };               
 
                 //Init DSP для смещения высоты тона
                 mDsp = new SampleDSP(source.ToSampleSource()/*.AppendSource(Equalizer.Create10BandEqualizer, out mEqualizer)*/.ToStereo());
-
-                /*mDsp1 = new SampleDSP(source2.ToStereo());
-                mDsp2 = new SampleDSP(source3.ToStereo());
-                mDsp3 = new SampleDSP(source4.ToStereo());
-                mDsp4 = new SampleDSP(source5.ToStereo());
-                mDsp.GainDB = (float)slVol1.Value;
-                mDsp1.GainDB = (float)slVol2.Value;
-                mDsp2.GainDB = (float)slVol3.Value;
-                mDsp3.GainDB = (float)slVol4.Value;
-                mDsp4.GainDB = (float)slVol5.Value;*/
-                //SetupSampleSource(mDsp);
-
 
                 //SetPitchShiftValue();
                 mSoundIn.Start();
@@ -451,16 +435,11 @@ namespace SimpleNeurotuner
                 Mixer();
 
                 //Добавляем наш источник звука в микшер
-                mMixer.AddSource(/*source.ToSampleSource().ToStereo()*/mDsp.ChangeSampleRate(mMixer.WaveFormat.SampleRate));
-                /*mMixer.AddSource(/*source.ToSampleSource().ToStereo()mDsp1.ChangeSampleRate(mMixer.WaveFormat.SampleRate));
-                mMixer.AddSource(/*source.ToSampleSource().ToStereo()mDsp2.ChangeSampleRate(mMixer.WaveFormat.SampleRate));
-                mMixer.AddSource(/*source.ToSampleSource().ToStereo()mDsp3.ChangeSampleRate(mMixer.WaveFormat.SampleRate));
-                mMixer.AddSource(/*source.ToSampleSource().ToStereo()mDsp4.ChangeSampleRate(mMixer.WaveFormat.SampleRate));*/
+                mMixer.AddSource(mDsp.ChangeSampleRate(mMixer.WaveFormat.SampleRate));
                 
                 //Запускает устройство воспроизведения звука с задержкой 1 мс.
                 await Task.Run(() => SoundOut());
 
-               
                 //return true;
                 //Thread.Sleep(2000);
                 //mDsp.PitchShift = 0;
@@ -527,15 +506,51 @@ namespace SimpleNeurotuner
             } while (click != 0);*/
         }
 
+        public float[] FloatArrayFromByteArray(byte[] byteWav)
+        {
+            float[] buffer = new float[byteWav.Length / 4];
+            Buffer.BlockCopy(byteWav, 0, buffer, 0, byteWav.Length);
+            return buffer;
+        }
+
+        public float[] readAmplitudeValues(string filename)
+        {
+            var file = File.OpenRead(filename);
+            int MSB, LSB;
+            byte[] buffer = new byte[file.Length];
+            file.Read(buffer, 0, buffer.Length);
+            float[] data = new float[buffer.Length / 2];
+
+            for(int i = 0; i < buffer.Length; i += 2)
+            {
+                if(filename != null)
+                {
+                    MSB = buffer[i * 2];
+                    LSB = buffer[i * 2 + 1];
+                }
+                else
+                {
+                    LSB = buffer[i * 2];
+                    MSB = buffer[i * 2 + 1];
+                }
+                data[i] = ((MSB << 8) | LSB) / 32768;
+            }
+
+            return data;
+        }
+
         private void btnStop_Click(object sender, RoutedEventArgs e)
         {
             Stop();
             click = 0;
             audioclick = 0;
-            if (audioclick == 0)
+            if (cmbModes.SelectedIndex == 0)
             {
-                SaveDeleteWindow saveDelete = new SaveDeleteWindow();
-                saveDelete.Show();
+                if (audioclick == 0)
+                {
+                    SaveDeleteWindow saveDelete = new SaveDeleteWindow();
+                    saveDelete.Show();
+                }
             }
         }
 
@@ -808,14 +823,7 @@ namespace SimpleNeurotuner
                 int filterIndex = Int32.Parse((string)trackbar.Tag);
                 EqualizerFilter filter = mEqualizer.SampleFilters[filterIndex];
                 filter.AverageGainDB = value;
-                if (filter.AverageFrequency == mDsp.freq)
-                {
-                    if (filter.AverageGainDB == FrequencyUtils.magn)
-                    {
-
-                    }
-                }
-                //filter.AverageFrequency = value;
+                
                 lbVolValue1.Content = (int)slVol1.Value;
                 lbVolValue2.Content = (int)slVol2.Value;
                 lbVolValue3.Content = (int)slVol3.Value;
@@ -1008,10 +1016,17 @@ namespace SimpleNeurotuner
             {
                 //unsafe
                 {
+                    double closestFreq;
                     int[] Rdat = new int[150000];
                     int Ndt;
                     int Ww, Hw,k,ik,dWw,dHw;
                     filename = @"Record\" + cmbRecord.SelectedItem.ToString();
+                    if ((filename != "Record\\Select a record") && (filename != "Record\\Выберите запись"))
+                    {
+                        PitchShifter.FindClosestNote(FrequencyUtils.FindFundamentalFrequency(FloatArrayFromByteArray(File.ReadAllBytes(filename)), mMp3.WaveFormat.SampleRate, 60, 24000), out closestFreq);
+                        File.AppendAllText("FreqRecord.txt", FrequencyUtils.FindFundamentalFrequency(FloatArrayFromByteArray(File.ReadAllBytes(filename)), mMp3.WaveFormat.SampleRate, 60, 24000).ToString() + "\n");
+                        File.WriteAllText("FreqClosestRec.txt", closestFreq.ToString());
+                    }
                     if ((filename != "Record\\Select a record") && (filename != "Record\\Выберите запись"))
                     {
                         worker.RunWorkerAsync();
