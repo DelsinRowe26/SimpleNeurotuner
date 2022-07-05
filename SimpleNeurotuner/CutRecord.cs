@@ -57,7 +57,8 @@ namespace SimpleNeurotuner
             byte[] buffer = new byte[headerSize];
             fileStream.Read(buffer, 0, headerSize);
             IntPtr headerPtr = Marshal.AllocHGlobal(headerSize);
-
+            //ReadWav();
+            
             
 
             //PitchShifter.PitchShift(0, 2, waveFileReader.Chunks.Count, 2048, 4, (byte)waveFileReader.WaveFormat.SampleRate, buffer);

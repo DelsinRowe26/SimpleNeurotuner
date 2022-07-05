@@ -1,16 +1,18 @@
 ﻿using System;
+using System.Collections.Generic;
 using CSCore;
-using System.IO;
-using CSCore.Codecs.WAV;
+using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
+using System.IO;
 
 namespace SimpleNeurotuner
 {
-    class SampleDSP: ISampleSource
+    class SampleDSPRecord : ISampleSource
     {
         ISampleSource mSource;
         public float[] freq;
-        public SampleDSP(ISampleSource source)
+        public SampleDSPRecord(ISampleSource source)
         {
             if (source == null)
                 throw new ArgumentNullException("source");
@@ -23,24 +25,24 @@ namespace SimpleNeurotuner
             double closestfreq = 0;
             float gainAmplification = (float)(Math.Pow(10.0, GainDB / 20.0));//получить Усиление
             int samples = mSource.Read(buffer, offset, count);//образцы
-            //if (gainAmplification != 1.0f) 
-            //{
-                for (int i = offset; i < offset + samples; i++)
-                {
-                    buffer[i] = Math.Max(Math.Min(buffer[i] * gainAmplification, 1), -1);
-                    //buffer1[i] = (double)buffer[i];
-                    
-                }
+                                                              //if (gainAmplification != 1.0f) 
+                                                              //{
+            for (int i = offset; i < offset + samples; i++)
+            {
+                buffer[i] = Math.Max(Math.Min(buffer[i] * gainAmplification, 1), -1);
+                //buffer1[i] = (double)buffer[i];
+
+            }
             freq = buffer;
             //await Task.Run(() => FrequencyUtils.FindFundamentalFrequency(buffer, mSource.WaveFormat.SampleRate, 31, 16000));
-            FrequencyUtils.FindFundamentalFrequency(buffer, mSource.WaveFormat.SampleRate, 31, 16000);
+            FrequencyUtilsRec.FindFundamentalFrequency(buffer, mSource.WaveFormat.SampleRate, 31, 16000);
             //freq = FrequencyUtils.FindFundamentalFrequency(buffer, mSource.WaveFormat.SampleRate, 31, 16000);
             //await Task.Run(() => PitchShifter.FindClosestNote(FrequencyUtils.FindFundamentalFrequency(buffer, mSource.WaveFormat.SampleRate, 31, 16000), out closestfreq));
-            PitchShifter.FindClosestNote(FrequencyUtils.FindFundamentalFrequency(buffer, mSource.WaveFormat.SampleRate, 31, 16000), out closestfreq);
+            PitchShifter.FindClosestNote(FrequencyUtilsRec.FindFundamentalFrequency(buffer, mSource.WaveFormat.SampleRate, 31, 16000), out closestfreq);
             //await Task.Run(() => File.WriteAllText("ClosestFreq.txt", closestfreq.ToString()));
-            File.WriteAllText("ClosestFreq.txt", closestfreq.ToString());
+            File.WriteAllText("FreqClosestRec.txt", closestfreq.ToString());
             //await Task.Run(() => File.AppendAllText("Freq.txt", FrequencyUtils.FindFundamentalFrequency(buffer, mSource.WaveFormat.SampleRate, 31, 16000).ToString("f3") + "\n"));
-            File.AppendAllText("Freq.txt", FrequencyUtils.FindFundamentalFrequency(buffer, mSource.WaveFormat.SampleRate, 31, 16000).ToString("f3") + "\n");
+            File.AppendAllText("FreqRecord.txt", FrequencyUtilsRec.FindFundamentalFrequency(buffer, mSource.WaveFormat.SampleRate, 31, 16000).ToString("f3") + "\n");
             //}
             if (PitchShift != 1.0f)
             {
@@ -48,7 +50,7 @@ namespace SimpleNeurotuner
                 PitchShifter.PitchShift(PitchShift, offset, count, 4096, 4, mSource.WaveFormat.SampleRate, buffer);
 
             }
-          
+
             return samples;
         }
 
@@ -87,10 +89,5 @@ namespace SimpleNeurotuner
         {
             if (mSource != null) mSource.Dispose();
         }
-
-        /*public int Read(float[] buffer, int offset, int count)
-        {
-            return mSource.Read(buffer, offset, count);
-        }*/
     }
 }

@@ -55,7 +55,8 @@ namespace SimpleNeurotuner
         //private Equalizer equalizer;
         private WasapiOut mSoundOut;
         private WasapiCapture mSoundIn;
-        private SampleDSP mDsp, mDsp1, mDsp2, mDsp3, mDsp4;
+        private SampleDSP mDsp;
+        private SampleDSPRecord mDspRec;
         string[] file1 = File.ReadAllLines("window.tmp");
         /// <summary>
         /// рисование спектра
@@ -79,6 +80,7 @@ namespace SimpleNeurotuner
         string FileName, cutFileName;
         DispatcherTimer timer1 = new DispatcherTimer();
         private System.Windows.Point startPoint;
+        //public Image ImgSpectr;
         private System.Windows.Shapes.Rectangle rectangle;
         //private PitchShifter _pitchShifter;
 
@@ -101,7 +103,7 @@ namespace SimpleNeurotuner
             worker.DoWork += worker_DoWork;
             worker.ProgressChanged += worker_ProgressChanged;
 
-            int Np = 30;
+            int Np = 120;
             double[] Data1 = new double[Np + 1];
 
             for (int i = 0; i < Np; i++)
@@ -123,7 +125,7 @@ namespace SimpleNeurotuner
                     drw.Pen = new Pen(Brushes.LightGray, 0.01);
 
                     RectangleGeometry myRectGeometry = new RectangleGeometry();
-                    myRectGeometry.Rect = new Rect(0, 0, 1, 1);
+                    myRectGeometry.Rect = new Rect(0, 0, 4, 2);
                     gg.Children.Add(myRectGeometry);
                 }
 
@@ -144,7 +146,7 @@ namespace SimpleNeurotuner
 
                     for(int i = 0; i < 10; i++)
                     {
-                        LineGeometry myRectGeometry = new LineGeometry(new Point(1.1, i * 0.1), new Point(-0.1, i * 0.1));
+                        LineGeometry myRectGeometry = new LineGeometry(new Point(4.1, i * 0.2), new Point(-0.1, i * 0.2));
                         gg.Children.Add(myRectGeometry);
                     }
                 }
@@ -158,8 +160,10 @@ namespace SimpleNeurotuner
                     gg = new GeometryGroup();
                     for(int i = 0; i < Np; i++)
                     {
-                        LineGeometry l = new LineGeometry(new Point((double)i / (double)Np, 1.0 - (Data1[i] / 2.0)),
-                            new Point((double)(i + 1) / (double)Np, 1.0 - (Data1[i + 1] / 2.0)));
+                        /*LineGeometry l = new LineGeometry(new Point((double)(i + 1) / (double)Np, 2.0 - (Data1[i] / 2.0)),
+                            new Point((double)(i + 1) / (double)Np, 1.0 - (Data1[i + 1] / 2.0)));*/
+                        LineGeometry l = new LineGeometry(new Point((double)(i * 2 + 1)/(double)(Np-60), 2.0 - (Data1[i] / 2.0)),
+                            new Point((double)(i * 2 + 1) / (double)(Np - 60), 1.0 - (Data1[i + 1] / 2.0)));
                         gg.Children.Add(l);
                     }
                 }
@@ -171,7 +175,7 @@ namespace SimpleNeurotuner
                     drw.Pen = new Pen(Brushes.White, 0.2);
 
                     RectangleGeometry myRectGeometry = new RectangleGeometry();
-                    myRectGeometry.Rect = new Rect(-0.1, -0.1, 1.2, 1.2);
+                    myRectGeometry.Rect = new Rect(-0.1, -0.1, 4.2, 2.2);
                     gg.Children.Add(myRectGeometry);
                 }
 
@@ -182,7 +186,7 @@ namespace SimpleNeurotuner
                     drw.Pen = new Pen(Brushes.LightGray, 0.01);
 
                     RectangleGeometry myRectGeometry = new RectangleGeometry();
-                    myRectGeometry.Rect = new Rect(0, 0, 1, 1);
+                    myRectGeometry.Rect = new Rect(0, 0, 4, 2);
                     gg.Children.Add(myRectGeometry);
                 }
 
@@ -192,20 +196,27 @@ namespace SimpleNeurotuner
                     drw.Brush = Brushes.LightGray;
                     drw.Pen = new Pen(Brushes.Gray, 0.003);
 
-                    for(int i = 1; i < 10; i++)
+                    for(int i = 1; i < 20; i+=2)
                     {
                         FormattedText formattedText = new FormattedText(
-                            ((double)(1-i+0.1)).ToString(),
+                            ((double)(10-i+0.1)).ToString(),
                             CultureInfo.GetCultureInfo("en-us"),
                             FlowDirection.LeftToRight,
                             new Typeface("Verdana"),
-                            0.05,
+                            0.09,
                             Brushes.Black);
 
+                        formattedText.SetFontWeight(FontWeights.Bold);
 
+                        Geometry geometry = formattedText.BuildGeometry(new Point(-0.2, i * 0.1 - 0.03));
+                        gg.Children.Add(geometry);
                     }
                 }
+
+                drw.Geometry = gg;
+                mDrawingGroup.Children.Add(drw);
             }
+            ImgSpectr.Source = new DrawingImage(mDrawingGroup);
         }
 
         void worker_DoWork(object sender, DoWorkEventArgs e)
@@ -313,7 +324,7 @@ namespace SimpleNeurotuner
                 if (mMixer != null)
                 {
                     mMixer.Dispose();
-                    mMp3.ToWaveSource(16).Loop().ToSampleSource().Dispose();
+                    //mMp3.ToWaveSource(16).Loop().ToSampleSource().Dispose();
                     mMixer = null;
                 }
                 if (mSoundOut != null)
@@ -335,6 +346,7 @@ namespace SimpleNeurotuner
                 }
                 if (mMp3 != null)
                 {
+                    mDspRec.Dispose();
                     mMp3.Dispose();
                     mMp3 = null;
                 }
@@ -457,11 +469,6 @@ namespace SimpleNeurotuner
             //return false;
         }
 
-        private void timer1_Tick(object sender, EventArgs e)
-        {
-            //GenerateLineSpectrum();
-        }
-
         private void SoundOut()
         {
             mSoundOut = new WasapiOut(/*false, AudioClientShareMode.Exclusive, 1*/);
@@ -477,11 +484,11 @@ namespace SimpleNeurotuner
             if (click != 0)
             {
                 Mixer();
-                mMp3 = CodecFactory.Instance.GetCodec(filename).ToStereo().ToSampleSource().AppendSource(Equalizer.Create10BandEqualizer, out mEqualizer);
-                //mDsp1 = new SampleDSP(mMp3.ToWaveSource(16).ToSampleSource());
+                mMp3 = CodecFactory.Instance.GetCodec(filename).ToStereo().ToSampleSource()/*.AppendSource(Equalizer.Create10BandEqualizer, out mEqualizer)*/;
+                mDspRec = new SampleDSPRecord(mMp3.ToWaveSource(16).ToSampleSource());
                 //mDsp1.GainDB = (float)slVolume.Value;
-                mMixer.AddSource(mMp3.ChangeSampleRate(mMixer.WaveFormat.SampleRate).ToWaveSource(16).Loop().ToSampleSource());
-
+                //mMixer.AddSource(mMp3.ChangeSampleRate(mMixer.WaveFormat.SampleRate).ToWaveSource(16).Loop().ToSampleSource());
+                mMixer.AddSource(mDspRec.ChangeSampleRate(mMixer.WaveFormat.SampleRate).ToWaveSource(16).Loop().ToSampleSource());
                 await Task.Run(() => SoundOut());
             }
             else
@@ -504,39 +511,6 @@ namespace SimpleNeurotuner
 
                 Thread.Sleep(900);
             } while (click != 0);*/
-        }
-
-        public float[] FloatArrayFromByteArray(byte[] byteWav)
-        {
-            float[] buffer = new float[byteWav.Length / 4];
-            Buffer.BlockCopy(byteWav, 0, buffer, 0, byteWav.Length);
-            return buffer;
-        }
-
-        public float[] readAmplitudeValues(string filename)
-        {
-            var file = File.OpenRead(filename);
-            int MSB, LSB;
-            byte[] buffer = new byte[file.Length];
-            file.Read(buffer, 0, buffer.Length);
-            float[] data = new float[buffer.Length / 2];
-
-            for(int i = 0; i < buffer.Length; i += 2)
-            {
-                if(filename != null)
-                {
-                    MSB = buffer[i * 2];
-                    LSB = buffer[i * 2 + 1];
-                }
-                else
-                {
-                    LSB = buffer[i * 2];
-                    MSB = buffer[i * 2 + 1];
-                }
-                data[i] = ((MSB << 8) | LSB) / 32768;
-            }
-
-            return data;
         }
 
         private void btnStop_Click(object sender, RoutedEventArgs e)
@@ -604,30 +578,6 @@ namespace SimpleNeurotuner
         {
             Window1 window1 = new Window1();
             window1.Show();
-        }
-
-        private void slVol1_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
-        {
-            try
-            {
-                mDsp.GainDB = (float)slVol1.Value;
-                lbVolValue1.Content = (int)slVol1.Value;
-            }
-            catch
-            {
-                if (langindex == "0")
-                {
-                    string msg = "Ошибка в измененном значении объема: \r\n" + "Сначала начните запись, затем переместите ползунок громкости.";
-                    MessageBox.Show(msg);
-                    Debug.WriteLine(msg);
-                }
-                else
-                {
-                    string msg = "Error in Volume Value Changed: \r\n" + "Start recording first, then move the volume slider.";
-                    MessageBox.Show(msg);
-                    Debug.WriteLine(msg);
-                }
-            }
         }
 
         private void btnRecord_MouseMove(object sender, MouseEventArgs e)
@@ -712,102 +662,6 @@ namespace SimpleNeurotuner
                 {
                     string msg = "An error occurred, if it popped up,\nsomething is broken,\nor you deleted something you needed.";
                     MessageBox.Show(msg);
-                }
-            }
-        }
-
-        private void slVol5_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
-        {
-            try
-            {
-                mDsp4.GainDB = (float)slVol5.Value;
-                lbVolValue5.Content = (int)slVol5.Value;
-            }
-            catch
-            {
-                if (langindex == "0")
-                {
-                    string msg = "Ошибка в измененном значении объема: \r\n" + "Сначала начните запись, затем переместите ползунок громкости.";
-                    MessageBox.Show(msg);
-                    Debug.WriteLine(msg);
-                }
-                else
-                {
-                    string msg = "Error in Volume Value Changed: \r\n" + "Start recording first, then move the volume slider.";
-                    MessageBox.Show(msg);
-                    Debug.WriteLine(msg);
-                }
-            }
-        }
-
-        private void slVol2_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
-        {
-            try
-            {
-                mDsp1.GainDB = (float)slVol2.Value;
-                lbVolValue2.Content = (int)slVol2.Value;
-            }
-            catch
-            {
-                if (langindex == "0")
-                {
-                    string msg = "Ошибка в измененном значении объема: \r\n" + "Сначала начните запись, затем переместите ползунок громкости.";
-                    MessageBox.Show(msg);
-                    Debug.WriteLine(msg);
-                }
-                else
-                {
-                    string msg = "Error in Volume Value Changed: \r\n" + "Start recording first, then move the volume slider.";
-                    MessageBox.Show(msg);
-                    Debug.WriteLine(msg);
-                }
-            }
-        }
-
-        private void slVol3_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
-        {
-            try
-            {
-                mDsp2.GainDB = (float)slVol3.Value;
-                lbVolValue3.Content = (int)slVol3.Value;
-            }
-            catch
-            {
-                if (langindex == "0")
-                {
-                    string msg = "Ошибка в измененном значении объема: \r\n" + "Сначала начните запись, затем переместите ползунок громкости.";
-                    MessageBox.Show(msg);
-                    Debug.WriteLine(msg);
-                }
-                else
-                {
-                    string msg = "Error in Volume Value Changed: \r\n" + "Start recording first, then move the volume slider.";
-                    MessageBox.Show(msg);
-                    Debug.WriteLine(msg);
-                }
-            }
-        }
-
-        private void slVol4_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
-        {
-            try
-            {
-                mDsp3.GainDB = (float)slVol4.Value;
-                lbVolValue4.Content = (int)slVol4.Value;
-            }
-            catch
-            {
-                if (langindex == "0")
-                {
-                    string msg = "Ошибка в измененном значении объема: \r\n" + "Сначала начните запись, затем переместите ползунок громкости.";
-                    MessageBox.Show(msg);
-                    Debug.WriteLine(msg);
-                }
-                else
-                {
-                    string msg = "Error in Volume Value Changed: \r\n" + "Start recording first, then move the volume slider.";
-                    MessageBox.Show(msg);
-                    Debug.WriteLine(msg);
                 }
             }
         }
@@ -936,11 +790,6 @@ namespace SimpleNeurotuner
             }
         }
 
-        public void tbFreq_TextChanged(object sender, TextChangedEventArgs e)
-        {
-
-        }
-
         private void SimpleNeurotuner_Activated(object sender, EventArgs e)
         {
             string[] text = File.ReadAllLines("Data_Load.dat");
@@ -1021,12 +870,6 @@ namespace SimpleNeurotuner
                     int Ndt;
                     int Ww, Hw,k,ik,dWw,dHw;
                     filename = @"Record\" + cmbRecord.SelectedItem.ToString();
-                    if ((filename != "Record\\Select a record") && (filename != "Record\\Выберите запись"))
-                    {
-                        PitchShifter.FindClosestNote(FrequencyUtils.FindFundamentalFrequency(FloatArrayFromByteArray(File.ReadAllBytes(filename)), mMp3.WaveFormat.SampleRate, 60, 24000), out closestFreq);
-                        File.AppendAllText("FreqRecord.txt", FrequencyUtils.FindFundamentalFrequency(FloatArrayFromByteArray(File.ReadAllBytes(filename)), mMp3.WaveFormat.SampleRate, 60, 24000).ToString() + "\n");
-                        File.WriteAllText("FreqClosestRec.txt", closestFreq.ToString());
-                    }
                     if ((filename != "Record\\Select a record") && (filename != "Record\\Выберите запись"))
                     {
                         worker.RunWorkerAsync();

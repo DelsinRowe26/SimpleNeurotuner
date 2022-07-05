@@ -93,8 +93,10 @@
       <DependentUpon>FrequenciesScale.cs</DependentUpon>
     </Compile>
     <Compile Include="FrequencyUtils.cs" />
+    <Compile Include="FrequencyUtilsRec.cs" />
     <Compile Include="PitchShifter.cs" />
     <Compile Include="SampleDSP.cs" />
+    <Compile Include="SampleDSPRecord.cs" />
     <Compile Include="SaveDeleteWindow.xaml.cs">
       <DependentUpon>SaveDeleteWindow.xaml</DependentUpon>
     </Compile>
