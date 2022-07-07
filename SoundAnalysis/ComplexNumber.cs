@@ -5,16 +5,16 @@ namespace SoundAnalysis
     //комплексные числа
     struct ComplexNumber
     {
-        public double Re;
-        public double Im;
+        public float Re;
+        public float Im;
 
-        public ComplexNumber(double re)
+        public ComplexNumber(float re)
         {
             this.Re = re;
             this.Im = 0;
         }
 
-        public ComplexNumber(double re, double im)
+        public ComplexNumber(float re, float im)
         {
             this.Re = re;
             this.Im = im;
@@ -41,15 +41,15 @@ namespace SoundAnalysis
             return new ComplexNumber(-n.Re, -n.Im);
         }
 
-        public static implicit operator ComplexNumber(double n)
+        public static implicit operator ComplexNumber(float n)
         {
-            return new ComplexNumber(n, 0);
+            return new ComplexNumber((float)n, 0);
         }
 
         public ComplexNumber PoweredE()
         {
-            double e = Math.Exp(Re);
-            return new ComplexNumber(e * Math.Cos(Im), e * Math.Sin(Im));
+            float e = (float)Math.Exp(Re);
+            return new ComplexNumber((float)(e * Math.Cos(Im)), (float)(e * Math.Sin(Im)));
         }
 
         public double Power2()

@@ -8,7 +8,7 @@ namespace SoundAnalysis
     {
         //х - входные данные
         //return - спектрограмма данных
-        public static double[] Calculate(float[] x)
+        public static float[] Calculate(float[] x)
         {
             int length;
             int bitsInLength;
@@ -37,7 +37,7 @@ namespace SoundAnalysis
             {
                 int m = 1 << i;
                 int n = m * 2;
-                double alpha = -(2 * Math.PI / n);
+                float alpha = (float)-(2 * Math.PI / n);
 
                 for (int k = 0; k < m; k++)
                 {
@@ -55,10 +55,10 @@ namespace SoundAnalysis
             }
 
             //вычисление спектрограмы
-            double[] spectrogram = new double[length];
+            float[] spectrogram = new float[length];
             for (int i = 0; i < spectrogram.Length; i++)
             {
-                spectrogram[i] = data[i].AbsPower2();
+                spectrogram[i] = (float)data[i].AbsPower2();
             }
             return spectrogram;
         }

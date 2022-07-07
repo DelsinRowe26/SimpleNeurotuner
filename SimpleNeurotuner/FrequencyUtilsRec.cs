@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 
@@ -13,6 +14,7 @@ namespace SimpleNeurotuner
     public static class FrequencyUtilsRec
     {
         public static int magn;
+        public static double fristPeak;
         // Находим фундаментальную частоту: вычисляем спектрограмму, находим пики, анализируем
         //х - звуковые сэмплы
         //sampleRate частота семплирования
@@ -22,7 +24,19 @@ namespace SimpleNeurotuner
 
         internal static double FindFundamentalFrequency(float[] x, int sampleRate, double minFreq, double maxFreq)
         {
-            double[] spectr = FftAlgorithm.Calculate(x);
+            float[] spectr = FftAlgorithm.Calculate(x);
+            for(int i = 0; i < spectr.Length; i++)
+            {
+                /*if (i % 2 == 1)
+                {
+                    File.AppendAllText("spectr.txt", spectr[i].ToString() + "\n");
+                }
+                else
+                {
+                    File.AppendAllText("spectr2.txt", spectr[i].ToString() + "\n");
+                }*/
+                File.AppendAllText("spectr.txt", spectr[i].ToString() + "\n");
+            }
 
             int usefullMinSpectr = Math.Max(0,
                 (int)(minFreq * spectr.Length / sampleRate));
@@ -34,7 +48,10 @@ namespace SimpleNeurotuner
             int[] peakIndices;
             peakIndices = FindPeaks(spectr, usefullMinSpectr, usefullMaxSpectr - usefullMinSpectr,
                 PeaksCount);
-
+            for (int i = 0; i < 5; i++)
+            {
+                File.AppendAllText("magnRec.txt", FindPeaks(spectr, usefullMinSpectr, usefullMaxSpectr - usefullMinSpectr, PeaksCount)[i].ToString() + "\n");
+            }
             if (Array.IndexOf(peakIndices, usefullMinSpectr) >= 0)
             {
                 // 
@@ -106,7 +123,7 @@ namespace SimpleNeurotuner
             }
         }
 
-        private static int[] FindPeaks(double[] values, int index, int length, int peaksCount)
+        private static int[] FindPeaks(float[] values, int index, int length, int peaksCount)
         {
             //MainWindow mainWindow = new MainWindow();
             //mainWindow.Magn = 0;
@@ -116,7 +133,8 @@ namespace SimpleNeurotuner
             for (int i = 0; i < peaksCount; i++)
             {
                 peakValues[i] = values[peakIndices[i] = i + index];
-                magn = (int)peakValues[i];
+                //File.AppendAllText("magnRec.txt", peakValues[i].ToString("f3") + "\n");
+                //if (peakValues[i] < 0 && peakValues[i + 1] > 0) { }
             }
 
             // находим минимальное значение

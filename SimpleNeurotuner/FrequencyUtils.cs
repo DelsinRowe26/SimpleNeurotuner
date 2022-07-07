@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 
@@ -22,7 +23,7 @@ namespace SimpleNeurotuner
         
         internal static double FindFundamentalFrequency(float[] x, int sampleRate, double minFreq, double maxFreq)
         {
-            double[] spectr = FftAlgorithm.Calculate(x);
+            float[] spectr = FftAlgorithm.Calculate(x);
 
             int usefullMinSpectr = Math.Max(0,
                 (int)(minFreq * spectr.Length / sampleRate));
@@ -34,7 +35,7 @@ namespace SimpleNeurotuner
             int[] peakIndices;
             peakIndices = FindPeaks(spectr, usefullMinSpectr, usefullMaxSpectr - usefullMinSpectr,
                 PeaksCount);
-
+            File.AppendAllText("magn.txt", FindPeaks(spectr, usefullMinSpectr, usefullMaxSpectr - usefullMinSpectr, PeaksCount).ToString());
             if (Array.IndexOf(peakIndices, usefullMinSpectr) >= 0)
             {
                 // 
@@ -106,7 +107,7 @@ namespace SimpleNeurotuner
             }
         }
 
-        private static int[] FindPeaks(double[] values, int index, int length, int peaksCount)
+        private static int[] FindPeaks(float[] values, int index, int length, int peaksCount)
         {
             //MainWindow mainWindow = new MainWindow();
             //mainWindow.Magn = 0;
