@@ -90,6 +90,7 @@ namespace SimpleNeurotuner
         {
             float[] peakValues = new float[peaksCount];
             int[] peakIndices = new int[peaksCount];
+            //int len = buffer.Length;
 
             for(int i = 0; i < peaksCount; i++)
             {

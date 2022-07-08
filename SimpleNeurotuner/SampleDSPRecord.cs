@@ -34,7 +34,8 @@ namespace SimpleNeurotuner
                 //buffer1[i] = (double)buffer[i];
 
             }
-            freq = buffer;
+            int len = buffer.Length;
+            //freq = buffer;
             //await Task.Run(() => FrequencyUtils.FindFundamentalFrequency(buffer, mSource.WaveFormat.SampleRate, 31, 16000));
             FrequencyUtilsRec.FindFundamentalFrequency(buffer, mSource.WaveFormat.SampleRate, 30, mSource.WaveFormat.SampleRate / 2);
             //freq = FrequencyUtils.FindFundamentalFrequency(buffer, mSource.WaveFormat.SampleRate, 31, 16000);

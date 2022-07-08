@@ -25,7 +25,7 @@ namespace SimpleNeurotuner
         internal static double FindFundamentalFrequency(float[] x, int sampleRate, double minFreq, double maxFreq)
         {
             float[] spectr = FftAlgorithm.Calculate(x);
-            for(int i = 0; i < spectr.Length; i++)
+            /*for(int i = 0; i < spectr.Length; i++)
             {
                 /*if (i % 2 == 1)
                 {
@@ -34,10 +34,10 @@ namespace SimpleNeurotuner
                 else
                 {
                     File.AppendAllText("spectr2.txt", spectr[i].ToString() + "\n");
-                }*/
+                }
                 File.AppendAllText("spectr.txt", spectr[i].ToString() + "\n");
-            }
-
+            }*/
+            int len = x.Length;
             int usefullMinSpectr = Math.Max(0,
                 (int)(minFreq * spectr.Length / sampleRate));
             int usefullMaxSpectr = Math.Min(spectr.Length,
@@ -65,7 +65,7 @@ namespace SimpleNeurotuner
             int verifyFragmentLength = (int)(sampleRate / minFreq);
 
             // перебираем все пики для поиска одного с наименьшим отличием от других
-            double minPeakValue = Double.PositiveInfinity;
+            float minPeakValue = float.PositiveInfinity;
             int minPeakIndex = 0;
             int minOptimalInterval = 0;
             for (int i = 0; i < peakIndices.Length; i++)
@@ -73,7 +73,7 @@ namespace SimpleNeurotuner
                 int index = peakIndices[i];
                 int binIntervalStart = spectr.Length / (index + 1), binIntervalEnd = spectr.Length / index;
                 int interval;
-                double peakValue;
+                float peakValue;
                 // сканирование частот/интервалов
                 ScanSignalIntervals(x, verifyFragmentOffset, verifyFragmentLength,
                     binIntervalStart, binIntervalEnd, out interval, out peakValue);
@@ -90,9 +90,9 @@ namespace SimpleNeurotuner
         }
 
         private static void ScanSignalIntervals(float[] x, int index, int length,
-            int intervalMin, int intervalMax, out int optimalInterval, out double optimalValue)
+            int intervalMin, int intervalMax, out int optimalInterval, out float optimalValue)
         {
-            optimalValue = Double.PositiveInfinity;
+            optimalValue = float.PositiveInfinity;
             optimalInterval = 0;
 
             // интервал между самым маленьким и большим значением может быть большим
@@ -109,10 +109,10 @@ namespace SimpleNeurotuner
             {
                 int interval = intervalMin + (intervalMax - intervalMin) * i / steps;
 
-                double sum = 0;
+                float sum = 0;
                 for (int j = 0; j < length; j++)
                 {
-                    double diff = x[index + j] - x[index + j + interval];
+                    float diff = x[index + j] - x[index + j + interval];
                     sum += diff * diff;
                 }
                 if (optimalValue > sum)
@@ -127,8 +127,9 @@ namespace SimpleNeurotuner
         {
             //MainWindow mainWindow = new MainWindow();
             //mainWindow.Magn = 0;
-            double[] peakValues = new double[peaksCount];
+            float[] peakValues = new float[peaksCount];
             int[] peakIndices = new int[peaksCount];
+            //int len = values.Length;
 
             for (int i = 0; i < peaksCount; i++)
             {
