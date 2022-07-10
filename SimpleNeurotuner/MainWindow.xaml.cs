@@ -312,7 +312,7 @@ namespace SimpleNeurotuner
             {
                 click = 1;
                 await Task.Run(() => Sound(file));
-                //StartFullDuplex();
+                StartFullDuplex();
             }
         }
 
@@ -379,7 +379,7 @@ namespace SimpleNeurotuner
             mSource = notificationSource.ToWaveSource(16);
         }
 
-        /*public ISampleSource BandPassFilter(WasapiCapture mSoundIn, int sampleRate, int bottomFreq, int topFreq)
+        public ISampleSource BandPassFilter(WasapiCapture mSoundIn, int sampleRate, int bottomFreq, int topFreq)
         {
             var sampleSource = new SoundInSource(mSoundIn) { FillWithZeros = true }
                     .ChangeSampleRate(sampleRate).ToStereo().ToSampleSource();
@@ -389,7 +389,7 @@ namespace SimpleNeurotuner
             filteredSource.Filter = new LowpassFilter(sampleRate, topFreq);
 
             return filteredSource;
-        }*/
+        }
 
         /*private void GenerateLineSpectrum()
         {
@@ -476,6 +476,11 @@ namespace SimpleNeurotuner
             mSoundOut.Initialize(mMixer.ToWaveSource(16));
              //mSoundOut.Initialize(mSource);
             mSoundOut.Play();
+        }
+
+        private void SetPitchShiftValue()
+        {
+            mDspRec.PitchShift = (float)Math.Pow(2.0F, slPitch.Value / 13.0F);
         }
 
         private async void Sound(string file)
@@ -813,6 +818,12 @@ namespace SimpleNeurotuner
                 cmbRecord.SelectedIndex = cmbRecord.Items.Count - 1;
                 Filling();
             }
+        }
+
+        private void slPitch_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            SetPitchShiftValue();
+            lbPitchValue.Content = slPitch.Value.ToString("f1");
         }
 
         private void cmbModes_SelectionChanged(object sender, SelectionChangedEventArgs e)

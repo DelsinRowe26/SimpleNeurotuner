@@ -6,20 +6,23 @@
         xmlns:wf="clr-namespace:System.Windows.Forms;assembly=System.Windows.Forms"
         xmlns:local="clr-namespace:SimpleNeurotuner"
         mc:Ignorable="d"
-        Title="Neurotuner NFT" Height="588" Width="569" Loaded="SimpleNeurotuner_Loaded" Closing="SimpleNeurotuner_Closing" ResizeMode="CanMinimize" Activated="SimpleNeurotuner_Activated">
+        Title="Neurotuner NFT" Height="602" Width="569" Loaded="SimpleNeurotuner_Loaded" Closing="SimpleNeurotuner_Closing" ResizeMode="CanMinimize" Activated="SimpleNeurotuner_Activated">
     <Window.Background>
-        <ImageBrush ImageSource="/ad5ddc9e-b9a1-4d8f-9e45-b6bed5b338ca.jpg" TileMode="Tile" Stretch="Uniform"/>
+        <ImageBrush Stretch="UniformToFill" TileMode="Tile">
+            <ImageBrush.ImageSource>
+                <ImageSource>/background.jpg</ImageSource>
+            </ImageBrush.ImageSource>
+        </ImageBrush>
     </Window.Background>
     <Grid x:Name="grid" Margin="0,0,-2,0">
-        <Button x:Name="btnStart_Open" Content="Start" HorizontalAlignment="Left" Margin="68,408,0,0" VerticalAlignment="Top" Height="30" Width="95" Click="btnStart_Open_Click" MouseMove="btnStart_Open_MouseMove" MouseLeave="btnStart_Open_MouseLeave" FontSize="16">
+        <Button x:Name="btnStart_Open" Content="Start" HorizontalAlignment="Center" Margin="0,434,0,0" VerticalAlignment="Top" Height="30" Width="95" Click="btnStart_Open_Click" MouseMove="btnStart_Open_MouseMove" MouseLeave="btnStart_Open_MouseLeave" FontSize="16" Background="{x:Null}">
             <Button.Template>
                 <ControlTemplate>
-                    <Border BorderBrush="{TemplateBinding Control.BorderBrush}" BorderThickness="1" CornerRadius="25">
+                    <Border BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="1" CornerRadius="25">
                         <FocusManager.FocusedElement>
-                            <Button>btnStart</Button>
+                            <Button Content="btnStart"/>
                         </FocusManager.FocusedElement>
-                        <Border.Background>Gainsboro</Border.Background>
-                        <ContentPresenter Content="{TemplateBinding ContentControl.Content}" HorizontalAlignment="Center" VerticalAlignment="Center" ></ContentPresenter>
+                        <ContentPresenter Content="{TemplateBinding ContentControl.Content}" HorizontalAlignment="Center" VerticalAlignment="Center" />
                     </Border>
                 </ControlTemplate>
             </Button.Template>
@@ -32,12 +35,11 @@
                 </Style>
             </Button.Style>
         </Button>
-        <Button x:Name="btnStop" Content="Stop" HorizontalAlignment="Left" Margin="68,485,0,0" VerticalAlignment="Top" Height="30" Width="95" Click="btnStop_Click" MouseMove="btnStop_MouseMove" MouseLeave="btnStop_MouseLeave" FontSize="16">
+        <Button x:Name="btnStop" Content="Stop" HorizontalAlignment="Center" Margin="0,504,0,0" VerticalAlignment="Top" Height="30" Width="95" Click="btnStop_Click" MouseMove="btnStop_MouseMove" MouseLeave="btnStop_MouseLeave" FontSize="16" Background="{x:Null}">
             <Button.Template>
                 <ControlTemplate>
-                    <Border BorderBrush="{TemplateBinding Control.BorderBrush}" BorderThickness="1" CornerRadius="25">
-                        <Border.Background>Gainsboro</Border.Background>
-                        <ContentPresenter Content="{TemplateBinding ContentControl.Content}" HorizontalAlignment="Center" VerticalAlignment="Center" ></ContentPresenter>
+                    <Border BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="1" CornerRadius="25" Background="{x:Null}">
+                        <ContentPresenter Content="{TemplateBinding ContentControl.Content}" HorizontalAlignment="Center" VerticalAlignment="Center" />
                     </Border>
                 </ControlTemplate>
             </Button.Template>
@@ -61,7 +63,7 @@
                 </Style>
             </ComboBox.Style>
         </ComboBox>
-        <Menu x:Name="menu" VerticalAlignment="Top" Height="25">
+        <Menu x:Name="menu" VerticalAlignment="Top" Height="25" Background="#FFF0F0F0">
             <MenuItem x:Name="Help" Header="Help" Click="MenuItem_Click"></MenuItem>
             <ComboBox x:Name="cmbModes" Width="120" SelectionChanged="cmbModes_SelectionChanged" ToolTip="Modes">
                 <!--<ComboBoxItem Content="Audition"/>-->
@@ -69,7 +71,7 @@
             </ComboBox>
         </Menu>
         <Label x:Name="label" Content="Label" HorizontalAlignment="Left" Margin="742,354,0,0" VerticalAlignment="Top"/>
-        <Label x:Name="lbVersion" Content="Version: 1.1" HorizontalAlignment="Left" Margin="452,500,0,0" VerticalAlignment="Top" FontSize="18">
+        <Label x:Name="lbVersion" Content="Version: 1.1" HorizontalAlignment="Left" Margin="452,500,0,0" VerticalAlignment="Top" FontSize="18" Visibility="Hidden">
             <Label.Style>
                 <Style>
                     <Setter Property="Control.FontFamily" Value="Times New Roman"/>
@@ -78,12 +80,11 @@
         </Label>
         <Slider x:Name="slVol10" HorizontalAlignment="Left" Margin="513,130,0,0" VerticalAlignment="Top" Width="24" Orientation="Vertical" Height="255" TickPlacement="BottomRight" ValueChanged="slEq_ValueChanged" Tag="01" Minimum="-20" Maximum="20" Visibility="Hidden"/>
         <Label x:Name="lbVolValue5" Content="0" HorizontalAlignment="Left" Margin="206,376,0,0" VerticalAlignment="Top" Height="32" Width="36" FontSize="18" Visibility="Hidden"/>
-        <Button x:Name="btnRecord" Content="Audition" HorizontalAlignment="Left" Margin="68,446,0,0" VerticalAlignment="Top" Height="30" Width="95" MouseMove="btnRecord_MouseMove" MouseLeave="btnRecord_MouseLeave" Click="btnRecord_Click" Visibility="Hidden" FontSize="14">
+        <Button x:Name="btnRecord" Content="Audition" HorizontalAlignment="Center" Margin="0,469,0,0" VerticalAlignment="Top" Height="30" Width="95" MouseMove="btnRecord_MouseMove" MouseLeave="btnRecord_MouseLeave" Click="btnRecord_Click" Visibility="Visible" FontSize="14" Background="{x:Null}">
             <Button.Template>
                 <ControlTemplate>
-                    <Border BorderBrush="{TemplateBinding Control.BorderBrush}" BorderThickness="1" CornerRadius="25">
-                        <Border.Background>Gainsboro</Border.Background>
-                        <ContentPresenter Content="{TemplateBinding ContentControl.Content}" HorizontalAlignment="Center" VerticalAlignment="Center" ></ContentPresenter>
+                    <Border BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="1" CornerRadius="25" Background="{x:Null}">
+                        <ContentPresenter Content="{TemplateBinding ContentControl.Content}" HorizontalAlignment="Center" VerticalAlignment="Center" />
                     </Border>
                 </ControlTemplate>
             </Button.Template>
@@ -105,9 +106,9 @@
             </ProgressBar.Foreground>
         </ProgressBar>
         <Label x:Name="lbRecordPB" Content="Recording in progress..." HorizontalAlignment="Left" Margin="226,130,0,0" VerticalAlignment="Top" Visibility="Hidden"/>
-        <TabControl x:Name="tabControl" Margin="159,136,159,166" Visibility="Visible">
-            <TabItem x:Name="TabNFT" Header="gNeuro NFT">
-                <Grid Background="#FFE5E5E5" Width="230" Margin="7,0,8,0" Height="230">
+        <TabControl x:Name="tabControl" Margin="159,136,159,166" Visibility="Visible" Background="{x:Null}" BorderBrush="{x:Null}">
+            <TabItem x:Name="TabNFT" Header="gNeuro NFT" Background="{x:Null}" BorderBrush="{x:Null}">
+                <Grid Width="230" Margin="7,0,8,0" Height="230">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="82*"/>
                         <ColumnDefinition Width="33*"/>
@@ -117,8 +118,8 @@
                     <Image Grid.ColumnSpan="2" HorizontalAlignment="Left" Height="100" Margin="70,96,0,0" VerticalAlignment="Top" Width="100"/>
                 </Grid>
             </TabItem>
-            <TabItem x:Name="TabSettings" Header="Settings">
-                <Grid Background="#FFE5E5E5">
+            <TabItem x:Name="TabSettings" Header="Settings" Background="{x:Null}" BorderBrush="{x:Null}">
+                <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="27*"/>
                         <ColumnDefinition Width="202*"/>
@@ -140,7 +141,7 @@
                 </Grid>
             </TabItem>
         </TabControl>
-        <ProgressBar x:Name="PBNFT" HorizontalAlignment="Center" Height="24" Margin="0,32,0,0" VerticalAlignment="Top" Width="212" BorderBrush="Black">
+        <ProgressBar x:Name="PBNFT" HorizontalAlignment="Center" Height="24" Margin="0,32,0,0" VerticalAlignment="Top" Width="212" BorderBrush="Black" Background="{x:Null}">
             <ProgressBar.Foreground>
                 <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
                     <GradientStop Color="#FF067515"/>
@@ -168,5 +169,7 @@
         <Label x:Name="lbVolValue9" Content="0" HorizontalAlignment="Left" Margin="469,390,0,0" VerticalAlignment="Top" Height="32" Width="36" FontSize="18" Visibility="Hidden"/>
         <Label x:Name="lbVolValue10" Content="0" HorizontalAlignment="Left" Margin="513,390,0,0" VerticalAlignment="Top" Height="32" Width="36" FontSize="18" Visibility="Hidden"/>
         <Image x:Name="ImgSpectr" HorizontalAlignment="Left" Height="292" Margin="10,79,0,0" VerticalAlignment="Top" Width="518" Visibility="Hidden"/>
+        <Slider x:Name="slPitch" HorizontalAlignment="Center" Margin="0,79,0,0" VerticalAlignment="Top" Width="250" Maximum="15" Minimum="-15" TickPlacement="BottomRight" ValueChanged="slPitch_ValueChanged"/>
+        <Label x:Name="lbPitchValue" Content="0" HorizontalAlignment="Left" Margin="421,70,0,0" VerticalAlignment="Top" FontSize="14"/>
     </Grid>
 </Window>

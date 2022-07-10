@@ -25,6 +25,7 @@ namespace SimpleNeurotuner
         internal static double FindFundamentalFrequency(float[] x, int sampleRate, double minFreq, double maxFreq)
         {
             float[] spectr = FftAlgorithm.Calculate(x);
+
             /*for(int i = 0; i < spectr.Length; i++)
             {
                 /*if (i % 2 == 1)
