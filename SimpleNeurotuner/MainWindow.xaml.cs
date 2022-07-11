@@ -311,7 +311,7 @@ namespace SimpleNeurotuner
             else
             {
                 click = 1;
-                await Task.Run(() => Sound(file));
+                //await Task.Run(() => Sound(file));
                 StartFullDuplex();
             }
         }
@@ -716,12 +716,12 @@ namespace SimpleNeurotuner
             mMixer.AddSource(mDsp.ChangeSampleRate(mMixer.WaveFormat.SampleRate));
 
             SoundOut();
-            Thread.Sleep(5000);
-            mDsp.PitchShift = 0;
-            Thread.Sleep(5000);
-            Stop();
-            mSoundIn.Stop();
-            if (langindex == "0")
+            //Thread.Sleep(5000);
+            //mDsp.PitchShift = 0;
+            //Thread.Sleep(5000);
+            //Stop();
+            //mSoundIn.Stop();
+            /*if (langindex == "0")
             {
                 string msg = "Запись и обработка завершена.";
                 MessageBox.Show(msg);
@@ -730,7 +730,7 @@ namespace SimpleNeurotuner
             {
                 string msg = "Recording and processing completed.";
                 MessageBox.Show(msg);
-            }
+            }*/
             //PitchShifter.PitchShift(0, 2, 2, 2048, 4, mSoundIn.WaveFormat.SampleRate, );
             //mSoundIn.DataAvailable += (s, data) => PitchShifter.PitchShift(0, data.Offset, data.ByteCount, 2048, 4, mSoundIn.WaveFormat.SampleRate, data.Data);
         }

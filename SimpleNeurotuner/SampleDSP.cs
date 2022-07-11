@@ -44,12 +44,8 @@ namespace SimpleNeurotuner
             ///File.AppendAllText("Freq.txt", MyFrequencyUtils.FindFundamentalFrequency(buffer, mSource.WaveFormat.SampleRate, 30, mSource.WaveFormat.SampleRate / 2).ToString("f3") + "\n");
             ///}
             ///</summary>
-            if (PitchShift != 1.0f)
-            {
                 //FrequencyUtils.FindFundamentalFrequency(buffer1, mSource.WaveFormat.SampleRate, 60, 22050);
-                PitchShifter.PitchShift(PitchShift, offset, count, 4096, 4, mSource.WaveFormat.SampleRate, buffer);
-
-            }
+                PitchShifter1.PitchShift(PitchShift, offset, count, 4096, 4, mSource.WaveFormat.SampleRate, buffer);
           
             return samples;
         }

@@ -53,7 +53,7 @@ using System.Threading.Tasks;
 
 namespace SimpleNeurotuner
 {
-    public class PitchShifter
+    public class PitchShifter1
     {
 
         #region Private Static Memebers
@@ -153,7 +153,7 @@ namespace SimpleNeurotuner
                         imag = gFFTworksp[2 * k + 1];
 
                         /* compute magnitude and phase/вычислить амплитуду и фазу  */
-                        magn = Math.Sqrt(real * real+ imag * imag);//амплитуда
+                        magn = Math.Sqrt(real * real + imag * imag);//амплитуда
                         phase = Math.Atan2(imag, real);//фаза
 
                         /* compute phase difference/вычислить разность фаз */
@@ -187,120 +187,12 @@ namespace SimpleNeurotuner
 
                     }
 
+                    int usefulMinSpectr = Math.Max(0, (int)(30 * gAnaMagn.Length / sampleRate));
+                    int usefulMaxSpectr = Math.Max(0, (int)(24000 * gAnaMagn.Length / sampleRate) + 1);
 
+                    MyFrequencyUtils.FindPeaks(gAnaMagn, usefulMinSpectr, usefulMaxSpectr - usefulMinSpectr, 2);
 
-                    MAX = gAnaMagn[0];
-                    IndexMAX = 0;
-                    for(k = 1; k <= fftFrameSize2; k++)
-                    {
-                        if (MAX > gAnaMagn[k])
-                        {
-                            MAX = gAnaMagn[k];
-                            IndexMAX = k;
-                            //File.WriteAllText("magnmax.txt", gAnaMagn[k].ToString());
-                        }
-                    }
-
-                    //MAX = gAnaMagn[0];
                     
-                    /*for (k = IndexMAX; k <= fftFrameSize2; k--)
-                    {
-                        if (gAnaMagn[k] - gAnaMagn[k - 1] >= 0 && k != 1)//Идем в левую сторону от Максимума
-                        {
-
-                            //Console.WriteLine(gAnaMagn[k]);
-                            //File.AppendAllText("magn1.txt", gAnaMagn[k].ToString() + "\n");
-                        }
-                        else
-                        {
-                            IndexSTART = k;
-                            break;
-                        }
-                    }
-
-                    //MAX = gAnaMagn[0];
-                    for (k = IndexMAX; k < fftFrameSize2; k++)
-                    {
-                        if (gAnaMagn[k] - gAnaMagn[k + 1] > 0)//Идем в правую сторону от Максимума
-                        {
-                            //File.AppendAllText("magn2.txt", gAnaMagn[k].ToString() + "\n");
-                            //Console.WriteLine(gAnaMagn[k]);
-                        }
-                        else
-                        {
-                            IndexEND = k;
-                            break;
-                        }
-                    }
-
-                    MAX1 = gAnaMagn[0];
-                    for (k = 0; k < IndexSTART; k++)
-                    {
-                        if (gAnaMagn[k] > MAX1)
-                        {
-                            MAX1 = gAnaMagn[k];//Поиск максимума с начала всего массива до начала первого максимума
-                            IndexMAX1 = k;
-                        }
-                    }
-
-                    MAX2 = gAnaMagn[0];
-                    for (k = IndexEND; k < fftFrameSize2; k++)
-                    {
-                        if (gAnaMagn[k] > MAX2)
-                        {
-                            MAX2 = gAnaMagn[k];//Поиск максимума с конца первого максимума и до конца массива
-                            IndexMAX2 = k;
-                        }
-                    }*/
-
-                    /*for (k = 0; k <= fftFrameSize2; k++)
-                    {
-                        double magn1;
-                        if (min[0] != 0)
-                        {
-                            if (k >= (min[0] * fftFrameSize2) / SampleRate2 && k <= (max[0] * fftFrameSize2) / SampleRate2)
-                            {
-                                magn1 = gAnaMagn[k];
-                                magn1 = magn1 * Vol[0];
-                                gAnaMagn[k] = (float)magn1;
-                                //Thread.Sleep(100);
-                            }
-                            else if (min[1] >= (780 * fftFrameSize2) / SampleRate2 && k <= (max[1] * fftFrameSize2) / SampleRate2 && min[1] != 0)
-                            {
-                                magn1 = gAnaMagn[k];
-                                magn1 *= Vol[1];
-                                gAnaMagn[k] = (float)magn1;
-                                //Thread.Sleep(100);
-                            }
-                            else if (k >= (min[2] * fftFrameSize2) / SampleRate2 && k <= (max[2] * fftFrameSize2) / SampleRate2 && min[2] != 0)
-                            {
-                                magn1 = gAnaMagn[k];
-                                magn1 *= Vol[2];
-                                gAnaMagn[k] = (float)magn1;
-                                //Thread.Sleep(100);
-                            }
-                            else if (k >= (min[3] * fftFrameSize2) / SampleRate2 && k <= (max[3] * fftFrameSize2) / SampleRate2 && min[3] != 0)
-                            {
-                                magn1 = gAnaMagn[k];
-                                magn1 *= Vol[3];
-                                gAnaMagn[k] = (float)magn1;
-                                //Thread.Sleep(100);
-                            }
-                            else if (k >= (min[4] * fftFrameSize2) / SampleRate2 && k <= (max[4] * fftFrameSize2) / SampleRate2 && min[4] != 0)
-                            {
-                                magn1 = gAnaMagn[k];
-                                magn1 *= Vol[4];
-                                gAnaMagn[k] = (float)magn1;
-                                //Thread.Sleep(100);
-                            }
-                            else
-                            {
-                                magn1 = gAnaMagn[k];
-                                gAnaMagn[k] = (float)magn1;
-                            }
-                        }
-                        else { break; }
-                    }*/
 
                     /* ***************** PROCESSING ******************* */
                     /* this does the actual pitch shifting/это делает фактическое изменение высоты тона */
@@ -329,7 +221,7 @@ namespace SimpleNeurotuner
                         /* get magnitude and true frequency from synthesis arrays/получить величину и истинную частоту из массивов синтеза */
                         magn = gSynMagn[k];
                         tmp = gSynFreq[k];
-                        
+
                         /* subtract bin mid frequency/вычесть среднюю частоту бина */
                         tmp -= (double)k * freqPerBin;
 
@@ -341,7 +233,7 @@ namespace SimpleNeurotuner
 
                         /* add the overlap phase advance back in/добавить фазу перекрытия обратно в */
                         tmp += (double)k * expct;
-                        
+
 
                         /* accumulate delta phase to get bin phase/накапливать дельта-фазу, чтобы получить бин-фазу */
                         gSumPhase[k] += (float)tmp;
@@ -360,7 +252,7 @@ namespace SimpleNeurotuner
                     /* do inverse transform/сделать обратное преобразование */
                     //await Task.Run(() => FrequencyUtils.FindFundamentalFrequency(gFFTworksp, 44100, 60, 22050));
                     ShortTimeFourierTransform(gFFTworksp, fftFrameSize, 1);
-                    
+
 
                     /* do windowing and add to output accumulator/делать окна и добавлять в выходной аккумулятор */
                     for (k = 0; k < fftFrameSize; k++)
@@ -440,3 +332,4 @@ namespace SimpleNeurotuner
         #endregion
     }
 }
+

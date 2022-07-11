@@ -9,6 +9,7 @@ namespace SimpleNeurotuner
 {
     public static class MyFrequencyUtils
     {
+        public static int[] indexPeak = new int[2];
         internal static float FindFundamentalFrequency(float[] buffer, int sampleRate, float minFreq, float maxFreq)
         {
             float[] spectr = FftAlgorithm.Calculate(buffer);
@@ -86,7 +87,7 @@ namespace SimpleNeurotuner
             }
         }
 
-        private static int[] FindPeaks(float[] buffer, int index, int length, int peaksCount)
+        public static int[] FindPeaks(float[] buffer, int index, int length, int peaksCount)
         {
             float[] peakValues = new float[peaksCount];
             int[] peakIndices = new int[peaksCount];
@@ -96,6 +97,8 @@ namespace SimpleNeurotuner
             {
                 //-if (buffer[i] < 0 && buffer[i + 1] > 0) { }
                 peakValues[i] = buffer[peakIndices[i] = i + index];
+                indexPeak[i] = peakIndices[i];
+
             }
             
             //принимаем за максимальное значение начальное значение массива
