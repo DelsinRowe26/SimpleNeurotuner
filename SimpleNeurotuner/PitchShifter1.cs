@@ -63,7 +63,7 @@ namespace SimpleNeurotuner
         public static int[] max = new int[10];
         public static int[] Vol = new int[10];
         public static int SampleRate2;
-        private static float MAX, MAX1, MAX2;
+        private static float KMAX, MMAX, MAX;
         private static long IndexMAX, IndexMAX1, IndexMAX2;
         private static long IndexSTART, IndexEND;
         private static int MAX_FRAME_LENGTH = 16000;
@@ -104,7 +104,7 @@ namespace SimpleNeurotuner
         {
             double magn, phase, tmp, window, real, imag;
             double freqPerBin, expct;
-            long i, k, qpd, index, inFifoLatency, stepSize, fftFrameSize2;
+            long i, k, m, qpd, index, inFifoLatency, stepSize, fftFrameSize2;
             double closestFrequency;//ближайшая частота
             string noteName;
 
@@ -191,31 +191,31 @@ namespace SimpleNeurotuner
                     int usefulMaxSpectr = Math.Max(0, (int)(24000 * gAnaMagn.Length / sampleRate) + 1);
 
                     int[] indexPeak = MyFrequencyUtils.FindPeaks(gAnaMagn, usefulMinSpectr, usefulMaxSpectr - usefulMinSpectr, 2);
-
+                    int[] result = new int[2];
 
                     for(int j = 0; j < 2; j++)
                     {
-                        MAX = gAnaMagn[indexPeak[j]];
                         k = indexPeak[j];
-                        while (gAnaMagn[indexPeak[j]] < gAnaMagn[k] && k <= fftFrameSize2)
+                        KMAX = gAnaMagn[k];
+                        k++;
+                        while (k < fftFrameSize2 && KMAX < gAnaMagn[k])
                         {
-                            if (gAnaMagn[k] > MAX)
-                            {
-                                MAX = gAnaMagn[k];
-                            }
-                            
-                            k++;
+                            KMAX = gAnaMagn[k++];
                         }
-                        MAX = gAnaMagn[indexPeak[j]];
-                        k = indexPeak[j];
-                        while (gAnaMagn[indexPeak[j]] < gAnaMagn[k] && k <= fftFrameSize2 && k >= 0)
+                        m = indexPeak[j];
+                        MMAX = gAnaMagn[m];
+                        m--;
+                        while (m >= 0 && MMAX < gAnaMagn[m])
                         {
-                            if (gAnaMagn[k] > MAX)
-                            {
-                                MAX = gAnaMagn[k];
-                            }
-
-                            k--;
+                            MMAX = gAnaMagn[m--];
+                        }
+                        if (Math.Abs(indexPeak[j] - k) > Math.Abs(indexPeak[j] - m))
+                        {
+                            result[j] = (int)m;
+                        }
+                        else
+                        {
+                            result[j] = (int)k;
                         }
                     }
                     
