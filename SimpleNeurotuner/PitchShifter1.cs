@@ -190,8 +190,34 @@ namespace SimpleNeurotuner
                     int usefulMinSpectr = Math.Max(0, (int)(30 * gAnaMagn.Length / sampleRate));
                     int usefulMaxSpectr = Math.Max(0, (int)(24000 * gAnaMagn.Length / sampleRate) + 1);
 
-                    MyFrequencyUtils.FindPeaks(gAnaMagn, usefulMinSpectr, usefulMaxSpectr - usefulMinSpectr, 2);
+                    int[] indexPeak = MyFrequencyUtils.FindPeaks(gAnaMagn, usefulMinSpectr, usefulMaxSpectr - usefulMinSpectr, 2);
 
+
+                    for(int j = 0; j < 2; j++)
+                    {
+                        MAX = gAnaMagn[indexPeak[j]];
+                        k = indexPeak[j];
+                        while (gAnaMagn[indexPeak[j]] < gAnaMagn[k] && k <= fftFrameSize2)
+                        {
+                            if (gAnaMagn[k] > MAX)
+                            {
+                                MAX = gAnaMagn[k];
+                            }
+                            
+                            k++;
+                        }
+                        MAX = gAnaMagn[indexPeak[j]];
+                        k = indexPeak[j];
+                        while (gAnaMagn[indexPeak[j]] < gAnaMagn[k] && k <= fftFrameSize2 && k >= 0)
+                        {
+                            if (gAnaMagn[k] > MAX)
+                            {
+                                MAX = gAnaMagn[k];
+                            }
+
+                            k--;
+                        }
+                    }
                     
 
                     /* ***************** PROCESSING ******************* */
