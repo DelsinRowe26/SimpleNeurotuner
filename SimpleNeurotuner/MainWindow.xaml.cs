@@ -312,7 +312,7 @@ namespace SimpleNeurotuner
             {
                 click = 1;
                 await Task.Run(() => Sound(file));
-                //StartFullDuplex();
+                StartFullDuplex();
             }
         }
 
