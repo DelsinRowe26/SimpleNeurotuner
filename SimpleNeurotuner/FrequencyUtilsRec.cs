@@ -49,10 +49,14 @@ namespace SimpleNeurotuner
             int[] peakIndices;
             peakIndices = FindPeaks(spectr, usefullMinSpectr, usefullMaxSpectr - usefullMinSpectr,
                 PeaksCount);
-            for (int i = 0; i < 5; i++)
+            /*for (int i = 0; i < PeaksCount; i++)
+            {
+                File.AppendAllText("magnRec.txt", peakIndices[i].ToString("f3") + "\n");
+            }*/
+            /*for (int i = 0; i < 5; i++)
             {
                 File.AppendAllText("magnRec.txt", FindPeaks(spectr, usefullMinSpectr, usefullMaxSpectr - usefullMinSpectr, PeaksCount)[i].ToString() + "\n");
-            }
+            }*/
             if (Array.IndexOf(peakIndices, usefullMinSpectr) >= 0)
             {
                 // 

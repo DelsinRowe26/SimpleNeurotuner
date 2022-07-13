@@ -242,7 +242,7 @@ namespace SimpleNeurotuner
 
         private void Mixer()
         {
-            mMixer = new SimpleMixer(2, SampleRate) //стерео, 44,1 КГц
+            mMixer = new SimpleMixer(1, SampleRate) //стерео, 44,1 КГц
             {
                 FillWithZeros = true,
                 DivideResult = true, //Для этого установлено значение true, чтобы избежать звуков тиков из-за превышения -1 и 1.
@@ -311,8 +311,8 @@ namespace SimpleNeurotuner
             else
             {
                 click = 1;
-                //await Task.Run(() => Sound(file));
-                StartFullDuplex();
+                await Task.Run(() => Sound(file));
+                //StartFullDuplex();
             }
         }
 
@@ -438,7 +438,7 @@ namespace SimpleNeurotuner
                 var source = new SoundInSource(mSoundIn) { FillWithZeros = true };               
 
                 //Init DSP для смещения высоты тона
-                mDsp = new SampleDSP(source.ToSampleSource()/*.AppendSource(Equalizer.Create10BandEqualizer, out mEqualizer)*/.ToStereo());
+                mDsp = new SampleDSP(source.ToSampleSource()/*.AppendSource(Equalizer.Create10BandEqualizer, out mEqualizer)*/.ToMono());
 
                 //SetPitchShiftValue();
                 mSoundIn.Start();
@@ -453,7 +453,7 @@ namespace SimpleNeurotuner
                 await Task.Run(() => SoundOut());
 
                 //return true;
-                //Thread.Sleep(2000);
+                //Thread.Sleep(2000); 
                 //mDsp.PitchShift = 0;
 
                 //await Task.Run(() => SoundOut());
@@ -489,7 +489,7 @@ namespace SimpleNeurotuner
             if (click != 0)
             {
                 Mixer();
-                mMp3 = CodecFactory.Instance.GetCodec(filename).ToStereo().ToSampleSource()/*.AppendSource(Equalizer.Create10BandEqualizer, out mEqualizer)*/;
+                mMp3 = CodecFactory.Instance.GetCodec(filename).ToMono().ToSampleSource()/*.AppendSource(Equalizer.Create10BandEqualizer, out mEqualizer)*/;
                 mDspRec = new SampleDSPRecord(mMp3.ToWaveSource(16).ToSampleSource());
                 //mDsp1.GainDB = (float)slVolume.Value;
                 //mMixer.AddSource(mMp3.ChangeSampleRate(mMixer.WaveFormat.SampleRate).ToWaveSource(16).Loop().ToSampleSource());
