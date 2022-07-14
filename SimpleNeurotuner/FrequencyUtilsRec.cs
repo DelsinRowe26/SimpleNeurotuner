@@ -45,7 +45,7 @@ namespace SimpleNeurotuner
                 (int)(maxFreq * spectr.Length / sampleRate) + 1);
 
             // находим пики частот по БПФ
-            const int PeaksCount = 5;
+            const int PeaksCount = 30;
             int[] peakIndices;
             peakIndices = FindPeaks(spectr, usefullMinSpectr, usefullMaxSpectr - usefullMinSpectr,
                 PeaksCount);

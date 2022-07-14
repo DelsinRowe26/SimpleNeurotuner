@@ -219,17 +219,10 @@ namespace SimpleNeurotuner
                         }
                         
                         float[] bufRec = new float[20];
+                        float sum = 0;
                         for(int l = 0; l < 20; l++)
                         {
-                            if(Math.Sqrt(Math.Pow(KMAX - MMAX, 2)) < 25)//могу ошибаться с среднеквадратичным отклонением, смотрел на формулу, но с переменными мог ошибиться
-                            {
-                                bufRec[l] = KMAX;
-                            }
-                            else
-                            {
-                                //здесь нужно что-то сделать чтобы всё по новой начиналось
-                            }
-                            
+                            sum += bufRec[l] / 20;
                         }
                     }
                     //bufRec[l] = (float)Math.Sqrt(Math.Pow(KMAX - MMAX,2));

@@ -16,7 +16,7 @@ namespace SimpleNeurotuner
             int usefulMinSpectr = Math.Max(0, (int)(minFreq * spectr.Length / sampleRate));
             int usefulMaxSpectr = Math.Max(0, (int)(maxFreq * spectr.Length / sampleRate) + 1);
 
-            const int PeakCount = 5;
+            const int PeakCount = 30;
             int[] peakIndices;
             peakIndices = FindPeaks(spectr, usefulMinSpectr, usefulMaxSpectr - usefulMinSpectr, PeakCount);
             if(Array.IndexOf(peakIndices, usefulMinSpectr) >= 0)
