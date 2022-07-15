@@ -63,7 +63,7 @@ namespace SimpleNeurotuner
         public static int[] max = new int[10];
         public static int[] Vol = new int[10];
         public static int SampleRate2;
-        private static float KMAX, MMAX, MAX;
+        private static float[] KMAX, MMAX;
         private static long IndexMAX, IndexMAX1, IndexMAX2;
         private static long IndexSTART, IndexEND;
         private static int MAX_FRAME_LENGTH = 16000;
@@ -193,36 +193,39 @@ namespace SimpleNeurotuner
                     int[] indexPeak = MyFrequencyUtils.FindPeaks(gAnaMagn, usefulMinSpectr, usefulMaxSpectr - usefulMinSpectr, 2);
                     int[] result = new int[2];
 
-                    for(int j = 0; j < 2; j++)
+                    for (int n = 1; n <= 8; n++)
                     {
-                        k = indexPeak[j];
-                        KMAX = gAnaMagn[k];
-                        k++;
-                        while (k < fftFrameSize2 && KMAX < gAnaMagn[k])
+                        float kmu = 0;
+                        float mmu = 0;
+                        float ksigma = 0;
+                        float msigma = 0;
+                        for (int j = 0; j < 2; j++)
                         {
-                            KMAX = gAnaMagn[k++];
-                        }
-                        m = indexPeak[j];
-                        MMAX = gAnaMagn[m];
-                        m--;
-                        while (m >= 0 && MMAX < gAnaMagn[m])
-                        {
-                            MMAX = gAnaMagn[m--];
-                        }
-                        if (Math.Abs(indexPeak[j] - k) > Math.Abs(indexPeak[j] - m))
-                        {
-                            result[j] = (int)m;
-                        }
-                        else
-                        {
-                            result[j] = (int)k;
-                        }
-                        
-                        float[] bufRec = new float[20];
-                        float sum = 0;
-                        for(int l = 0; l < 20; l++)
-                        {
-                            sum += bufRec[l] / 20;
+                            k = indexPeak[j];
+                            KMAX[n] = gAnaMagn[k];
+                            k++;
+                            while (k < fftFrameSize2 && KMAX[n] < gAnaMagn[k])
+                            {
+                                KMAX[n] = gAnaMagn[k++];
+                            }
+                            m = indexPeak[j];
+                            MMAX[n] = gAnaMagn[m];
+                            m--;
+                            while (m >= 0 && MMAX[n] < gAnaMagn[m])
+                            {
+                                MMAX[n] = gAnaMagn[m--];
+                            }
+                            if (Math.Abs(indexPeak[j] - k) > Math.Abs(indexPeak[j] - m))
+                            {
+                                result[j] = (int)m;
+                            }
+                            else
+                            {
+                                result[j] = (int)k;
+                            }
+                            kmu += KMAX[n] / 8;
+                            mmu += MMAX[n] / 8;
+                            //ksigma += Math.Sqrt(Math.Pow());
                         }
                     }
                     //bufRec[l] = (float)Math.Sqrt(Math.Pow(KMAX - MMAX,2));
