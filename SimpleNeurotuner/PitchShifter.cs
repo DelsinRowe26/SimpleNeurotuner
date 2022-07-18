@@ -63,7 +63,7 @@ namespace SimpleNeurotuner
         public static int[] max = new int[10];
         public static int[] Vol = new int[10];
         public static int SampleRate2;
-        private static float MAX, MAX1, MAX2;
+        private static float MAX, MAX1, MAX2, coeffVol;
         private static long IndexMAX, IndexMAX1, IndexMAX2;
         private static long IndexSTART, IndexEND;
         private static int MAX_FRAME_LENGTH = 16000;
@@ -189,17 +189,24 @@ namespace SimpleNeurotuner
 
 
 
-                    MAX = gAnaMagn[0];
+                    /*MAX = gAnaMagn[0];
                     IndexMAX = 0;
                     for(k = 1; k <= fftFrameSize2; k++)
                     {
-                        if (MAX > gAnaMagn[k])
+                        MAX = Math.Max(MAX, gAnaMagn[k]);
+                        /*if (MAX < gAnaMagn[k])
                         {
                             MAX = gAnaMagn[k];
                             IndexMAX = k;
-                            //File.WriteAllText("magnmax.txt", gAnaMagn[k].ToString());
+                            //File.WriteAllText("magnmax.txt", gAnaMagn[k].ToString());7
                         }
                     }
+
+                    for (k= 0; k <= fftFrameSize2; k++)
+                    {
+                        coeffVol = MAX / PitchShifter1.MAXIN;
+                        gAnaMagn[k] *= coeffVol;
+                    }*/
 
                     //MAX = gAnaMagn[0];
                     

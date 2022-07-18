@@ -64,7 +64,8 @@ namespace SimpleNeurotuner
         public static int[] Vol = new int[10];
         public static int SampleRate2;
         private static float[] KMAX, MMAX;
-        private static long IndexMAX, IndexMAX1, IndexMAX2;
+        public static float MAX, MIN, MAXIN;
+        private static long IndexMAX, IndexMAX1, IndexMAX2, IndexMIN;
         private static long IndexSTART, IndexEND;
         private static int MAX_FRAME_LENGTH = 16000;
         private static float[] gInFIFO = new float[MAX_FRAME_LENGTH];
@@ -192,15 +193,14 @@ namespace SimpleNeurotuner
 
                     int[] indexPeak = MyFrequencyUtils.FindPeaks(gAnaMagn, usefulMinSpectr, usefulMaxSpectr - usefulMinSpectr, 2);
                     int[] result = new int[2];
+                    float kmu = 0;
+                    float mmu = 0;
+                    float ksigma = 0;
+                    float msigma = 0;
+                    int n = 0;
 
-                    for (int n = 1; n <= 8; n++)
+                    for (int j = 0; j < 2; j++)
                     {
-                        float kmu = 0;
-                        float mmu = 0;
-                        float ksigma = 0;
-                        float msigma = 0;
-                        for (int j = 0; j < 2; j++)
-                        {
                             k = indexPeak[j];
                             KMAX[n] = gAnaMagn[k];
                             k++;
@@ -225,10 +225,35 @@ namespace SimpleNeurotuner
                             }
                             kmu += KMAX[n] / 8;
                             mmu += MMAX[n] / 8;
-                            //ksigma += Math.Sqrt(Math.Pow());
-                        }
+                            ksigma += (float)Math.Sqrt(Math.Pow(KMAX[n] - kmu, 2));
+                            msigma += (float)Math.Sqrt(Math.Pow(MMAX[n] - mmu, 2));
+                            if (((Math.Abs(KMAX[n] - kmu)  < ksigma) == (kmu - ksigma < KMAX[n] && KMAX[n] < ksigma + kmu)) && ((Math.Abs(KMAX[n] - kmu) < 2 * ksigma) == (kmu - 2 * ksigma < KMAX[n] && KMAX[n] < 2 * ksigma + kmu)) && ((Math.Abs(KMAX[n] - kmu) < 3 * ksigma) == (kmu - 3 * ksigma < KMAX[n] && KMAX[n] < 3 * ksigma + kmu)))
+                            {
+
+                            }
                     }
+                    
                     //bufRec[l] = (float)Math.Sqrt(Math.Pow(KMAX - MMAX,2));
+                    /*MAX = gAnaMagn[0];
+                    MIN = gAnaMagn[0];
+                    IndexMAX = 0;
+                    IndexMIN = 0;
+                    for(k = 0; k <= fftFrameSize2; k++)
+                    {
+                        MAX = Math.Max(MAX, gAnaMagn[k]);
+                        MIN = Math.Min(MIN, gAnaMagn[k]);
+                        /*if(MAX < gAnaMagn[k])
+                        {
+                            MAX = gAnaMagn[k];
+                            IndexMAX = k;
+                        }
+                        if(MIN > gAnaMagn[k])
+                        {
+                            MIN = gAnaMagn[k];
+                            IndexMIN = k;
+                        }*
+                        MAXIN = Math.Max(Math.Abs(MIN), Math.Abs(MAX));
+                    }*/
 
                     /* ***************** PROCESSING ******************* */
                     /* this does the actual pitch shifting/это делает фактическое изменение высоты тона */
