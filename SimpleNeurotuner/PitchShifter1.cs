@@ -63,9 +63,9 @@ namespace SimpleNeurotuner
         public static int[] max = new int[10];
         public static int[] Vol = new int[10];
         public static int SampleRate2;
-        private static float[] KMAX, MMAX;
+        private static float KMAX, MMAX;
         public static float MAX, MIN, MAXIN;
-        private static long IndexMAX, IndexMAX1, IndexMAX2, IndexMIN;
+        private static long IndexMAX, IndexMAX1, IndexMAX2, IndexMIN, n = 0;
         private static long IndexSTART, IndexEND;
         private static int MAX_FRAME_LENGTH = 16000;
         private static float[] gInFIFO = new float[MAX_FRAME_LENGTH];
@@ -197,23 +197,25 @@ namespace SimpleNeurotuner
                     float mmu = 0;
                     float ksigma = 0;
                     float msigma = 0;
-                    int n = 0;
+                    
 
                     for (int j = 0; j < 2; j++)
                     {
+                        if (n < 8)
+                        {
                             k = indexPeak[j];
-                            KMAX[n] = gAnaMagn[k];
+                            KMAX = gAnaMagn[k];
                             k++;
-                            while (k < fftFrameSize2 && KMAX[n] < gAnaMagn[k])
+                            while (k < fftFrameSize2 && KMAX < gAnaMagn[k])
                             {
-                                KMAX[n] = gAnaMagn[k++];
+                                KMAX = gAnaMagn[k++];
                             }
                             m = indexPeak[j];
-                            MMAX[n] = gAnaMagn[m];
+                            MMAX = gAnaMagn[m];
                             m--;
-                            while (m >= 0 && MMAX[n] < gAnaMagn[m])
+                            while (m >= 0 && MMAX < gAnaMagn[m])
                             {
-                                MMAX[n] = gAnaMagn[m--];
+                                MMAX = gAnaMagn[m--];
                             }
                             if (Math.Abs(indexPeak[j] - k) > Math.Abs(indexPeak[j] - m))
                             {
@@ -223,26 +225,35 @@ namespace SimpleNeurotuner
                             {
                                 result[j] = (int)k;
                             }
-                            kmu += KMAX[n] / 8;
-                            mmu += MMAX[n] / 8;
-                            ksigma += (float)Math.Sqrt(Math.Pow(KMAX[n] - kmu, 2));
-                            msigma += (float)Math.Sqrt(Math.Pow(MMAX[n] - mmu, 2));
-                            if (((Math.Abs(KMAX[n] - kmu)  < ksigma) == (kmu - ksigma < KMAX[n] && KMAX[n] < ksigma + kmu)) && ((Math.Abs(KMAX[n] - kmu) < 2 * ksigma) == (kmu - 2 * ksigma < KMAX[n] && KMAX[n] < 2 * ksigma + kmu)) && ((Math.Abs(KMAX[n] - kmu) < 3 * ksigma) == (kmu - 3 * ksigma < KMAX[n] && KMAX[n] < 3 * ksigma + kmu)))
+                            kmu += KMAX / 8;
+                            mmu += MMAX / 8;
+                            ksigma += (float)Math.Sqrt(Math.Pow(KMAX - kmu, 2));
+                            msigma += (float)Math.Sqrt(Math.Pow(MMAX - mmu, 2));
+                            if (((Math.Abs(KMAX - kmu) < ksigma) == (kmu - ksigma < KMAX && KMAX < ksigma + kmu)) && ((Math.Abs(KMAX - kmu) < 2 * ksigma) == (kmu - 2 * ksigma < KMAX && KMAX < 2 * ksigma + kmu)) && ((Math.Abs(KMAX - kmu) < 3 * ksigma) == (kmu - 3 * ksigma < KMAX && KMAX < 3 * ksigma + kmu)))
                             {
-
+                                n++;
                             }
+                            else
+                            {
+                                n = 0;
+                            }
+                        }
+                        else
+                        {
+                            n = 0;
+                        }
                     }
                     
                     //bufRec[l] = (float)Math.Sqrt(Math.Pow(KMAX - MMAX,2));
-                    /*MAX = gAnaMagn[0];
-                    MIN = gAnaMagn[0];
-                    IndexMAX = 0;
-                    IndexMIN = 0;
+                    MAX = gAnaMagn[0];
+                    MIN = MAX;
+                    /*IndexMAX = 0;
+                    IndexMIN = 0;*/
                     for(k = 0; k <= fftFrameSize2; k++)
                     {
-                        MAX = Math.Max(MAX, gAnaMagn[k]);
-                        MIN = Math.Min(MIN, gAnaMagn[k]);
-                        /*if(MAX < gAnaMagn[k])
+                        /*MAX = Math.Max(MAX, gAnaMagn[k]);
+                        MIN = Math.Min(MIN, gAnaMagn[k]);*/
+                        if(MAX < gAnaMagn[k])
                         {
                             MAX = gAnaMagn[k];
                             IndexMAX = k;
@@ -251,9 +262,9 @@ namespace SimpleNeurotuner
                         {
                             MIN = gAnaMagn[k];
                             IndexMIN = k;
-                        }*
+                        }
                         MAXIN = Math.Max(Math.Abs(MIN), Math.Abs(MAX));
-                    }*/
+                    }
 
                     /* ***************** PROCESSING ******************* */
                     /* this does the actual pitch shifting/это делает фактическое изменение высоты тона */

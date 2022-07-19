@@ -799,24 +799,27 @@ namespace SimpleNeurotuner
         {
             string[] text = File.ReadAllLines("Data_Load.dat");
             string[] text1 = File.ReadAllLines(fileinfo.FullName);
-            //string[] filename = File.ReadAllLines(fileInfo1.FullName);
-            if (text.Length == 0 && text1.Length == 1)
+            //string[] filename = File.ReadAllLines(file1.FullName);
+            if (file1.Length != 1)
             {
-                Languages();
-            }
-            if (langindex == "0")
-            {
-                cmbRecord.Items.Clear();
-                cmbRecord.Items.Add("Выберите запись");
-                cmbRecord.SelectedIndex = cmbRecord.Items.Count - 1;
-                Filling();
-            }
-            else
-            {
-                cmbRecord.Items.Clear();
-                cmbRecord.Items.Add("Select a record");
-                cmbRecord.SelectedIndex = cmbRecord.Items.Count - 1;
-                Filling();
+                if (text.Length == 0 && text1.Length == 1)
+                {
+                    Languages();
+                }
+                if (langindex == "0")
+                {
+                    cmbRecord.Items.Clear();
+                    cmbRecord.Items.Add("Выберите запись");
+                    cmbRecord.SelectedIndex = cmbRecord.Items.Count - 1;
+                    Filling();
+                }
+                else
+                {
+                    cmbRecord.Items.Clear();
+                    cmbRecord.Items.Add("Select a record");
+                    cmbRecord.SelectedIndex = cmbRecord.Items.Count - 1;
+                    Filling();
+                }
             }
         }
 
