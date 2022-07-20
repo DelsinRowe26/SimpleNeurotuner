@@ -251,9 +251,9 @@ namespace SimpleNeurotuner
                     IndexMIN = 0;*/
                     for(k = 0; k <= fftFrameSize2; k++)
                     {
-                        /*MAX = Math.Max(MAX, gAnaMagn[k]);
-                        MIN = Math.Min(MIN, gAnaMagn[k]);*/
-                        if(MAX < gAnaMagn[k])
+                        MAX = Math.Max(MAX, gAnaMagn[k]);
+                        MIN = Math.Min(MIN, gAnaMagn[k]);/**/
+                        /*if(MAX < gAnaMagn[k])
                         {
                             MAX = gAnaMagn[k];
                             IndexMAX = k;
@@ -262,7 +262,7 @@ namespace SimpleNeurotuner
                         {
                             MIN = gAnaMagn[k];
                             IndexMIN = k;
-                        }
+                        }*/
                         MAXIN = Math.Max(Math.Abs(MIN), Math.Abs(MAX));
                     }
 

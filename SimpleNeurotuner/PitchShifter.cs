@@ -193,14 +193,15 @@ namespace SimpleNeurotuner
                     IndexMAX = 0;
                     for(k = 1; k <= fftFrameSize2; k++)
                     {
-                        //MAX = Math.Max(MAX, gAnaMagn[k]);
-                        if (MAX < gAnaMagn[k])
+                        MAX = Math.Max(MAX, gAnaMagn[k]);
+                        /*if (MAX < gAnaMagn[k])
                         {
                             MAX = gAnaMagn[k];
                             IndexMAX = k;
                             //File.WriteAllText("magnmax.txt", gAnaMagn[k].ToString());7
-                        }
-                        coeffVol = MAX / PitchShifter1.MAXIN;
+                        }*/
+                        //coeffVol = MAX / PitchShifter1.MAXIN;
+                        coeffVol = PitchShifter1.MAXIN / MAX;
                         if (coeffVol != 0)
                         {
                             gAnaMagn[k] *= coeffVol;

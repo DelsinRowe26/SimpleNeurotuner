@@ -169,7 +169,7 @@
         <Label x:Name="lbVolValue9" Content="0" HorizontalAlignment="Left" Margin="469,390,0,0" VerticalAlignment="Top" Height="32" Width="36" FontSize="18" Visibility="Hidden"/>
         <Label x:Name="lbVolValue10" Content="0" HorizontalAlignment="Left" Margin="513,390,0,0" VerticalAlignment="Top" Height="32" Width="36" FontSize="18" Visibility="Hidden"/>
         <Image x:Name="ImgSpectr" HorizontalAlignment="Left" Height="292" Margin="10,79,0,0" VerticalAlignment="Top" Width="518" Visibility="Hidden"/>
-        <Slider x:Name="slPitch" HorizontalAlignment="Center" Margin="0,79,0,0" VerticalAlignment="Top" Width="250" Maximum="15" Minimum="-15" TickPlacement="BottomRight" ValueChanged="slPitch_ValueChanged"/>
+        <Slider x:Name="slVol" HorizontalAlignment="Center" Margin="0,79,0,0" VerticalAlignment="Top" Width="250" Maximum="100" TickPlacement="BottomRight" ValueChanged="slPitch_ValueChanged"/>
         <Label x:Name="lbPitchValue" Content="0" HorizontalAlignment="Left" Margin="421,70,0,0" VerticalAlignment="Top" FontSize="14"/>
     </Grid>
 </Window>

@@ -1,5 +1,8 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Text;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -18,6 +21,7 @@ using System.Windows.Media;
 using System.Threading;
 using System.Diagnostics;
 using System.IO;
+
 
 using AudioAnalyzer;
 using WinformsVisualization.Visualization;
@@ -38,10 +42,45 @@ namespace SimpleNeurotuner
     /// <summary>
     /// Логика взаимодействия для MainWindow.xaml
     /// </summary>
+
+    /*[StructLayout(LayoutKind.Sequential)]
+    public struct WAVEFORMATEX
+    {
+        public ushort wFormatTag;
+        public ushort nChannels;
+        public uint nSamplesPerSec;
+        public uint nAvgBytesPerSec;
+        public ushort nBlockAlign;
+        public ushort wBitsPerSample;
+        public ushort cbSize;
+    }*/
+
     public partial class MainWindow : Window
     {
+        /*public const uint WAVE_MAPPER = unchecked((uint)(-1));
+
+        [DllImport("winmm.dll", SetLastError = true)]
+        public static extern uint waveOutOpen(ref uint hWaveOut, uint uDeviceId, ref WAVEFORMATEX ipFormat, uint dwCallback, uint dwInstance, uint dwFlags);
         
-            
+        [DllImport("winmm.dll", SetLastError = true, CharSet = CharSet.Auto)]
+        public static extern uint waveOutGetVolume(uint hwo, ref uint dwVolume);
+
+        [DllImport("winmm.dll", SetLastError = true, CallingConvention = CallingConvention.Winapi)]
+        public static extern int waveOutSetVolume(uint uDeviceID, uint dwVolume);
+
+        [DllImport("winmm.dll", SetLastError = true, CharSet = CharSet.Auto)]
+        public static extern uint waveOutClose(uint hwo);
+
+        [DllImport("Kernel32.dll", EntryPoint = "RtlZeroMemory", SetLastError = false)]
+        static extern void ZeroMemory(ref WAVEFORMATEX dest, int size);*/
+
+        private const int APPCOMMAND_VOLUME_UP = 0xA0000;
+        private const int APPCOMMAND_VOLUME_DOWN = 0x90000;
+        private const int WM_APPCOMMAND = 0x319;
+
+        [DllImport("user32.dll")]
+        public static extern IntPtr SendMessageW(IntPtr hWnd, int Msg, IntPtr wParam, IntPtr lParam);
+
         [DllImport("BiblZvuk.dll", CallingConvention = CallingConvention.Cdecl)]
         //unsafe
           static extern int vizualzvuk(string filename,  int[] Rdat);
@@ -102,121 +141,6 @@ namespace SimpleNeurotuner
             worker.WorkerSupportsCancellation = true;
             worker.DoWork += worker_DoWork;
             worker.ProgressChanged += worker_ProgressChanged;
-
-            int Np = 120;
-            double[] Data1 = new double[Np + 1];
-
-            for (int i = 0; i < Np; i++)
-            {
-                Data1[i] = Math.Sin(i / 5.0) + 1;
-            }
-
-            DrawingGroup mDrawingGroup = new DrawingGroup();
-
-            for (int DrawingStage = 0; DrawingStage < 10; DrawingStage++)
-            {
-                GeometryDrawing drw = new GeometryDrawing();
-                GeometryGroup gg = new GeometryGroup();
-
-                //Background
-                if( DrawingStage == 1)
-                {
-                    drw.Brush = Brushes.Beige;
-                    drw.Pen = new Pen(Brushes.LightGray, 0.01);
-
-                    RectangleGeometry myRectGeometry = new RectangleGeometry();
-                    myRectGeometry.Rect = new Rect(0, 0, 4, 2);
-                    gg.Children.Add(myRectGeometry);
-                }
-
-                //Мелкая сетка
-                if ( DrawingStage == 2)
-                {
-                    drw.Brush = Brushes.Beige;
-                    drw.Pen = new Pen(Brushes.Gray, 0.003);
-
-                    DoubleCollection dashes = new DoubleCollection();
-                    for(int i = 1; i < 10; i++)
-                        dashes.Add(0.1);
-                    drw.Pen.DashStyle = new DashStyle(dashes, 0);
-
-                    drw.Pen.EndLineCap = PenLineCap.Round;
-                    drw.Pen.StartLineCap = PenLineCap.Round;
-                    drw.Pen.DashCap = PenLineCap.Round;
-
-                    for(int i = 0; i < 10; i++)
-                    {
-                        LineGeometry myRectGeometry = new LineGeometry(new Point(4.1, i * 0.2), new Point(-0.1, i * 0.2));
-                        gg.Children.Add(myRectGeometry);
-                    }
-                }
-
-                //график #1
-                if(DrawingStage == 3)
-                {
-                    drw.Brush = Brushes.White;
-                    drw.Pen = new Pen(Brushes.Black, 0.005);
-
-                    gg = new GeometryGroup();
-                    for(int i = 0; i < Np; i++)
-                    {
-                        /*LineGeometry l = new LineGeometry(new Point((double)(i + 1) / (double)Np, 2.0 - (Data1[i] / 2.0)),
-                            new Point((double)(i + 1) / (double)Np, 1.0 - (Data1[i + 1] / 2.0)));*/
-                        LineGeometry l = new LineGeometry(new Point((double)(i * 2 + 1)/(double)(Np-60), 2.0 - (Data1[i] / 2.0)),
-                            new Point((double)(i * 2 + 1) / (double)(Np - 60), 1.0 - (Data1[i + 1] / 2.0)));
-                        gg.Children.Add(l);
-                    }
-                }
-
-                //обрезка лишнего
-                if (DrawingStage == 5)
-                {
-                    drw.Brush = Brushes.Transparent;
-                    drw.Pen = new Pen(Brushes.White, 0.2);
-
-                    RectangleGeometry myRectGeometry = new RectangleGeometry();
-                    myRectGeometry.Rect = new Rect(-0.1, -0.1, 4.2, 2.2);
-                    gg.Children.Add(myRectGeometry);
-                }
-
-                //Рамка
-                if(DrawingStage == 6)
-                {
-                    drw.Brush = Brushes.Transparent;
-                    drw.Pen = new Pen(Brushes.LightGray, 0.01);
-
-                    RectangleGeometry myRectGeometry = new RectangleGeometry();
-                    myRectGeometry.Rect = new Rect(0, 0, 4, 2);
-                    gg.Children.Add(myRectGeometry);
-                }
-
-                //Надписи
-                if(DrawingStage == 7)
-                {
-                    drw.Brush = Brushes.LightGray;
-                    drw.Pen = new Pen(Brushes.Gray, 0.003);
-
-                    for(int i = 1; i < 20; i+=2)
-                    {
-                        FormattedText formattedText = new FormattedText(
-                            ((double)(10-i+0.1)).ToString(),
-                            CultureInfo.GetCultureInfo("en-us"),
-                            FlowDirection.LeftToRight,
-                            new Typeface("Verdana"),
-                            0.09,
-                            Brushes.Black);
-
-                        formattedText.SetFontWeight(FontWeights.Bold);
-
-                        Geometry geometry = formattedText.BuildGeometry(new Point(-0.2, i * 0.1 - 0.03));
-                        gg.Children.Add(geometry);
-                    }
-                }
-
-                drw.Geometry = gg;
-                mDrawingGroup.Children.Add(drw);
-            }
-            ImgSpectr.Source = new DrawingImage(mDrawingGroup);
         }
 
         void worker_DoWork(object sender, DoWorkEventArgs e)
@@ -472,6 +396,7 @@ namespace SimpleNeurotuner
         private void SoundOut()
         {
             mSoundOut = new WasapiOut(/*false, AudioClientShareMode.Exclusive, 1*/);
+            //mSoundOut.Volume
             //mSoundOut.Device = mOutputDevices[cmbOutput.SelectedIndex];
             mSoundOut.Initialize(mMixer.ToWaveSource(16));
              //mSoundOut.Initialize(mSource);
@@ -480,7 +405,7 @@ namespace SimpleNeurotuner
 
         private void SetPitchShiftValue()
         {
-            mDspRec.PitchShift = (float)Math.Pow(2.0F, slPitch.Value / 13.0F);
+            //mDspRec.PitchShift = (float)Math.Pow(2.0F, slVol.Value / 13.0F);
         }
 
         private async void Sound(string file)
@@ -494,6 +419,7 @@ namespace SimpleNeurotuner
                 //mDsp1.GainDB = (float)slVolume.Value;
                 //mMixer.AddSource(mMp3.ChangeSampleRate(mMixer.WaveFormat.SampleRate).ToWaveSource(16).Loop().ToSampleSource());
                 mMixer.AddSource(mDspRec.ChangeSampleRate(mMixer.WaveFormat.SampleRate).ToWaveSource(16).Loop().ToSampleSource());
+                //SoundOut();
                 await Task.Run(() => SoundOut());
             }
             else
@@ -825,8 +751,35 @@ namespace SimpleNeurotuner
 
         private void slPitch_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            SetPitchShiftValue();
-            lbPitchValue.Content = slPitch.Value.ToString("f1");
+            if(slVol.Value > slVol.Value--)
+            {
+               // SendMessageW(this.Handle, WM_APPCOMMAND, this.Handle, (IntPtr)APPCOMMAND_VOLUME_UP);
+            }
+            //SetPitchShiftValue();
+            /*uint volume = 0;
+            unsafe
+            {
+                uint hWO = 0;
+                WAVEFORMATEX waveF = new WAVEFORMATEX();
+
+                ZeroMemory(ref waveF, sizeof(WAVEFORMATEX));
+                waveOutOpen(ref hWO, WAVE_MAPPER, ref waveF, 0, 0, 0);
+                waveOutGetVolume(hWO, ref volume);
+                waveOutClose(hWO);
+            }
+            slVol.Value = volume;
+            lbPitchValue.Content = slVol.Value.ToString("f1");*/
+            /*unsafe
+            {
+                uint hWO = 0;
+                WAVEFORMATEX waveF = new WAVEFORMATEX();
+
+                ZeroMemory(ref waveF, sizeof(WAVEFORMATEX));
+                waveOutOpen(ref hWO, WAVE_MAPPER, ref waveF, 0, 0, 0);
+                waveOutSetVolume(hWO, Convert.ToUInt32(slVol.Value));
+                waveOutClose(hWO);
+            }*/
+            lbPitchValue.Content = slVol.Value.ToString("f1");
         }
 
         private void cmbModes_SelectionChanged(object sender, SelectionChangedEventArgs e)
