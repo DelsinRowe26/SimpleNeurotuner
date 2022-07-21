@@ -43,7 +43,7 @@ namespace SimpleNeurotuner
     /// Логика взаимодействия для MainWindow.xaml
     /// </summary>
 
-    /*[StructLayout(LayoutKind.Sequential)]
+    [StructLayout(LayoutKind.Sequential)]
     public struct WAVEFORMATEX
     {
         public ushort wFormatTag;
@@ -53,11 +53,11 @@ namespace SimpleNeurotuner
         public ushort nBlockAlign;
         public ushort wBitsPerSample;
         public ushort cbSize;
-    }*/
+    }
 
     public partial class MainWindow : Window
     {
-        /*public const uint WAVE_MAPPER = unchecked((uint)(-1));
+        public const uint WAVE_MAPPER = unchecked((uint)(-1));
 
         [DllImport("winmm.dll", SetLastError = true)]
         public static extern uint waveOutOpen(ref uint hWaveOut, uint uDeviceId, ref WAVEFORMATEX ipFormat, uint dwCallback, uint dwInstance, uint dwFlags);
@@ -72,14 +72,14 @@ namespace SimpleNeurotuner
         public static extern uint waveOutClose(uint hwo);
 
         [DllImport("Kernel32.dll", EntryPoint = "RtlZeroMemory", SetLastError = false)]
-        static extern void ZeroMemory(ref WAVEFORMATEX dest, int size);*/
+        static extern void ZeroMemory(ref WAVEFORMATEX dest, int size);
 
-        private const int APPCOMMAND_VOLUME_UP = 0xA0000;
+        /*private const int APPCOMMAND_VOLUME_UP = 0xA0000;
         private const int APPCOMMAND_VOLUME_DOWN = 0x90000;
-        private const int WM_APPCOMMAND = 0x319;
+        private const int WM_APPCOMMAND = 0x319;*/
 
-        [DllImport("user32.dll")]
-        public static extern IntPtr SendMessageW(IntPtr hWnd, int Msg, IntPtr wParam, IntPtr lParam);
+        /*[DllImport("user32.dll")]
+        public static extern IntPtr SendMessageW(IntPtr hWnd, int Msg, IntPtr wParam, IntPtr lParam);*/
 
         [DllImport("BiblZvuk.dll", CallingConvention = CallingConvention.Cdecl)]
         //unsafe
@@ -426,22 +426,6 @@ namespace SimpleNeurotuner
             {
                 Stop();
             }
-            /*do
-            {
-                Mixer();
-                mMp3 = CodecFactory.Instance.GetCodec(filename).ToStereo().ToSampleSource();
-                mMixer.AddSource(mMp3.ChangeSampleRate(mMixer.WaveFormat.SampleRate));
-                //open the selected file
-                /*ISampleSource source = CodecFactory.Instance.GetCodec(openFileDialog.FileName)
-                    .ToSampleSource()
-                    .AppendSource(x => new PitchShifter(x), out _pitchShifter);
-
-                //play the audio
-
-                await Task.Run(() => SoundOut());
-
-                Thread.Sleep(900);
-            } while (click != 0);*/
         }
 
         private void btnStop_Click(object sender, RoutedEventArgs e)
@@ -751,35 +735,37 @@ namespace SimpleNeurotuner
 
         private void slPitch_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            if(slVol.Value > slVol.Value--)
-            {
-               // SendMessageW(this.Handle, WM_APPCOMMAND, this.Handle, (IntPtr)APPCOMMAND_VOLUME_UP);
-            }
             //SetPitchShiftValue();
-            /*uint volume = 0;
-            unsafe
+            /*if (slVol.Value - (slVol.Value++) < 0)
             {
-                uint hWO = 0;
-                WAVEFORMATEX waveF = new WAVEFORMATEX();
+                uint volume = 0;
+                unsafe
+                {
+                    uint hWO = 0;
+                    WAVEFORMATEX waveF = new WAVEFORMATEX();
 
-                ZeroMemory(ref waveF, sizeof(WAVEFORMATEX));
-                waveOutOpen(ref hWO, WAVE_MAPPER, ref waveF, 0, 0, 0);
-                waveOutGetVolume(hWO, ref volume);
-                waveOutClose(hWO);
+                    ZeroMemory(ref waveF, sizeof(WAVEFORMATEX));
+                    waveOutOpen(ref hWO, WAVE_MAPPER, ref waveF, 0, 0, 0);
+                    waveOutGetVolume(hWO, ref volume);
+                    waveOutClose(hWO);
+                }
+                slVol.Value = volume;
+                lbPitchValue.Content = slVol.Value.ToString("f1");
             }
-            slVol.Value = volume;
-            lbPitchValue.Content = slVol.Value.ToString("f1");*/
-            /*unsafe
+            else if (slVol.Value - (slVol.Value--) > 0)
             {
-                uint hWO = 0;
-                WAVEFORMATEX waveF = new WAVEFORMATEX();
+                unsafe
+                {
+                    uint hWO = 0;
+                    WAVEFORMATEX waveF = new WAVEFORMATEX();
 
-                ZeroMemory(ref waveF, sizeof(WAVEFORMATEX));
-                waveOutOpen(ref hWO, WAVE_MAPPER, ref waveF, 0, 0, 0);
-                waveOutSetVolume(hWO, Convert.ToUInt32(slVol.Value));
-                waveOutClose(hWO);
+                    ZeroMemory(ref waveF, sizeof(WAVEFORMATEX));
+                    waveOutOpen(ref hWO, WAVE_MAPPER, ref waveF, 0, 0, 0);
+                    waveOutSetVolume(hWO, Convert.ToUInt32(slVol.Value));
+                    waveOutClose(hWO);
+                }
+                lbPitchValue.Content = slVol.Value.ToString("f1");
             }*/
-            lbPitchValue.Content = slVol.Value.ToString("f1");
         }
 
         private void cmbModes_SelectionChanged(object sender, SelectionChangedEventArgs e)
