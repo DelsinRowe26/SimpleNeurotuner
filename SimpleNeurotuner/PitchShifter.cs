@@ -68,6 +68,9 @@ namespace SimpleNeurotuner
         private static long IndexSTART, IndexEND;
         private static int MAX_FRAME_LENGTH = 16000;
         private static float[] gInFIFO = new float[MAX_FRAME_LENGTH];
+        private static int[] kt = new int[MAX_FRAME_LENGTH * 2];
+        private static int[] minfreq = new int[MAX_FRAME_LENGTH * 2];
+        private static int[] maxfreq = new int[MAX_FRAME_LENGTH * 2];
         private static float[] gOutFIFO = new float[MAX_FRAME_LENGTH];
         private static float[] gFFTworksp = new float[2 * MAX_FRAME_LENGTH];
         private static float[] gCoefficient = new float[2 * MAX_FRAME_LENGTH];
@@ -79,7 +82,8 @@ namespace SimpleNeurotuner
         private static float[] gAnaMagn = new float[MAX_FRAME_LENGTH];
         private static float[] gSynFreq = new float[MAX_FRAME_LENGTH];
         private static float[] gSynMagn = new float[MAX_FRAME_LENGTH];
-        //private static StreamReader fileName = new StreamReader("", System.Text.Encoding.Default);
+        private static StreamReader fileName = new StreamReader("Wide_voice.txt", System.Text.Encoding.Default);
+        private static string[] txt = fileName.ReadToEnd().Split(new char[] { ' ', '.' }, StringSplitOptions.None);
         //private static string[] NoteNames = { "A", "A#", "B/H", "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#" };
         private static float ToneStep = (float)Math.Pow(2, 1.0 / 12);//рассчет шага тоны
         private static long gRover, gInit;
@@ -149,9 +153,38 @@ namespace SimpleNeurotuner
                         gFFTworksp[fftFrameSize * 9 + k] = 0.0F;//заполню нулями до 40960*/
                     }
 
-                    
+                    /*for(k = 0; k < fftFrameSize; k++)
+                    {
+                        for (int n = 0, f = 1, t = 2; n < fileName.ReadToEnd().Length && f < fileName.ReadToEnd().Length && t < fileName.ReadToEnd().Length; n += 3, f += 3, t += 3) 
+                        {
+                            minfreq[k] = int.Parse(txt[n]);
+                            maxfreq[k] = int.Parse(txt[f]);
+                            kt[k] = int.Parse(txt[t]);
+                        }
+                        if (k < minfreq[k])
+                        {
+                            kt[k] = 1;
+                        }
+                    }
+                    */
 
-                    for(k = 0; k < fftFrameSize; k++)
+
+
+
+                    /*if (k * 2 < int.Parse(txt[0]) && k * 2 + 1 < int.Parse(txt[0]))
+                        {
+                            kt[k * 2] = 1;
+                            kt[k * 2 + 1] = 1;
+                        }
+                        else if(k * 2 >= int.Parse(txt[0]) && k * 2 + 1 >= int.Parse(txt[0]) && k * 2 < int.Parse(txt[3]) && k * 2 + 1 < int.Parse(txt[3]))
+                        {
+                            kt[k * 2] = 10;
+                            kt[k * 2 + 1] = 10;
+                        }
+                        kt[k * 2] = int.Parse(fileName.ReadLine());
+                        kt[k * 2 + 1] = int.Parse(fileName.ReadLine());*/
+
+                    for (k = 0; k < fftFrameSize; k++)
                     {
                         /*if(k >= (60 * fftFrameSize2) / sampleRate && k <= (4320 * fftFrameSize2) / sampleRate)
                         {
@@ -192,7 +225,13 @@ namespace SimpleNeurotuner
                         else if (k >= (6960 * fftFrameSize2) / sampleRate && k <= (7949 * fftFrameSize2) / sampleRate)
                         {
                             gCoefficient[k] = 1;
-                        }*/
+                        }
+                        */
+                        if (2 * k < 60 && 2 * k + 1 < 60)
+                        {
+                            gCoefficient[k * 2] = 1;
+                            gCoefficient[k * 2 + 1] = 1;
+                        }
 
                         if (2 * k <= 4320 && (2 * k + 1) <= 4320)
                             {
@@ -312,6 +351,12 @@ namespace SimpleNeurotuner
                         {
                             gAnaMagn[k] *= coeffVol;
                         }
+                    }
+
+                    for(k = 0; k < fftFrameSize; k++)
+                    {
+                        gFFTworksp[2 * k] *= gCoefficient[k];
+                        gFFTworksp[2 * k + 1] *= gCoefficient[k];
                     }
 
                     /*for (k= 0; k <= fftFrameSize2; k++)
