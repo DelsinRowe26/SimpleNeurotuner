@@ -66,11 +66,12 @@ namespace SimpleNeurotuner
         private static float MAX, MAX1, MAX2, coeffVol;
         private static long IndexMAX, IndexMAX1, IndexMAX2;
         private static long IndexSTART, IndexEND;
-        private static int MAX_FRAME_LENGTH = 16000;
+        private static int MAX_FRAME_LENGTH = 22050;
         private static float[] gInFIFO = new float[MAX_FRAME_LENGTH];
         private static int[] kt = new int[MAX_FRAME_LENGTH * 2];
         private static int[] minfreq = new int[MAX_FRAME_LENGTH * 2];
         private static int[] maxfreq = new int[MAX_FRAME_LENGTH * 2];
+        private static int[] coef = new int[MAX_FRAME_LENGTH * 2];
         private static float[] gOutFIFO = new float[MAX_FRAME_LENGTH];
         private static float[] gFFTworksp = new float[2 * MAX_FRAME_LENGTH];
         private static float[] gCoefficient = new float[2 * MAX_FRAME_LENGTH];
@@ -83,6 +84,8 @@ namespace SimpleNeurotuner
         private static float[] gSynFreq = new float[MAX_FRAME_LENGTH];
         private static float[] gSynMagn = new float[MAX_FRAME_LENGTH];
         private static StreamReader fileName = new StreamReader("Wide_voice.txt", System.Text.Encoding.Default);
+        //private static int Nlines = fileName.ReadLine().Length;
+        private static int Nlines = File.ReadAllLines("Wide_voice.txt").Length;
         private static string[] txt = fileName.ReadToEnd().Split(new char[] { ' ', '.' }, StringSplitOptions.None);
         //private static string[] NoteNames = { "A", "A#", "B/H", "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#" };
         private static float ToneStep = (float)Math.Pow(2, 1.0 / 12);//рассчет шага тоны
@@ -148,141 +151,37 @@ namespace SimpleNeurotuner
                         gFFTworksp[fftFrameSize * 4 + k] = 0.0F;//заполню нулями до 20480
                         gFFTworksp[fftFrameSize * 5 + k] = 0.0F;//заполню нулями до 24576
                         gFFTworksp[fftFrameSize * 6 + k] = 0.0F;//заполню нулями до 28672
-                        //gFFTworksp[fftFrameSize * 7 + k] = 0.0F;//заполню нулями до 32768
-                        /*gFFTworksp[fftFrameSize * 8 + k] = 0.0F;//заполню нулями до 36864
-                        gFFTworksp[fftFrameSize * 9 + k] = 0.0F;//заполню нулями до 40960*/
-                    }
-
-                    /*for(k = 0; k < fftFrameSize; k++)
-                    {
-                        for (int n = 0, f = 1, t = 2; n < fileName.ReadToEnd().Length && f < fileName.ReadToEnd().Length && t < fileName.ReadToEnd().Length; n += 3, f += 3, t += 3) 
+                        gFFTworksp[fftFrameSize * 7 + k] = 0.0F;//заполню нулями до 32768
+                        gFFTworksp[fftFrameSize * 8 + k] = 0.0F;//заполню нулями до 36864
+                        gFFTworksp[fftFrameSize * 9 + k] = 0.0F;//заполню нулями до 40960
+                        if (fftFrameSize * 10 + k < sampleRate)
                         {
-                            minfreq[k] = int.Parse(txt[n]);
-                            maxfreq[k] = int.Parse(txt[f]);
-                            kt[k] = int.Parse(txt[t]);
-                        }
-                        if (k < minfreq[k])
-                        {
-                            kt[k] = 1;
+                            gFFTworksp[fftFrameSize * 10 + k] = 0.0F;
                         }
                     }
-                    */
 
-
-
-
-                    /*if (k * 2 < int.Parse(txt[0]) && k * 2 + 1 < int.Parse(txt[0]))
-                        {
-                            kt[k * 2] = 1;
-                            kt[k * 2 + 1] = 1;
-                        }
-                        else if(k * 2 >= int.Parse(txt[0]) && k * 2 + 1 >= int.Parse(txt[0]) && k * 2 < int.Parse(txt[3]) && k * 2 + 1 < int.Parse(txt[3]))
-                        {
-                            kt[k * 2] = 10;
-                            kt[k * 2 + 1] = 10;
-                        }
-                        kt[k * 2] = int.Parse(fileName.ReadLine());
-                        kt[k * 2 + 1] = int.Parse(fileName.ReadLine());*/
-
-                    for (k = 0; k < fftFrameSize; k++)
+                    for (int f = 0; f < sampleRate; f++)
                     {
-                        /*if(k >= (60 * fftFrameSize2) / sampleRate && k <= (4320 * fftFrameSize2) / sampleRate)
-                        {
-                            gCoefficient[k] = 10;
-                        }
-                        else if (k >= (4320 * fftFrameSize2) / sampleRate && k <= (4650 * fftFrameSize2) / sampleRate)
-                        {
-                            gCoefficient[k] = 9;
-                        }
-                        else if (k >= (4650 * fftFrameSize2) / sampleRate && k <= (4980 * fftFrameSize2) / sampleRate)
-                        {
-                            gCoefficient[k] = 8;
-                        }
-                        else if (k >= (4980 * fftFrameSize2) / sampleRate && k <= (5310 * fftFrameSize2) / sampleRate)
-                        {
-                            gCoefficient[k] = 7;
-                        }
-                        else if (k >= (5310 * fftFrameSize2) / sampleRate && k <= (5640 * fftFrameSize2) / sampleRate)
-                        {
-                            gCoefficient[k] = 6;
-                        }
-                        else if (k >= (5640 * fftFrameSize2) / sampleRate && k <= (5970 * fftFrameSize2) / sampleRate)
-                        {
-                            gCoefficient[k] = 5;
-                        }
-                        else if (k >= (5970 * fftFrameSize2) / sampleRate && k <= (6300 * fftFrameSize2) / sampleRate)
-                        {
-                            gCoefficient[k] = 4;
-                        }
-                        else if (k >= (6300 * fftFrameSize2) / sampleRate && k <= (6630 * fftFrameSize2) / sampleRate)
-                        {
-                            gCoefficient[k] = 3;
-                        }
-                        else if (k >= (6630 * fftFrameSize2) / sampleRate && k <= (6960 * fftFrameSize2) / sampleRate)
-                        {
-                            gCoefficient[k] = 2;
-                        }
-                        else if (k >= (6960 * fftFrameSize2) / sampleRate && k <= (7949 * fftFrameSize2) / sampleRate)
-                        {
-                            gCoefficient[k] = 1;
-                        }
-                        */
-                        if (2 * k < 60 && 2 * k + 1 < 60)
-                        {
-                            gCoefficient[k * 2] = 1;
-                            gCoefficient[k * 2 + 1] = 1;
-                        }
+                        kt[f] = 1;
+                    }
 
-                        if (2 * k <= 4320 && (2 * k + 1) <= 4320)
-                            {
-                                gCoefficient[k * 2] = 10;
-                                gCoefficient[k * 2 + 1] = 10;
-                            }
-                            else if(2 * k > 4320 && (2 * k + 1) > 4320 && 2 * k <= 4650 && (2 * k + 1) <= 4650)
-                            {
-                                gCoefficient[k * 2] = 9;
-                                gCoefficient[k * 2 + 1] = 9;
-                            }
-                            else if (2 * k > 4650 && (2 * k + 1) > 4650 && 2 * k <= 4980 && (2 * k + 1) <= 4980)
-                            {
-                                gCoefficient[k * 2] = 8;
-                                gCoefficient[k * 2 + 1] = 8;
-                            }
-                            else if (2 * k > 4980 && (2 * k + 1) > 4980 && 2 * k <= 5310 && (2 * k + 1) <= 5310)
-                            {
-                                gCoefficient[k * 2] = 7;
-                                gCoefficient[k * 2 + 1] = 7;
-                            }
-                            else if (2 * k > 5310 && (2 * k + 1) > 5310 && 2 * k <= 5640 && (2 * k + 1) <= 5640)
-                            {
-                                gCoefficient[k * 2] = 6;
-                                gCoefficient[k * 2 + 1] = 6;
-                            }
-                            else if (2 * k > 5640 && (2 * k + 1) > 5640 && 2 * k <= 5970 && (2 * k + 1) <= 5970)
-                            {
-                                gCoefficient[k * 2] = 5;
-                                gCoefficient[k * 2 + 1] = 5;
-                            }
-                            else if (2 * k > 5970 && (2 * k + 1) > 5970 && 2 * k <= 6300 && (2 * k + 1) <= 6300)
-                            {
-                                gCoefficient[k * 2] = 4;
-                                gCoefficient[k * 2 + 1] = 4;
-                            }
-                            else if (2 * k > 6300 && (2 * k + 1) > 6300 && 2 * k <= 6630 && (2 * k + 1) <= 6630)
-                            {
-                                gCoefficient[k * 2] = 3;
-                                gCoefficient[k * 2 + 1] = 3;
-                            }
-                            else if (2 * k > 6630 && (2 * k + 1) > 6630 && 2 * k <= 6960 && (2 * k + 1) <= 6960)
-                            {
-                                gCoefficient[k * 2] = 2;
-                                gCoefficient[k * 2 + 1] = 2;
-                            }
-                            else if (2 * k > 6960 && (2 * k + 1) > 6960 && 2 * k <= 7949 && (2 * k + 1) <= 7949)
-                            {
-                                gCoefficient[k * 2] = 1;
-                                gCoefficient[k * 2 + 1] = 1;
-                            }
+                    for(int p = 0; p < Nlines; p++)
+                    {
+                        for(int q = 0, r = 1, e = 2; q < Nlines && r < Nlines && e < Nlines; q+=3, r+=3, e+=3)
+                        {
+                            minfreq[p] = int.Parse(txt[q]);
+                            maxfreq[p] = int.Parse(txt[r]);
+                            coef[p] = int.Parse(txt[e]);
+                        }
+                    }
+
+                    for(int t = 0; t < Nlines; t++)
+                    {
+                        for(int l = minfreq[t]; l < maxfreq[t]; l++)
+                        {
+                            kt[l] = coef[t];
+                            kt[(int)sampleRate - l] = coef[t];
+                        }
                     }
 
                     /* ***************** ANALYSIS ******************* */
@@ -294,8 +193,8 @@ namespace SimpleNeurotuner
                     {
 
                         /* de-interlace FFT buffer/деинтерлейсный буфер FFT  */
-                        real = gFFTworksp[2 * k] * gCoefficient[2 * k];
-                        imag = gFFTworksp[2 * k + 1] * gCoefficient[2 * k + 1];
+                        real = gFFTworksp[2 * k];
+                        imag = gFFTworksp[2 * k + 1];
 
                         /* compute magnitude and phase/вычислить амплитуду и фазу  */
                         magn = Math.Sqrt(real * real+ imag * imag);//амплитуда
@@ -353,11 +252,11 @@ namespace SimpleNeurotuner
                         }
                     }
 
-                    for(k = 0; k < fftFrameSize; k++)
+                    /*for(k = 0; k < fftFrameSize; k++)
                     {
-                        gFFTworksp[2 * k] *= gCoefficient[k];
-                        gFFTworksp[2 * k + 1] *= gCoefficient[k];
-                    }
+                        gFFTworksp[2 * k] *= kt[k];
+                        gFFTworksp[2 * k + 1] *= kt[k];
+                    }*/
 
                     /*for (k= 0; k <= fftFrameSize2; k++)
                     {
