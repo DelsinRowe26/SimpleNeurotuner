@@ -782,6 +782,20 @@ namespace SimpleNeurotuner
             {
                 btnRecord.Visibility = Visibility.Hidden;
                 pbRecord.Visibility = Visibility.Hidden;
+                if (langindex == "0")
+                {
+                    cmbRecord.Items.Clear();
+                    cmbRecord.Items.Add("Выберите запись");
+                    cmbRecord.SelectedIndex = cmbRecord.Items.Count - 1;
+                    Filling();
+                }
+                else
+                {
+                    cmbRecord.Items.Clear();
+                    cmbRecord.Items.Add("Select a record");
+                    cmbRecord.SelectedIndex = cmbRecord.Items.Count - 1;
+                    Filling();
+                }
             }
         }
 

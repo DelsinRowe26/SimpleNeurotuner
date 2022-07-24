@@ -79,7 +79,7 @@ namespace SimpleNeurotuner
         private static float[] gAnaMagn = new float[MAX_FRAME_LENGTH];
         private static float[] gSynFreq = new float[MAX_FRAME_LENGTH];
         private static float[] gSynMagn = new float[MAX_FRAME_LENGTH];
-        private static string[] NoteNames = { "A", "A#", "B/H", "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#" };
+        //private static string[] NoteNames = { "A", "A#", "B/H", "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#" };
         private static float ToneStep = (float)Math.Pow(2, 1.0 / 12);//рассчет шага тоны
         private static long gRover, gInit;
         #endregion
@@ -189,7 +189,7 @@ namespace SimpleNeurotuner
                     }
 
                     int usefulMinSpectr = Math.Max(0, (int)(30 * gAnaMagn.Length / sampleRate));
-                    int usefulMaxSpectr = Math.Max(0, (int)(24000 * gAnaMagn.Length / sampleRate) + 1);
+                    int usefulMaxSpectr = Math.Max(0, (int)((sampleRate / 2) * gAnaMagn.Length / sampleRate) + 1);
 
                     int[] indexPeak = MyFrequencyUtils.FindPeaks(gAnaMagn, usefulMinSpectr, usefulMaxSpectr - usefulMinSpectr, 2);
                     int[] result = new int[2];
@@ -244,11 +244,8 @@ namespace SimpleNeurotuner
                         }
                     }
                     
-                    //bufRec[l] = (float)Math.Sqrt(Math.Pow(KMAX - MMAX,2));
                     MAX = gAnaMagn[0];
                     MIN = MAX;
-                    /*IndexMAX = 0;
-                    IndexMIN = 0;*/
                     for(k = 0; k <= fftFrameSize2; k++)
                     {
                         MAX = Math.Max(MAX, gAnaMagn[k]);
